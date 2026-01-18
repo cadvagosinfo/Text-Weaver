@@ -74,6 +74,51 @@ export function useCreateReport() {
   });
 }
 
+export function useUpdateReport() {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  return useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: InsertReport }) => {
+      const payload = {
+        ...data,
+        dataHora: new Date(data.dataHora).toISOString()
+      };
+      
+      const res = await fetch(`/api/reports/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        if (res.status === 400) {
+          const error = await res.json();
+          throw new Error(error.message || "Validation failed");
+        }
+        throw new Error("Failed to update report");
+      }
+
+      return await res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [api.reports.list.path] });
+      toast({
+        title: "Relatório Atualizado",
+        description: "O relatório foi atualizado com sucesso.",
+        variant: "default",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erro ao atualizar",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+}
+
 export function useDeleteReport() {
   const queryClient = useQueryClient();
   const { toast } = useToast();

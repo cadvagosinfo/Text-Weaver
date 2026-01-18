@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertReportSchema, type InsertReport } from "@shared/schema";
-import { useReports, useCreateReport, useDeleteReport } from "@/hooks/use-reports";
+import { useReports, useCreateReport, useUpdateReport, useDeleteReport } from "@/hooks/use-reports";
 import { ReportFormatter } from "@/components/ReportFormatter";
 
 import {
@@ -29,6 +29,7 @@ import { Badge } from "@/components/ui/badge";
 import { 
   Plus, 
   Trash2, 
+  Edit2,
   History, 
   Save, 
   ShieldAlert, 
@@ -68,7 +69,9 @@ const ROLES = ["Vítima", "Autor", "Testemunha"] as const;
 export default function Reports() {
   const { data: reports, isLoading: isLoadingReports } = useReports();
   const createReport = useCreateReport();
+  const updateReport = useUpdateReport();
   const deleteReport = useDeleteReport();
+  const [editingId, setEditingId] = useState<number | null>(null);
   
   const form = useForm<InsertReport>({
     resolver: zodResolver(insertReportSchema),
@@ -85,12 +88,12 @@ export default function Reports() {
     },
   });
 
-  const { fields: personFields, append: appendPerson, remove: removePerson } = useFieldArray({
+  const { fields: personFields, append: appendPerson, remove: removePerson, replace: replacePeople } = useFieldArray({
     control: form.control,
     name: "envolvidos",
   });
 
-  const { fields: materialFields, append: appendMaterial, remove: removeMaterial } = useFieldArray({
+  const { fields: materialFields, append: appendMaterial, remove: removeMaterial, replace: replaceMaterial } = useFieldArray({
     control: form.control,
     name: "material" as any,
   });
@@ -102,22 +105,71 @@ export default function Reports() {
     form.setValue("cidade", "");
   };
 
-  const onSubmit = (data: InsertReport) => {
-    createReport.mutate(data, {
-      onSuccess: () => {
-        form.reset({
-          fato: "",
-          unidade: "",
-          cidade: "",
-          local: "",
-          oficial: "",
-          material: [],
-          resumo: "",
-          envolvidos: [],
-          dataHora: new Date(),
-        });
-      }
+  const startEdit = (report: any) => {
+    setEditingId(report.id);
+    form.reset({
+      fato: report.fato,
+      unidade: report.unidade,
+      cidade: report.cidade,
+      local: report.local,
+      oficial: report.oficial,
+      material: report.material,
+      resumo: report.resumo,
+      envolvidos: report.envolvidos,
+      dataHora: new Date(report.dataHora),
     });
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    form.reset({
+      fato: "",
+      unidade: "",
+      cidade: "",
+      local: "",
+      oficial: "",
+      material: [],
+      resumo: "",
+      envolvidos: [],
+      dataHora: new Date(),
+    });
+  };
+
+  const onSubmit = (data: InsertReport) => {
+    if (editingId) {
+      updateReport.mutate({ id: editingId, data }, {
+        onSuccess: () => {
+          setEditingId(null);
+          form.reset({
+            fato: "",
+            unidade: "",
+            cidade: "",
+            local: "",
+            oficial: "",
+            material: [],
+            resumo: "",
+            envolvidos: [],
+            dataHora: new Date(),
+          });
+        }
+      });
+    } else {
+      createReport.mutate(data, {
+        onSuccess: () => {
+          form.reset({
+            fato: "",
+            unidade: "",
+            cidade: "",
+            local: "",
+            oficial: "",
+            material: [],
+            resumo: "",
+            envolvidos: [],
+            dataHora: new Date(),
+          });
+        }
+      });
+    }
   };
 
   return (
@@ -158,16 +210,26 @@ export default function Reports() {
               reports?.map((report) => (
                 <div 
                   key={report.id} 
-                  className="group bg-white dark:bg-slate-800 p-4 rounded-xl border shadow-sm hover:shadow-md hover:border-blue-200 dark:hover:border-blue-800 transition-all duration-200 relative"
+                  className={`group bg-white dark:bg-slate-800 p-4 rounded-xl border shadow-sm hover:shadow-md transition-all duration-200 relative ${editingId === report.id ? 'border-blue-500 ring-1 ring-blue-500' : 'hover:border-blue-200 dark:hover:border-blue-800'}`}
                 >
                   <div className="flex justify-between items-start mb-2">
                     <span className="font-semibold text-sm text-slate-900 dark:text-slate-100 line-clamp-1">{report.fato}</span>
-                    <button 
-                      onClick={() => deleteReport.mutate(report.id)}
-                      className="text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
+                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button 
+                        onClick={() => startEdit(report)}
+                        className="text-slate-400 hover:text-blue-500 p-1 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded"
+                        title="Editar"
+                      >
+                        <Edit2 className="w-3.5 h-3.5" />
+                      </button>
+                      <button 
+                        onClick={() => deleteReport.mutate(report.id)}
+                        className="text-slate-400 hover:text-red-500 p-1 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
+                        title="Excluir"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
                   <div className="space-y-1 text-xs text-muted-foreground">
                     <div className="flex items-center gap-1.5">
@@ -189,16 +251,29 @@ export default function Reports() {
       <main className="flex-1 flex flex-col h-screen overflow-hidden">
         <header className="px-8 py-5 border-b bg-white dark:bg-slate-900 flex justify-between items-center z-10 shadow-sm">
           <div>
-            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">Novo Relatório</h2>
+            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+              {editingId ? "Editando Relatório" : "Novo Relatório"}
+            </h2>
             <p className="text-sm text-muted-foreground mt-0.5">Preencha os dados abaixo para gerar a mensagem padrão.</p>
           </div>
-          <Button 
-            onClick={form.handleSubmit(onSubmit)} 
-            disabled={createReport.isPending}
-            className="bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/20 text-white min-w-[140px]"
-          >
-            {createReport.isPending ? "Salvando..." : <><Save className="w-4 h-4 mr-2" /> Salvar Relatório</>}
-          </Button>
+          <div className="flex items-center gap-3">
+            {editingId && (
+              <Button 
+                variant="ghost" 
+                onClick={cancelEdit}
+                className="text-muted-foreground"
+              >
+                Cancelar Edição
+              </Button>
+            )}
+            <Button 
+              onClick={form.handleSubmit(onSubmit)} 
+              disabled={createReport.isPending || updateReport.isPending}
+              className="bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/20 text-white min-w-[140px]"
+            >
+              {(createReport.isPending || updateReport.isPending) ? "Salvando..." : <><Save className="w-4 h-4 mr-2" /> {editingId ? "Atualizar Relatório" : "Salvar Relatório"}</>}
+            </Button>
+          </div>
         </header>
 
         <div className="flex-1 overflow-hidden">

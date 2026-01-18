@@ -61,6 +61,26 @@ export async function registerRoutes(
     }
   });
 
+  app.patch("/api/reports/:id", async (req, res) => {
+    try {
+      const id = Number(req.params.id);
+      const input = api.reports.create.input.parse(req.body);
+      const report = await storage.updateReport(id, input);
+      if (!report) {
+        return res.status(404).json({ message: "Report not found" });
+      }
+      res.json(report);
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        return res.status(400).json({
+          message: err.errors[0].message,
+          field: err.errors[0].path.join('.'),
+        });
+      }
+      throw err;
+    }
+  });
+
   app.delete(api.reports.delete.path, async (req, res) => {
     const id = Number(req.params.id);
     const report = await storage.getReport(id);
