@@ -1,0 +1,88 @@
+Create a web application for text editing, organization, and compilation, with a 100% Brazilian Portuguese user interface, designed to generate standardized messages for sending via WhatsApp.
+The application must allow users to fill in structured form fields and automatically compile the information into a specific message template, strictly following the rules below.
+General requirements:
+•	Simple, intuitive, and responsive interface.
+•	Language: Brazilian Portuguese (pt-BR).
+•	Fields must be displayed in the defined order.
+•	A button to generate the final message.
+•	A button to copy the final message for WhatsApp usage.
+•	Use asterisks (*) for bold formatting compatible with WhatsApp.
+Form fields in mandatory order:
+1.	Fato
+Free text field.
+2.	Unidade Policial
+Dropdown selection with fixed options:
+•	41º BPM
+•	2ª Cia Ind.
+3.	Cidade
+Dropdown selection dependent on the selected Unidade Policial.
+If 2ª Cia Ind. is selected, show only:
+•	Taquara
+•	Rolante
+•	Riozinho
+•	Igrejinha
+•	Três Coroas
+If 41º BPM is selected, show only:
+•	Gramado
+•	Canela
+•	São Francisco de Paula
+•	Nova Petrópolis
+•	Picada Café
+•	Cambará do Sul
+4.	Data / Hora
+Single combined field or two linked fields (date and time).
+The date and time must be compiled in the following format:
+DDHHMMMMMYY
+Where:
+•	DD = day (2 digits)
+•	HHMM = hour and minute
+•	MMM = abbreviated month in Portuguese, uppercase (JAN, FEV, MAR, ABR, MAI, JUN, JUL, AGO, SET, OUT, NOV, DEZ)
+•	YY = last two digits of the year
+Example:
+Input: 15 January 2025 at 16:30
+Compiled output: 151630JAN25
+5.	Local
+Text field.
+6.	Vítima / Autor / Testemunha
+There must be a role selection field (dropdown or radio buttons) with the options:
+•	Vítima
+•	Autor
+•	Testemunha
+Only one role may be selected per entry.
+For each entry:
+•	Text field for identification (name or qualification).
+•	An Antecedentes text field directly below, linked exclusively to that person.
+The application must allow adding and removing multiple entries while preserving the correct association between role, name, and antecedentes.
+7.	Oficial informado
+Text field.
+8.	Material apreendido
+Text field.
+9.	Resumo do fato
+Long text field.
+Special rules for the final compiled message:
+•	In the final output, the sections FATO and CIDADE - CRPM HORTÊNSIAS / UNIDADE must contain only the user-provided content, without any additional labels before the text.
+•	Section titles must remain bold using asterisks.
+Final message template:
+FATO
+[only the text entered in the Fato field]
+CIDADE - CRPM HORTÊNSIAS / UNIDADE
+[Cidade] - CRPM HORTÊNSIAS / [Unidade]
+DATA/HORA:
+[Date and time in DDHHMMMMMYY format]
+LOCAL:
+[Local]
+VÍTIMA/TESTEMUNHAS/AUTOR:
+[List of people, indicating the selected role for each]
+ANTECEDENTES:
+[Antecedentes corresponding to each person, maintaining correct associations]
+OFICIAL:
+[Oficial informado]
+MATERIAL APREENDIDO:
+[Material apreendido]
+RESUMO DO FATO:
+[Resumo do fato]
+Technical notes:
+•	Ensure dependent dropdowns (Cidade and Unidade Policial) function correctly.
+•	Ensure the Person, Role, and Antecedentes relationship is always preserved.
+•	Code must be clean, organized, and well-commented.
+•	The application may be built using HTML, CSS, and vanilla JavaScript, or a lightweight framework if preferred.
