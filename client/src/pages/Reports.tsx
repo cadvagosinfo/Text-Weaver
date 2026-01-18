@@ -72,6 +72,7 @@ export default function Reports() {
   const updateReport = useUpdateReport();
   const deleteReport = useDeleteReport();
   const [editingId, setEditingId] = useState<number | null>(null);
+  const [isPreliminar, setIsPreliminar] = useState(false);
   
   const form = useForm<InsertReport>({
     resolver: zodResolver(insertReportSchema),
@@ -261,7 +262,19 @@ export default function Reports() {
             </h2>
             <p className="text-sm text-muted-foreground mt-0.5">Preencha os dados abaixo para gerar a mensagem padrão.</p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center space-x-2 bg-slate-100 dark:bg-slate-800 p-2 rounded-lg border">
+              <label htmlFor="preliminar" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer">
+                PRELIMINAR
+              </label>
+              <input
+                id="preliminar"
+                type="checkbox"
+                checked={isPreliminar}
+                onChange={(e) => setIsPreliminar(e.target.checked)}
+                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600"
+              />
+            </div>
             {editingId && (
               <Button 
                 variant="ghost" 
@@ -502,7 +515,7 @@ export default function Reports() {
             </ScrollArea>
 
             <div className="h-full bg-slate-200/50 dark:bg-slate-900/50 p-8 border-l flex flex-col">
-              <ReportFormatter data={watchedData} />
+              <ReportFormatter data={watchedData} isPreliminar={isPreliminar} />
             </div>
           </div>
         </div>

@@ -18,9 +18,10 @@ const formatMilitaryDate = (date: Date | string) => {
 
 interface ReportFormatterProps {
   data: Partial<InsertReport>;
+  isPreliminar?: boolean;
 }
 
-export function ReportFormatter({ data }: ReportFormatterProps) {
+export function ReportFormatter({ data, isPreliminar }: ReportFormatterProps) {
   const [copied, setCopied] = useState(false);
 
   // Safeguard against partial data during form filling
@@ -44,7 +45,7 @@ export function ReportFormatter({ data }: ReportFormatterProps) {
 *ORCRIM:* ${p.orcrim || "Nada consta"}`;
   }).join("\n\n");
 
-  const formattedText = `*${safeData.fato.toUpperCase()}*
+  const formattedText = `${isPreliminar ? "*PRELIMINAR*\n\n" : ""}*${safeData.fato.toUpperCase()}*
 
 *${safeData.cidade.toUpperCase()} - CRPM HORTÊNSIAS / ${safeData.unidade.toUpperCase()}*
 
@@ -54,14 +55,15 @@ export function ReportFormatter({ data }: ReportFormatterProps) {
 
 ${involvedBlocks}
 
-*RESUMO DO FATO:* ${safeData.resumo}
-
 *MOTIVAÇÃO:* ${safeData.motivacao}
 
 *MATERIAL APREENDIDO:*
 ${Array.isArray(safeData.material) && safeData.material.length > 0 ? safeData.material.join("\n") : "Nenhum"}
 
 *OFICIAL:* ${safeData.oficial}
+
+*RESUMO DO FATO:*
+${safeData.resumo}
 
 *OCORRÊNCIA EM ANDAMENTO / AGUARDANDO MAIORES DADOS*`;
 
