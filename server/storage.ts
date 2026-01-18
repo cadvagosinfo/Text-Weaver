@@ -21,14 +21,14 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createReport(insertReport: InsertReport): Promise<Report> {
-    const [report] = await db.insert(reports).values(insertReport).returning();
+    const [report] = await db.insert(reports).values(insertReport as any).returning();
     return report;
   }
 
   async updateReport(id: number, insertReport: InsertReport): Promise<Report | undefined> {
     const [report] = await db
       .update(reports)
-      .set(insertReport)
+      .set(insertReport as any)
       .where(eq(reports.id, id))
       .returning();
     return report;

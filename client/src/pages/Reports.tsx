@@ -401,7 +401,7 @@ export default function Reports() {
                             <CardContent className="p-4 pt-4 grid gap-4 md:grid-cols-12">
                               <div className="md:col-span-3">
                                 <FormLabel className="text-xs text-muted-foreground mb-1 block">Tipo</FormLabel>
-                                <Select onValueChange={(value) => form.setValue(`envolvidos.${index}.role`, value)} defaultValue={field.role}>
+                                <Select onValueChange={(value) => form.setValue(`envolvidos.${index}.role` as any, value)} defaultValue={field.role}>
                                   <SelectTrigger className="h-9">
                                     <SelectValue />
                                   </SelectTrigger>
