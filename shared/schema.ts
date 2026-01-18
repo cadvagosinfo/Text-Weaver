@@ -17,7 +17,9 @@ export const reports = pgTable("reports", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const insertReportSchema = createInsertSchema(reports).omit({ id: true, createdAt: true });
+export const insertReportSchema = createInsertSchema(reports, {
+  dataHora: z.preprocess((val) => (typeof val === "string" ? new Date(val) : val), z.date()),
+}).omit({ id: true, createdAt: true });
 
 export type InsertReport = z.infer<typeof insertReportSchema>;
 export type Report = typeof reports.$inferSelect;
