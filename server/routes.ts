@@ -19,7 +19,7 @@ async function seedDatabase() {
         { role: "Autor", nome: "Indivíduo não identificado", antecedentes: "Posse de entorpecentes (2020)", orcrim: "Os Manos" }
       ],
       oficial: "Cap. Souza",
-      material: "1 porção de cocaína\n2 porções de maconha\n3 porções de crack",
+      material: ["1 porção de cocaína", "2 porções de maconha", "3 porções de crack"],
       resumo: "A guarnição foi despachada para atender ocorrência de furto. No local, a vítima informou que estacionou seu veículo..."
     });
   }

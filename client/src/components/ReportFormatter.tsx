@@ -6,12 +6,12 @@ import { Copy, FileText, Check } from "lucide-react";
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 
-// Helper to format date as DDHHMMMMMYY (e.g., 151630JAN25)
+// Helper to format date as DDHHMMMYY (e.g., 151630JAN25)
 const formatMilitaryDate = (date: Date | string) => {
   const d = new Date(date);
   const day = format(d, "dd");
   const time = format(d, "HHmm");
-  const month = format(d, "MMM", { locale: ptBR }).toUpperCase();
+  const month = format(d, "MMM", { locale: ptBR }).toUpperCase().replace(".", "");
   const year = format(d, "yy");
   return `${day}${time}${month}${year}`;
 };
@@ -32,7 +32,7 @@ export function ReportFormatter({ data }: ReportFormatterProps) {
     local: data.local || "[LOCAL]",
     envolvidos: data.envolvidos || [],
     oficial: data.oficial || "[OFICIAL]",
-    material: data.material || "[MATERIAL]",
+    material: data.material || [],
     resumo: data.resumo || "[RESUMO]",
   };
 
@@ -42,10 +42,6 @@ export function ReportFormatter({ data }: ReportFormatterProps) {
 *ANTECEDENTES:* ${p.antecedentes || "Nada consta"}
 *ORCRIM:* ${p.orcrim || "Nada consta"}`;
   }).join("\n\n");
-
-  const materialList = safeData.material
-    ? safeData.material.split("\n").filter(line => line.trim()).join("\n")
-    : "Nenhum";
 
   const formattedText = `*${safeData.fato.toUpperCase()}*
 
@@ -60,7 +56,7 @@ ${involvedBlocks}
 *OFICIAL:* ${safeData.oficial}
 
 *MATERIAL APREENDIDO:*
-${materialList}
+${Array.isArray(safeData.material) && safeData.material.length > 0 ? safeData.material.join("\n") : "Nenhum"}
 
 *RESUMO DO FATO:* ${safeData.resumo}`;
 
