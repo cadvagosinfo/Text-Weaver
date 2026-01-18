@@ -370,11 +370,19 @@ export default function Reports() {
                                   className="h-9"
                                 />
                               </div>
-                              <div className="md:col-span-4">
+                              <div className="md:col-span-3">
                                 <FormLabel className="text-xs text-muted-foreground mb-1 block">Antecedentes</FormLabel>
                                 <Input 
                                   {...form.register(`envolvidos.${index}.antecedentes`)} 
                                   placeholder="Ex: Posse de entorpecentes"
+                                  className="h-9"
+                                />
+                              </div>
+                              <div className="md:col-span-3">
+                                <FormLabel className="text-xs text-muted-foreground mb-1 block">ORCRIM</FormLabel>
+                                <Input 
+                                  {...form.register(`envolvidos.${index}.orcrim`)} 
+                                  placeholder="Facção / Grupo"
                                   className="h-9"
                                 />
                               </div>

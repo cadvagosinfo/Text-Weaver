@@ -1,0 +1,82 @@
+Create a web application update in Replit applying all the corrections and adjustments below, without removing any existing functionality and without introducing new runtime errors. The goal is to ensure the final compiled message strictly follows the operational format defined here.
+
+The application interface must remain in Brazilian Portuguese (pt-BR). The final compiled message must be fully compatible with WhatsApp, using asterisks (*) for bold formatting. Whenever applicable, responses must appear on the same line as the title, using the format TITLE: response. Do not duplicate titles, do not display unnecessary labels, and ensure clean, clear, and standardized formatting.
+
+For the following fields, the user-provided content must completely replace the title and appear in bold, with no label displayed:
+
+FATO
+
+CIDADE / CRPM HORTÊNSIAS / UNIDADE
+
+Example:
+If FATO is filled with “HOMICÍDIO DOLOSO”, the output must be:
+HOMICÍDIO DOLOSO
+
+If city and unit are “Gramado” and “41º BPM”, the output must be:
+Gramado - CRPM HORTÊNSIAS / 41º BPM
+
+The date and time must be compiled in the format DDHHMMMYY, where DD is the day, HHMM is hour and minute, MMM is the Portuguese abbreviated month in uppercase (JAN, FEV, MAR, ABR, MAI, JUN, JUL, AGO, SET, OUT, NOV, DEZ), and YY is the last two digits of the year. Example:
+DATA/HORA: 151630JAN25
+
+For VÍTIMA / AUTOR / TESTEMUNHA, each registered person must generate an individual block. For each person, the registration must include:
+
+Type (single selection): VÍTIMA, AUTOR, or TESTEMUNHA
+
+Identification (name and/or qualification)
+
+Antecedentes (text)
+
+ORCRIM (text)
+
+The application must allow adding and removing multiple people. In the final compiled message, each person must appear exactly in the following format, depending on the selected type:
+
+VÍTIMA: João da Silva, RG 123456789
+ANTECEDENTES: Posse de entorpecentes
+ORCRIM: Os Manos
+
+or
+
+AUTOR: …
+ANTECEDENTES: …
+ORCRIM: …
+
+or
+
+TESTEMUNHA: …
+ANTECEDENTES: …
+ORCRIM: …
+
+Rules for these blocks:
+
+The selected type must appear in the title.
+
+The identification must appear on the same line as the title.
+
+Do not repeat names in ANTECEDENTES or ORCRIM.
+
+ANTECEDENTES must always appear before ORCRIM.
+
+Each person must have their own block.
+
+Preserve the order in which people were registered.
+
+The field Material apreendido must support multiple items and be compiled as a vertical list, preserving order, with one item per line and no bullet symbols. The format must be:
+
+MATERIAL APREENDIDO:
+1 porção de cocaína
+2 porções de maconha
+3 porções de crack
+
+The following fields must always follow the format TITLE: response, with the response on the same line:
+
+DATA/HORA
+
+LOCAL
+
+OFICIAL
+
+RESUMO DO FATO
+
+Ensure that no variable is used without being declared (avoid errors such as “FileText is not defined”), standardize variable names using camelCase, review the entire message compilation function, and confirm the application runs without console or runtime errors.
+
+After applying these corrections, the application must generate clear, standardized, operational messages, strictly follow all formatting rules defined above, and be ready for real-world use with direct WhatsApp sharing.

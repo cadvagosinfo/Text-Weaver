@@ -36,40 +36,33 @@ export function ReportFormatter({ data }: ReportFormatterProps) {
     resumo: data.resumo || "[RESUMO]",
   };
 
-  const involvedText = safeData.envolvidos.length > 0
-    ? safeData.envolvidos.map(p => `${p.role}: ${p.nome}`).join("\n")
-    : "[ENVOLVIDOS]";
+  const involvedBlocks = safeData.envolvidos.map(p => {
+    const roleUpper = p.role.toUpperCase();
+    return `*${roleUpper}:* ${p.nome}
+*ANTECEDENTES:* ${p.antecedentes || "Nada consta"}
+*ORCRIM:* ${p.orcrim || "Nada consta"}`;
+  }).join("\n\n");
 
-  const antecedentsText = safeData.envolvidos.length > 0
-    ? safeData.envolvidos.map(p => `${p.nome}: ${p.antecedentes || "Nada consta"}`).join("\n")
-    : "[ANTECEDENTES]";
+  const materialList = safeData.material
+    ? safeData.material.split("\n").filter(line => line.trim()).join("\n")
+    : "Nenhum";
 
-  const formattedText = `*FATO*
-${safeData.fato}
+  const formattedText = `*${safeData.fato.toUpperCase()}*
 
-*CIDADE - CRPM HORTÊNSIAS / UNIDADE*
-${safeData.cidade} - CRPM HORTÊNSIAS / ${safeData.unidade}
+*${safeData.cidade.toUpperCase()} - CRPM HORTÊNSIAS / ${safeData.unidade.toUpperCase()}*
 
-*DATA/HORA:*
-${safeData.dataHora}
+*DATA/HORA:* ${safeData.dataHora}
 
-*LOCAL:*
-${safeData.local}
+*LOCAL:* ${safeData.local}
 
-*VÍTIMA/TESTEMUNHAS/AUTOR:*
-${involvedText}
+${involvedBlocks}
 
-*ANTECEDENTES:*
-${antecedentsText}
-
-*OFICIAL:*
-${safeData.oficial}
+*OFICIAL:* ${safeData.oficial}
 
 *MATERIAL APREENDIDO:*
-${safeData.material}
+${materialList}
 
-*RESUMO DO FATO:*
-${safeData.resumo}`;
+*RESUMO DO FATO:* ${safeData.resumo}`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(formattedText);

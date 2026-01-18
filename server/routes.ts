@@ -15,11 +15,11 @@ async function seedDatabase() {
       dataHora: sampleDate,
       local: "Av. das Hortênsias, 1234",
       envolvidos: [
-        { role: "Vítima", nome: "João da Silva", antecedentes: "Nada consta" },
-        { role: "Testemunha", nome: "Maria Oliveira", antecedentes: "Posse de entorpecentes (2020)" }
+        { role: "Vítima", nome: "João da Silva, RG 123456789", antecedentes: "Nada consta", orcrim: "Nenhuma" },
+        { role: "Autor", nome: "Indivíduo não identificado", antecedentes: "Posse de entorpecentes (2020)", orcrim: "Os Manos" }
       ],
       oficial: "Cap. Souza",
-      material: "Nenhum",
+      material: "1 porção de cocaína\n2 porções de maconha\n3 porções de crack",
       resumo: "A guarnição foi despachada para atender ocorrência de furto. No local, a vítima informou que estacionou seu veículo..."
     });
   }
