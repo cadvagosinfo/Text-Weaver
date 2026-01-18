@@ -34,6 +34,7 @@ export function ReportFormatter({ data }: ReportFormatterProps) {
     oficial: data.oficial || "[OFICIAL]",
     material: data.material || [],
     resumo: data.resumo || "[RESUMO]",
+    motivacao: data.motivacao || "[MOTIVAÇÃO]",
   };
 
   const involvedBlocks = safeData.envolvidos.map(p => {
@@ -53,12 +54,16 @@ export function ReportFormatter({ data }: ReportFormatterProps) {
 
 ${involvedBlocks}
 
-*OFICIAL:* ${safeData.oficial}
+*RESUMO DO FATO:* ${safeData.resumo}
+
+*MOTIVAÇÃO:* ${safeData.motivacao}
 
 *MATERIAL APREENDIDO:*
 ${Array.isArray(safeData.material) && safeData.material.length > 0 ? safeData.material.join("\n") : "Nenhum"}
 
-*RESUMO DO FATO:* ${safeData.resumo}`;
+*OFICIAL:* ${safeData.oficial}
+
+*OCORRÊNCIA EM ANDAMENTO / AGUARDANDO MAIORES DADOS*`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(formattedText);

@@ -14,11 +14,13 @@ export const reports = pgTable("reports", {
   oficial: text("oficial").notNull(),
   material: jsonb("material").notNull().$type<string[]>(),
   resumo: text("resumo").notNull(),
+  motivacao: text("motivacao").notNull().default(""),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
 export const insertReportSchema = createInsertSchema(reports, {
   dataHora: z.preprocess((val) => (typeof val === "string" ? new Date(val) : val), z.date()),
+  motivacao: z.string().min(1, "Motivação é obrigatória"),
 }).omit({ id: true, createdAt: true });
 
 export type InsertReport = z.infer<typeof insertReportSchema>;

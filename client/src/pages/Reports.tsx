@@ -83,6 +83,7 @@ export default function Reports() {
       oficial: "",
       material: [],
       resumo: "",
+      motivacao: "",
       envolvidos: [],
       dataHora: new Date(),
     },
@@ -115,6 +116,7 @@ export default function Reports() {
       oficial: report.oficial,
       material: report.material,
       resumo: report.resumo,
+      motivacao: report.motivacao || "",
       envolvidos: report.envolvidos,
       dataHora: new Date(report.dataHora),
     });
@@ -130,6 +132,7 @@ export default function Reports() {
       oficial: "",
       material: [],
       resumo: "",
+      motivacao: "",
       envolvidos: [],
       dataHora: new Date(),
     });
@@ -148,6 +151,7 @@ export default function Reports() {
             oficial: "",
             material: [],
             resumo: "",
+            motivacao: "",
             envolvidos: [],
             dataHora: new Date(),
           });
@@ -164,6 +168,7 @@ export default function Reports() {
             oficial: "",
             material: [],
             resumo: "",
+            motivacao: "",
             envolvidos: [],
             dataHora: new Date(),
           });
@@ -475,6 +480,17 @@ export default function Reports() {
                           <FormItem>
                             <FormLabel className="text-slate-700 font-medium">Resumo do Fato</FormLabel>
                             <FormControl><Textarea placeholder="Detalhes..." className="min-h-[120px] bg-white" {...field} /></FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="motivacao"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-slate-700 font-medium">Motivação</FormLabel>
+                            <FormControl><Input placeholder="Motivação do fato" className="bg-white" {...field} /></FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
