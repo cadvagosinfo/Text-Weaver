@@ -1,0 +1,16 @@
+Create the following updates in the existing Replit application, without removing any current functionality and without introducing new runtime errors.
+
+Mandatory footer in the final text
+At the end of every compiled report, automatically append the following sentence, always in bold and exactly as written below:
+
+OCORRÊNCIA EM ANDAMENTO / AGUARDANDO MAIORES DADOS
+
+This sentence must always be the last line of the final text. It must be added automatically, without user input, and must be included in saved reports, shared text, and generated PDF files.
+
+Edit saved reports
+Implement an Edit option for reports that have already been saved. Display a list of saved reports, and for each report provide an Edit button. When clicking Edit, all previously saved data must be loaded back into the form fields, allowing the user to modify any field. When saving after editing, the report must be updated by replacing the original version, not creating a duplicate. Ensure data consistency and prevent any loss of information during the editing process.
+
+Generate and download a PDF with all saved reports
+Create a button, clearly labeled in Portuguese, to generate and download a PDF containing all saved reports. The PDF must include all saved reports compiled one below the other, in the order they were saved. Each report must preserve exactly the same formatting used for WhatsApp, including bold text. There must be a clear visual separation between reports, such as a blank line or divider. The sentence OCORRÊNCIA EM ANDAMENTO / AGUARDANDO MAIORES DADOS must appear at the end of each report inside the PDF. The PDF must be generated and downloaded locally by the browser, and the content or formatting of individual reports must not be altered during PDF generation.
+
+General requirements: ensure all functions and variables are properly declared and scoped, avoid console or runtime errors, do not modify unrelated parts of the application, and confirm that after implementation the application reliably allows saving, editing, and exporting reports, resulting in a stable, user-friendly system ready for real operational use.
