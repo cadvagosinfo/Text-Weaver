@@ -64,7 +64,7 @@ const CIDADES_BY_UNIDADE: Record<string, string[]> = {
   ]
 };
 
-const ROLES = ["Vítima", "Autor", "Testemunha"] as const;
+const ROLES = ["Vítima", "Autor", "Testemunha", "Menor Apreendido", "Preso", "Suspeito"] as const;
 
 export default function Reports() {
   const { data: reports, isLoading: isLoadingReports } = useReports();
