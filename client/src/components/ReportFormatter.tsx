@@ -47,7 +47,7 @@ export function ReportFormatter({ data, isPreliminar }: ReportFormatterProps) {
   }).join("\n\n");
 
   const fatoText = safeData.fatoComplementar 
-    ? `*${safeData.fato.toUpperCase()} / ${safeData.fatoComplementar.toUpperCase()}*`
+    ? `*${safeData.fato.toUpperCase()}*\n*${safeData.fatoComplementar.toUpperCase()}*`
     : `*${safeData.fato.toUpperCase()}*`;
 
   const formattedText = `${isPreliminar ? "*PRELIMINAR*\n\n" : ""}${fatoText}
