@@ -5,6 +5,7 @@ import { z } from "zod";
 export const reports = pgTable("reports", {
   id: serial("id").primaryKey(),
   fato: text("fato").notNull(),
+  fatoComplementar: text("fato_complementar"),
   unidade: text("unidade").notNull(), // '41º BPM' | '2ª Cia Ind'
   cidade: text("cidade").notNull(),
   dataHora: timestamp("data_hora").notNull(),

@@ -73,11 +73,13 @@ export default function Reports() {
   const deleteReport = useDeleteReport();
   const [editingId, setEditingId] = useState<number | null>(null);
   const [isPreliminar, setIsPreliminar] = useState(false);
+  const [showFatoComplementar, setShowFatoComplementar] = useState(false);
   
   const form = useForm<InsertReport>({
     resolver: zodResolver(insertReportSchema),
     defaultValues: {
       fato: "",
+      fatoComplementar: "",
       unidade: "",
       cidade: "",
       local: "",
@@ -109,8 +111,10 @@ export default function Reports() {
 
   const startEdit = (report: any) => {
     setEditingId(report.id);
+    setShowFatoComplementar(!!report.fatoComplementar);
     form.reset({
       fato: report.fato,
+      fatoComplementar: report.fatoComplementar || "",
       unidade: report.unidade,
       cidade: report.cidade,
       local: report.local,
@@ -125,8 +129,10 @@ export default function Reports() {
 
   const cancelEdit = () => {
     setEditingId(null);
+    setShowFatoComplementar(false);
     form.reset({
       fato: "",
+      fatoComplementar: "",
       unidade: "",
       cidade: "",
       local: "",
@@ -140,12 +146,18 @@ export default function Reports() {
   };
 
   const onSubmit = (data: InsertReport) => {
+    const finalData = {
+      ...data,
+      fatoComplementar: showFatoComplementar ? data.fatoComplementar : null
+    };
     if (editingId) {
-      updateReport.mutate({ id: editingId, data }, {
+      updateReport.mutate({ id: editingId, data: finalData }, {
         onSuccess: () => {
           setEditingId(null);
+          setShowFatoComplementar(false);
           form.reset({
             fato: "",
+            fatoComplementar: "",
             unidade: "",
             cidade: "",
             local: "",
@@ -159,10 +171,12 @@ export default function Reports() {
         }
       });
     } else {
-      createReport.mutate(data, {
+      createReport.mutate(finalData, {
         onSuccess: () => {
+          setShowFatoComplementar(false);
           form.reset({
             fato: "",
+            fatoComplementar: "",
             unidade: "",
             cidade: "",
             local: "",
@@ -306,19 +320,49 @@ export default function Reports() {
                         <h3 className="font-semibold text-lg">Dados da Ocorrência</h3>
                       </div>
 
-                      <FormField
-                        control={form.control}
-                        name="fato"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-slate-700 font-medium">Fato (Natureza)</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Ex: Homicídio Doloso" className="bg-white" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
+                      <div className="space-y-4">
+                        <FormField
+                          control={form.control}
+                          name="fato"
+                          render={({ field }) => (
+                            <FormItem>
+                              <div className="flex items-center justify-between">
+                                <FormLabel className="text-slate-700 font-medium">Fato (Natureza)</FormLabel>
+                                <div className="flex items-center gap-2">
+                                  <label htmlFor="toggle-fato-comp" className="text-xs text-muted-foreground cursor-pointer">Fato Complementar?</label>
+                                  <input 
+                                    id="toggle-fato-comp"
+                                    type="checkbox" 
+                                    checked={showFatoComplementar}
+                                    onChange={(e) => setShowFatoComplementar(e.target.checked)}
+                                    className="h-3.5 w-3.5 rounded border-gray-300"
+                                  />
+                                </div>
+                              </div>
+                              <FormControl>
+                                <Input placeholder="Ex: Homicídio Doloso" className="bg-white" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        {showFatoComplementar && (
+                          <FormField
+                            control={form.control}
+                            name="fatoComplementar"
+                            render={({ field }) => (
+                              <FormItem className="animate-in fade-in slide-in-from-top-2 duration-200">
+                                <FormLabel className="text-slate-700 font-medium">Fato Complementar</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="Ex: Tráfico de Entorpecentes" className="bg-white border-blue-100" {...field} value={field.value || ""} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
                         )}
-                      />
+                      </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <FormField

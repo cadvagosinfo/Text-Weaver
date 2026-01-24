@@ -27,6 +27,7 @@ export function ReportFormatter({ data, isPreliminar }: ReportFormatterProps) {
   // Safeguard against partial data during form filling
   const safeData = {
     fato: data.fato || "[FATO]",
+    fatoComplementar: data.fatoComplementar || "",
     unidade: data.unidade || "[UNIDADE]",
     cidade: data.cidade || "[CIDADE]",
     dataHora: data.dataHora ? formatMilitaryDate(data.dataHora) : "[DATA/HORA]",
@@ -45,7 +46,11 @@ export function ReportFormatter({ data, isPreliminar }: ReportFormatterProps) {
 *ORCRIM:* ${p.orcrim || "Nada consta"}`;
   }).join("\n\n");
 
-  const formattedText = `${isPreliminar ? "*PRELIMINAR*\n\n" : ""}*${safeData.fato.toUpperCase()}*
+  const fatoText = safeData.fatoComplementar 
+    ? `*${safeData.fato.toUpperCase()} / ${safeData.fatoComplementar.toUpperCase()}*`
+    : `*${safeData.fato.toUpperCase()}*`;
+
+  const formattedText = `${isPreliminar ? "*PRELIMINAR*\n\n" : ""}${fatoText}
 
 *${safeData.cidade.toUpperCase()} - CRPM HORTÊNSIAS / ${safeData.unidade.toUpperCase()}*
 
