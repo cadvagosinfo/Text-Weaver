@@ -9,7 +9,9 @@ export const reports = pgTable("reports", {
   unidade: text("unidade").notNull(), // '41º BPM' | '2ª Cia Ind'
   cidade: text("cidade").notNull(),
   dataHora: timestamp("data_hora").notNull(),
-  local: text("local").notNull(),
+  localRua: text("local_rua").notNull(),
+  localNumero: text("local_numero").notNull(),
+  localBairro: text("local_bairro").notNull(),
   // Storing involved people as a JSONB array
   envolvidos: jsonb("envolvidos").notNull().$type<{ 
     role: string, 

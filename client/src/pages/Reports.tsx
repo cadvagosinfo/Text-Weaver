@@ -4,23 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { insertReportSchema, type InsertReport } from "@shared/schema";
 import { useReports, useCreateReport, useUpdateReport, useDeleteReport } from "@/hooks/use-reports";
 import { ReportFormatter } from "@/components/ReportFormatter";
-import { differenceInYears, parseISO, format } from "date-fns";
-
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { differenceInYears, parseISO, format, isFuture } from "date-fns";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -41,8 +25,24 @@ import {
   Calendar,
   Briefcase,
   FileText,
-  Package
+  Package,
+  AlertTriangle
 } from "lucide-react";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const UNIDADES = ["41º BPM", "2ª Cia Ind"] as const;
 
@@ -64,7 +64,7 @@ const CIDADES_BY_UNIDADE: Record<string, string[]> = {
   ]
 };
 
-const ROLES = ["Vítima", "Autor", "Testemunha", "Menor Apreendido", "Preso", "Suspeito"] as const;
+const ROLES = ["VÍTIMA", "AUTOR", "TESTEMUNHA", "PRESO", "MENOR APREENDIDO", "CONDUTOR", "ATENDIDO", "SUSPEITO"] as const;
 const DOCUMENTO_TIPOS = ["RG", "CPF"] as const;
 
 export default function Reports() {
@@ -83,7 +83,9 @@ export default function Reports() {
       fatoComplementar: "",
       unidade: "",
       cidade: "",
-      local: "",
+      localRua: "",
+      localNumero: "",
+      localBairro: "",
       oficial: "",
       material: [],
       resumo: "",
@@ -106,18 +108,27 @@ export default function Reports() {
   const watchedData = form.watch() as InsertReport;
 
   const calculateAge = (birthDate: string) => {
-    if (!birthDate) return "";
+    if (!birthDate) return null;
     try {
       const date = parseISO(birthDate);
-      return differenceInYears(new Date(), date).toString();
+      return differenceInYears(new Date(), date);
     } catch (e) {
-      return "";
+      return null;
     }
   };
 
   const handleUnidadeChange = (value: string) => {
     form.setValue("unidade", value);
     form.setValue("cidade", "");
+  };
+
+  const applyCPFMask = (value: string) => {
+    return value
+      .replace(/\D/g, "")
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d{1,2})/, "$1-$2")
+      .replace(/(-\d{2})\d+?$/, "$1");
   };
 
   const startEdit = (report: any) => {
@@ -128,7 +139,9 @@ export default function Reports() {
       fatoComplementar: report.fatoComplementar || "",
       unidade: report.unidade,
       cidade: report.cidade,
-      local: report.local,
+      localRua: report.localRua,
+      localNumero: report.localNumero,
+      localBairro: report.localBairro,
       oficial: report.oficial,
       material: report.material,
       resumo: report.resumo,
@@ -146,7 +159,9 @@ export default function Reports() {
       fatoComplementar: "",
       unidade: "",
       cidade: "",
-      local: "",
+      localRua: "",
+      localNumero: "",
+      localBairro: "",
       oficial: "",
       material: [],
       resumo: "",
@@ -171,7 +186,9 @@ export default function Reports() {
             fatoComplementar: "",
             unidade: "",
             cidade: "",
-            local: "",
+            localRua: "",
+            localNumero: "",
+            localBairro: "",
             oficial: "",
             material: [],
             resumo: "",
@@ -190,7 +207,9 @@ export default function Reports() {
             fatoComplementar: "",
             unidade: "",
             cidade: "",
-            local: "",
+            localRua: "",
+            localNumero: "",
+            localBairro: "",
             oficial: "",
             material: [],
             resumo: "",
@@ -211,7 +230,7 @@ export default function Reports() {
             <div className="p-2 bg-blue-600 rounded-lg shadow-lg shadow-blue-900/50">
               <ShieldAlert className="w-5 h-5 text-white" />
             </div>
-            <h1 className="font-bold text-lg tracking-tight">Polícia Militar</h1>
+            <h1 className="font-bold text-lg tracking-tight uppercase">Polícia Militar</h1>
           </div>
           <p className="text-xs text-blue-200/80 uppercase tracking-widest pl-[3.25rem]">Gerador de Ocorrências</p>
         </div>
@@ -244,7 +263,7 @@ export default function Reports() {
                   className={`group bg-white dark:bg-slate-800 p-4 rounded-xl border shadow-sm hover:shadow-md transition-all duration-200 relative ${editingId === report.id ? 'border-blue-500 ring-1 ring-blue-500' : 'hover:border-blue-200 dark:hover:border-blue-800'}`}
                 >
                   <div className="flex justify-between items-start mb-2">
-                    <span className="font-semibold text-sm text-slate-900 dark:text-slate-100 line-clamp-1">{report.fato}</span>
+                    <span className="font-semibold text-sm text-slate-900 dark:text-slate-100 line-clamp-1 uppercase">{report.fato}</span>
                     <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button 
                         onClick={() => startEdit(report)}
@@ -265,7 +284,7 @@ export default function Reports() {
                   <div className="space-y-1 text-xs text-muted-foreground">
                     <div className="flex items-center gap-1.5">
                       <MapPin className="w-3 h-3" />
-                      <span>{report.cidade}</span>
+                      <span className="uppercase">{report.cidade}</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <Calendar className="w-3 h-3" />
@@ -282,7 +301,7 @@ export default function Reports() {
       <main className="flex-1 flex flex-col h-screen overflow-hidden">
         <header className="px-8 py-5 border-b bg-white dark:bg-slate-900 flex justify-between items-center z-10 shadow-sm">
           <div>
-            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 uppercase">
               {editingId ? "Editando Relatório" : "Novo Relatório"}
             </h2>
             <p className="text-sm text-muted-foreground mt-0.5">Preencha os dados abaixo para gerar a mensagem padrão.</p>
@@ -328,7 +347,7 @@ export default function Reports() {
                     <div className="space-y-5">
                       <div className="flex items-center gap-2 pb-2 border-b">
                         <Briefcase className="w-5 h-5 text-blue-600" />
-                        <h3 className="font-semibold text-lg">Dados da Ocorrência</h3>
+                        <h3 className="font-semibold text-lg uppercase tracking-tight">Dados da Ocorrência</h3>
                       </div>
 
                       <div className="space-y-4">
@@ -338,9 +357,9 @@ export default function Reports() {
                           render={({ field }) => (
                             <FormItem>
                               <div className="flex items-center justify-between">
-                                <FormLabel className="text-slate-700 font-medium">Fato (Natureza)</FormLabel>
+                                <FormLabel className="text-slate-700 font-medium uppercase text-xs">Fato (Natureza)</FormLabel>
                                 <div className="flex items-center gap-2">
-                                  <label htmlFor="toggle-fato-comp" className="text-xs text-muted-foreground cursor-pointer">Fato Complementar?</label>
+                                  <label htmlFor="toggle-fato-comp" className="text-[10px] text-muted-foreground cursor-pointer uppercase font-bold">Fato Complementar?</label>
                                   <input 
                                     id="toggle-fato-comp"
                                     type="checkbox" 
@@ -351,7 +370,7 @@ export default function Reports() {
                                 </div>
                               </div>
                               <FormControl>
-                                <Input placeholder="Ex: Homicídio Doloso" className="bg-white" {...field} />
+                                <Input placeholder="Ex: Homicídio Doloso" className="bg-white uppercase" {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -364,9 +383,9 @@ export default function Reports() {
                             name="fatoComplementar"
                             render={({ field }) => (
                               <FormItem className="animate-in fade-in slide-in-from-top-2 duration-200">
-                                <FormLabel className="text-slate-700 font-medium">Fato Complementar</FormLabel>
+                                <FormLabel className="text-slate-700 font-medium uppercase text-xs">Fato Complementar</FormLabel>
                                 <FormControl>
-                                  <Input placeholder="Ex: Tráfico de Entorpecentes" className="bg-white border-blue-100" {...field} value={field.value || ""} />
+                                  <Input placeholder="Ex: Tráfico de Entorpecentes" className="bg-white border-blue-100 uppercase" {...field} value={field.value || ""} />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -381,15 +400,15 @@ export default function Reports() {
                           name="unidade"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-slate-700 font-medium">Unidade Policial</FormLabel>
+                              <FormLabel className="text-slate-700 font-medium uppercase text-xs">Unidade Policial</FormLabel>
                               <Select onValueChange={handleUnidadeChange} value={field.value}>
                                 <FormControl>
-                                  <SelectTrigger className="bg-white">
+                                  <SelectTrigger className="bg-white uppercase">
                                     <SelectValue placeholder="Selecione a unidade" />
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  {UNIDADES.map(u => <SelectItem key={u} value={u}>{u}</SelectItem>)}
+                                  {UNIDADES.map(u => <SelectItem key={u} value={u} className="uppercase">{u}</SelectItem>)}
                                 </SelectContent>
                               </Select>
                               <FormMessage />
@@ -402,16 +421,16 @@ export default function Reports() {
                           name="cidade"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="text-slate-700 font-medium">Cidade</FormLabel>
+                              <FormLabel className="text-slate-700 font-medium uppercase text-xs">Cidade</FormLabel>
                               <Select onValueChange={field.onChange} value={field.value} disabled={!form.watch("unidade")}>
                                 <FormControl>
-                                  <SelectTrigger className="bg-white">
+                                  <SelectTrigger className="bg-white uppercase">
                                     <SelectValue placeholder={form.watch("unidade") ? "Selecione a cidade" : "Selecione a unidade primeiro"} />
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
                                   {form.watch("unidade") && CIDADES_BY_UNIDADE[form.watch("unidade") as string]?.map(c => (
-                                    <SelectItem key={c} value={c}>{c}</SelectItem>
+                                    <SelectItem key={c} value={c} className="uppercase">{c}</SelectItem>
                                   ))}
                                 </SelectContent>
                               </Select>
@@ -421,13 +440,13 @@ export default function Reports() {
                         />
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                         <FormField
                           control={form.control}
                           name="dataHora"
                           render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className="text-slate-700 font-medium">Data e Hora</FormLabel>
+                            <FormItem className="md:col-span-1">
+                              <FormLabel className="text-slate-700 font-medium uppercase text-xs">Data e Hora</FormLabel>
                               <FormControl>
                                 <Input 
                                   type="datetime-local" 
@@ -441,95 +460,189 @@ export default function Reports() {
                           )}
                         />
 
-                        <FormField
-                          control={form.control}
-                          name="local"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className="text-slate-700 font-medium">Local do Fato</FormLabel>
-                              <FormControl>
-                                <Input placeholder="Rua, Número, Bairro" className="bg-white" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                        <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-3">
+                          <FormField
+                            control={form.control}
+                            name="localRua"
+                            render={({ field }) => (
+                              <FormItem className="md:col-span-2">
+                                <FormLabel className="text-slate-700 font-medium uppercase text-xs">Logradouro (Rua/Av)</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="Rua/Av" className="bg-white" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="localNumero"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-slate-700 font-medium uppercase text-xs">Número</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="Nº" className="bg-white" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
                       </div>
+
+                      <FormField
+                        control={form.control}
+                        name="localBairro"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-slate-700 font-medium uppercase text-xs">Bairro</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Bairro" className="bg-white" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     </div>
 
                     <div className="space-y-5">
                       <div className="flex items-center justify-between pb-2 border-b">
                         <div className="flex items-center gap-2">
                           <UserPlus className="w-5 h-5 text-blue-600" />
-                          <h3 className="font-semibold text-lg">Envolvidos</h3>
+                          <h3 className="font-semibold text-lg uppercase tracking-tight">Envolvidos</h3>
                         </div>
-                        <Button type="button" variant="secondary" size="sm" onClick={() => appendPerson({ role: "Vítima", nome: "", documentoTipo: "RG", documentoNumero: "", dataNascimento: "", antecedentes: "", orcrim: "" })} className="h-8">
+                        <Button type="button" variant="secondary" size="sm" onClick={() => appendPerson({ role: "VÍTIMA", nome: "", documentoTipo: "RG", documentoNumero: "", dataNascimento: "", antecedentes: "", orcrim: "" })} className="h-8 uppercase text-[10px] font-bold">
                           <Plus className="w-4 h-4 mr-1" /> Adicionar
                         </Button>
                       </div>
 
                       <div className="space-y-3">
-                        {personFields.map((field, index) => (
-                          <Card key={field.id} className="relative overflow-hidden group border-dashed">
-                            <CardContent className="p-4 pt-4 flex flex-col gap-4">
-                              <div className="grid gap-4 md:grid-cols-12">
-                                <div className="md:col-span-3">
-                                  <FormLabel className="text-xs text-muted-foreground mb-1 block">Tipo</FormLabel>
-                                  <Select onValueChange={(value) => form.setValue(`envolvidos.${index}.role` as any, value)} defaultValue={(field as any).role}>
-                                    <SelectTrigger className="h-9">
-                                      <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      {ROLES.map(role => <SelectItem key={role} value={role}>{role}</SelectItem>)}
-                                    </SelectContent>
-                                  </Select>
+                        {personFields.map((field, index) => {
+                          const personRole = watchedData.envolvidos?.[index]?.role;
+                          const birthDate = watchedData.envolvidos?.[index]?.dataNascimento;
+                          const age = calculateAge(birthDate || "");
+                          const docTipo = watchedData.envolvidos?.[index]?.documentoTipo;
+                          
+                          let validationMessage = null;
+                          let isError = false;
+
+                          if (age !== null) {
+                            if (personRole === "MENOR APREENDIDO" && age >= 18) {
+                              validationMessage = "ERRO: Idade igual ou superior a 18 anos. Altere o status do envolvido.";
+                              isError = true;
+                            } else if ((personRole === "PRESO" || personRole === "AUTOR") && age < 18) {
+                              validationMessage = "AVISO: Envolvido menor de 18 anos. Sugestão: alterar para MENOR APREENDIDO.";
+                              isError = false;
+                            }
+                          }
+
+                          return (
+                            <Card key={field.id} className={`relative overflow-hidden group border-dashed ${isError ? 'border-red-300 bg-red-50/30' : validationMessage ? 'border-amber-300 bg-amber-50/30' : ''}`}>
+                              <CardContent className="p-4 pt-4 flex flex-col gap-4">
+                                {validationMessage && (
+                                  <div className={`flex items-center gap-2 text-[10px] font-bold uppercase p-2 rounded border ${isError ? 'bg-red-100 border-red-200 text-red-700' : 'bg-amber-100 border-amber-200 text-amber-700'}`}>
+                                    <AlertTriangle className="w-3 h-3" />
+                                    <span>{validationMessage}</span>
+                                  </div>
+                                )}
+                                <div className="grid gap-4 md:grid-cols-12">
+                                  <div className="md:col-span-3">
+                                    <FormLabel className="text-[10px] uppercase font-bold text-muted-foreground mb-1 block">Tipo</FormLabel>
+                                    <Select 
+                                      onValueChange={(value) => form.setValue(`envolvidos.${index}.role` as any, value)} 
+                                      defaultValue={(field as any).role}
+                                    >
+                                      <SelectTrigger className="h-9 uppercase text-xs font-semibold">
+                                        <SelectValue />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        {ROLES.map(role => <SelectItem key={role} value={role} className="uppercase text-xs">{role}</SelectItem>)}
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
+                                  <div className="md:col-span-4">
+                                    <FormLabel className="text-[10px] uppercase font-bold text-muted-foreground mb-1 block">Nome Completo</FormLabel>
+                                    <Input 
+                                      {...form.register(`envolvidos.${index}.nome` as any)} 
+                                      placeholder="Nome completo" 
+                                      className="h-9 lowercase" 
+                                    />
+                                  </div>
+                                  <div className="md:col-span-2">
+                                    <FormLabel className="text-[10px] uppercase font-bold text-muted-foreground mb-1 block">Doc. Tipo</FormLabel>
+                                    <Select 
+                                      onValueChange={(value) => {
+                                        form.setValue(`envolvidos.${index}.documentoTipo` as any, value);
+                                        if (value === "CPF") {
+                                          const current = form.getValues(`envolvidos.${index}.documentoNumero` as any);
+                                          form.setValue(`envolvidos.${index}.documentoNumero` as any, applyCPFMask(current));
+                                        }
+                                      }} 
+                                      defaultValue={(field as any).documentoTipo || "RG"}
+                                    >
+                                      <SelectTrigger className="h-9 uppercase text-xs font-semibold">
+                                        <SelectValue />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        {DOCUMENTO_TIPOS.map(tipo => <SelectItem key={tipo} value={tipo} className="uppercase text-xs">{tipo}</SelectItem>)}
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
+                                  <div className="md:col-span-3">
+                                    <FormLabel className="text-[10px] uppercase font-bold text-muted-foreground mb-1 block">Nº Documento</FormLabel>
+                                    <Input 
+                                      {...form.register(`envolvidos.${index}.documentoNumero` as any)} 
+                                      placeholder="Número" 
+                                      className="h-9 uppercase font-mono text-xs"
+                                      onChange={(e) => {
+                                        let val = e.target.value;
+                                        if (docTipo === "CPF") {
+                                          val = applyCPFMask(val);
+                                        }
+                                        form.setValue(`envolvidos.${index}.documentoNumero` as any, val);
+                                      }}
+                                    />
+                                  </div>
                                 </div>
-                                <div className="md:col-span-4">
-                                  <FormLabel className="text-xs text-muted-foreground mb-1 block">Identificação</FormLabel>
-                                  <Input {...form.register(`envolvidos.${index}.nome` as any)} placeholder="Nome completo" className="h-9" />
+                                <div className="grid gap-4 md:grid-cols-12">
+                                  <div className="md:col-span-4">
+                                    <FormLabel className="text-[10px] uppercase font-bold text-muted-foreground mb-1 block">Nascimento</FormLabel>
+                                    <Input 
+                                      type="date" 
+                                      {...form.register(`envolvidos.${index}.dataNascimento` as any)} 
+                                      className="h-9"
+                                      max={format(new Date(), "yyyy-MM-dd")}
+                                      onChange={(e) => {
+                                        const val = e.target.value;
+                                        if (val && isFuture(parseISO(val))) {
+                                          return; // Block future dates
+                                        }
+                                        form.setValue(`envolvidos.${index}.dataNascimento` as any, val);
+                                      }}
+                                    />
+                                  </div>
+                                  <div className="md:col-span-2">
+                                    <FormLabel className="text-[10px] uppercase font-bold text-muted-foreground mb-1 block">Idade</FormLabel>
+                                    <Input 
+                                      value={age !== null ? `${age} anos` : ""} 
+                                      readOnly 
+                                      className="h-9 bg-muted font-bold text-xs" 
+                                    />
+                                  </div>
+                                  <div className="md:col-span-5 flex flex-col gap-2">
+                                    <Input {...form.register(`envolvidos.${index}.antecedentes` as any)} placeholder="Antecedentes" className="h-9 lowercase text-xs" />
+                                    <Input {...form.register(`envolvidos.${index}.orcrim` as any)} placeholder="ORCRIM" className="h-9 lowercase text-xs" />
+                                  </div>
+                                  <div className="md:col-span-1 flex items-end justify-end pb-0.5">
+                                    <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-red-500 hover:bg-red-50" onClick={() => removePerson(index)}>
+                                      <X className="w-4 h-4" />
+                                    </Button>
+                                  </div>
                                 </div>
-                                <div className="md:col-span-2">
-                                  <FormLabel className="text-xs text-muted-foreground mb-1 block">Doc. Tipo</FormLabel>
-                                  <Select onValueChange={(value) => form.setValue(`envolvidos.${index}.documentoTipo` as any, value)} defaultValue={(field as any).documentoTipo || "RG"}>
-                                    <SelectTrigger className="h-9">
-                                      <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      {DOCUMENTO_TIPOS.map(tipo => <SelectItem key={tipo} value={tipo}>{tipo}</SelectItem>)}
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-                                <div className="md:col-span-3">
-                                  <FormLabel className="text-xs text-muted-foreground mb-1 block">Número Doc.</FormLabel>
-                                  <Input {...form.register(`envolvidos.${index}.documentoNumero` as any)} placeholder="Número" className="h-9" />
-                                </div>
-                              </div>
-                              <div className="grid gap-4 md:grid-cols-12">
-                                <div className="md:col-span-4">
-                                  <FormLabel className="text-xs text-muted-foreground mb-1 block">Nascimento</FormLabel>
-                                  <Input type="date" {...form.register(`envolvidos.${index}.dataNascimento` as any)} className="h-9" />
-                                </div>
-                                <div className="md:col-span-2">
-                                  <FormLabel className="text-xs text-muted-foreground mb-1 block">Idade</FormLabel>
-                                  <Input value={calculateAge(watchedData.envolvidos?.[index]?.dataNascimento || "")} readOnly className="h-9 bg-muted" />
-                                </div>
-                                <div className="md:col-span-3">
-                                  <FormLabel className="text-xs text-muted-foreground mb-1 block">Antecedentes</FormLabel>
-                                  <Input {...form.register(`envolvidos.${index}.antecedentes` as any)} placeholder="Antecedentes" className="h-9" />
-                                </div>
-                                <div className="md:col-span-2">
-                                  <FormLabel className="text-xs text-muted-foreground mb-1 block">ORCRIM</FormLabel>
-                                  <Input {...form.register(`envolvidos.${index}.orcrim` as any)} placeholder="ORCRIM" className="h-9" />
-                                </div>
-                                <div className="md:col-span-1 flex items-end justify-end pb-0.5">
-                                  <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-red-500 hover:bg-red-50" onClick={() => removePerson(index)}>
-                                    <X className="w-4 h-4" />
-                                  </Button>
-                                </div>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        ))}
+                              </CardContent>
+                            </Card>
+                          );
+                        })}
                       </div>
                     </div>
 
@@ -537,9 +650,9 @@ export default function Reports() {
                       <div className="flex items-center justify-between pb-2 border-b">
                         <div className="flex items-center gap-2">
                           <Package className="w-5 h-5 text-blue-600" />
-                          <h3 className="font-semibold text-lg">Material Apreendido</h3>
+                          <h3 className="font-semibold text-lg uppercase tracking-tight">Material Apreendido</h3>
                         </div>
-                        <Button type="button" variant="secondary" size="sm" onClick={() => appendMaterial("" as any)} className="h-8">
+                        <Button type="button" variant="secondary" size="sm" onClick={() => appendMaterial("" as any)} className="h-8 uppercase text-[10px] font-bold">
                           <Plus className="w-4 h-4 mr-1" /> Adicionar Item
                         </Button>
                       </div>
@@ -547,7 +660,7 @@ export default function Reports() {
                       <div className="space-y-3">
                         {materialFields.map((field, index) => (
                           <div key={field.id} className="flex items-center gap-2">
-                            <Input {...form.register(`material.${index}` as any)} placeholder="Descreva o item" className="bg-white h-9" />
+                            <Input {...form.register(`material.${index}` as any)} placeholder="Descreva o item" className="bg-white h-9 lowercase" />
                             <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-red-500" onClick={() => removeMaterial(index)}>
                               <X className="w-4 h-4" />
                             </Button>
@@ -556,18 +669,18 @@ export default function Reports() {
                       </div>
                     </div>
 
-                    <div className="space-y-5">
+                    <div className="space-y-5 pb-12">
                       <div className="flex items-center gap-2 pb-2 border-b">
                         <FileText className="w-5 h-5 text-blue-600" />
-                        <h3 className="font-semibold text-lg">Resumo</h3>
+                        <h3 className="font-semibold text-lg uppercase tracking-tight">Finalização</h3>
                       </div>
                       <FormField
                         control={form.control}
                         name="oficial"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-slate-700 font-medium">Oficial Informado</FormLabel>
-                            <FormControl><Input placeholder="Nome / Patente" className="bg-white" {...field} /></FormControl>
+                            <FormLabel className="text-slate-700 font-medium uppercase text-xs">Oficial Informado</FormLabel>
+                            <FormControl><Input placeholder="Nome / Patente" className="bg-white uppercase" {...field} /></FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
@@ -577,8 +690,8 @@ export default function Reports() {
                         name="resumo"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-slate-700 font-medium">Resumo do Fato</FormLabel>
-                            <FormControl><Textarea placeholder="Detalhes..." className="min-h-[120px] bg-white" {...field} /></FormControl>
+                            <FormLabel className="text-slate-700 font-medium uppercase text-xs">Resumo do Fato</FormLabel>
+                            <FormControl><Textarea placeholder="Detalhes..." className="min-h-[120px] bg-white lowercase" {...field} /></FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
@@ -588,8 +701,8 @@ export default function Reports() {
                         name="motivacao"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-slate-700 font-medium">Motivação</FormLabel>
-                            <FormControl><Input placeholder="Motivação do fato" className="bg-white" {...field} /></FormControl>
+                            <FormLabel className="text-slate-700 font-medium uppercase text-xs">Motivação</FormLabel>
+                            <FormControl><Input placeholder="Motivação do fato" className="bg-white lowercase" {...field} /></FormControl>
                             <FormMessage />
                           </FormItem>
                         )}

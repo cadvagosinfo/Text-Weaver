@@ -41,7 +41,9 @@ export function ReportFormatter({ data, isPreliminar }: ReportFormatterProps) {
     unidade: data.unidade || "[UNIDADE]",
     cidade: data.cidade || "[CIDADE]",
     dataHora: data.dataHora ? formatMilitaryDate(data.dataHora) : "[DATA/HORA]",
-    local: data.local || "[LOCAL]",
+    localRua: data.localRua || "[LOGRADOURO]",
+    localNumero: data.localNumero || "[Nº]",
+    localBairro: data.localBairro || "[BAIRRO]",
     envolvidos: (data.envolvidos as any[]) || [],
     oficial: data.oficial || "[OFICIAL]",
     material: data.material || [],
@@ -51,18 +53,20 @@ export function ReportFormatter({ data, isPreliminar }: ReportFormatterProps) {
 
   const involvedBlocks = safeData.envolvidos.map((p: any) => {
     const roleUpper = (p.role || "ENVOLVIDO").toUpperCase();
-    const age = calculateAge(p.dataNascimento);
-    const docTipo = p.documentoTipo || "RG";
+    const ageVal = calculateAge(p.dataNascimento);
+    const ageStr = ageVal !== "N/A" ? `${ageVal} anos` : "idade não informada";
+    const nameLower = (p.nome || "[NOME]").toLowerCase();
+    const docTipo = (p.documentoTipo || "RG").toUpperCase();
     const docNum = p.documentoNumero || "Não informado";
     
-    return `*${roleUpper}:* ${p.nome || "[NOME]"}; *${docTipo}:* ${docNum}; *Idade:* ${age}
-*ANTECEDENTES:* ${p.antecedentes || "Nada consta"}
-*ORCRIM:* ${p.orcrim || "Nada consta"}`;
-  }).join("\n\n");
+    return `*${roleUpper}:* ${nameLower}; *${docTipo}:* ${docNum}; ${ageStr}`;
+  }).join("\n");
 
   const fatoText = safeData.fatoComplementar 
     ? `*${safeData.fato.toUpperCase()}*\n*${safeData.fatoComplementar.toUpperCase()}*`
     : `*${safeData.fato.toUpperCase()}*`;
+
+  const locationText = `*LOCAL:* ${safeData.localRua.toLowerCase()}, nº ${safeData.localNumero.toLowerCase()}, bairro ${safeData.localBairro.toLowerCase()}`;
 
   const formattedText = `${isPreliminar ? "*PRELIMINAR*\n\n" : ""}${fatoText}
 
@@ -70,19 +74,19 @@ export function ReportFormatter({ data, isPreliminar }: ReportFormatterProps) {
 
 *DATA/HORA:* ${safeData.dataHora}
 
-*LOCAL:* ${safeData.local}
+${locationText}
 
 ${involvedBlocks}
 
-*MOTIVAÇÃO:* ${safeData.motivacao}
+*MOTIVAÇÃO:* ${safeData.motivacao.toLowerCase()}
 
 *MATERIAL APREENDIDO:*
-${Array.isArray(safeData.material) && safeData.material.length > 0 ? safeData.material.join("\n") : "Nenhum"}
+${Array.isArray(safeData.material) && safeData.material.length > 0 ? safeData.material.map(m => m.toLowerCase()).join("\n") : "nenhum"}
 
-*OFICIAL:* ${safeData.oficial}
+*OFICIAL:* ${safeData.oficial.toUpperCase()}
 
 *RESUMO DO FATO:*
-${safeData.resumo}
+${safeData.resumo.toLowerCase()}
 
 *OCORRÊNCIA EM ANDAMENTO / AGUARDANDO MAIORES DADOS*`;
 

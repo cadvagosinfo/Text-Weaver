@@ -1,0 +1,78 @@
+Update Existing Application – Final Prompt (English)
+
+Update the existing application according to the interface, validation, and text formatting rules described below.
+Preserve all current standards, behaviors, and outputs where no change is explicitly specified.
+All existing output rules not mentioned in this prompt must remain unchanged.
+
+1. Involved Parties Qualification (Documentation and Validation)
+
+Selection List of Involved Parties
+The role/status selection dropdown already exists and must include, at a minimum, the following types:
+VÍTIMA, AUTOR, TESTEMUNHA, PRESO, MENOR APREENDIDO, CONDUTOR, ATENDIDO, SUSPEITO.
+Do not remove or change existing options; apply the new rules to all selected types.
+
+Input Masks
+• CPF: apply a mandatory mask in the format 000.000.000-00.
+• RG: no mask, allow free alphanumeric input.
+
+Date Validation
+• Block the selection of any future dates in the date of birth field.
+
+Age-Based Status Rules (Automatic Age Calculation)
+• MENOR APREENDIDO:
+– If the calculated age is 18 or older, display a blocking error and suggest changing the status to another type of involved party.
+• PRESO or AUTOR:
+– If the calculated age is under 18, display a visual warning suggesting changing the status to MENOR APREENDIDO.
+
+Age must always be automatically calculated from the date of birth.
+Manual age entry is not allowed.
+
+2. “Local do Fato” Expansion and Formatting
+
+New Required Fields
+• Address Number
+• Neighborhood Name
+
+Output Formatting
+The location must be generated strictly in lowercase, following exactly this format:
+
+LOCAL: [street name], nº [address number], bairro [neighborhood name]
+
+3. Capitalization Rules (Uppercase and Lowercase)
+
+Always in lowercase:
+• Names of involved parties
+• Motivation
+• Seized material
+• Incident summary
+• Location fields (street name, address number, neighborhood)
+
+Always in uppercase:
+• Roles / Statuses (e.g., VÍTIMA, AUTOR, PRESO, MENOR APREENDIDO, CONDUTOR, ATENDIDO)
+• Document types (CPF, RG)
+• RESPOSTA DE FATO
+• RESPOSTA DE CIDADE
+• RESPOSTA DE UNIDADE POLICIAL
+• OFICIAL
+• RESPOSTA DE OFICIAL
+
+Keep current format:
+• Date and Time outputs must remain exactly as currently implemented.
+
+4. Standard Output for Involved Parties
+
+The identification output for involved parties must follow exactly this format:
+
+[ROLE/STATUS]: [person name in lowercase]; [DOCUMENT TYPE]: [document number]; [age] anos
+
+
+Expected Output Examples:
+• VÍTIMA: fulano da silva; CPF: 877.824.489-05; 29 anos
+• MENOR APREENDIDO: ciclano de souza; RG: 12345678x; 16 anos
+• CONDUTOR: beltrano lima; CPF: 123.456.789-00; 35 anos
+• ATENDIDO: maria das dores; RG: 87654321x; 22 anos
+
+Location Example:
+• LOCAL: rua das palmeiras, nº 45, bairro centro
+
+All other texts, validations, behaviors, and existing output rules not explicitly mentioned in this prompt must remain unchanged, following the current system standards.
