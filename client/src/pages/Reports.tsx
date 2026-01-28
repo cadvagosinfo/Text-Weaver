@@ -1,9 +1,10 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertReportSchema, type InsertReport } from "@shared/schema";
 import { useReports, useCreateReport, useUpdateReport, useDeleteReport } from "@/hooks/use-reports";
 import { ReportFormatter } from "@/components/ReportFormatter";
+import { differenceInYears, parseISO, format } from "date-fns";
 
 import {
   Form,
@@ -42,7 +43,6 @@ import {
   FileText,
   Package
 } from "lucide-react";
-import { format } from "date-fns";
 
 const UNIDADES = ["41º BPM", "2ª Cia Ind"] as const;
 
@@ -65,6 +65,7 @@ const CIDADES_BY_UNIDADE: Record<string, string[]> = {
 };
 
 const ROLES = ["Vítima", "Autor", "Testemunha", "Menor Apreendido", "Preso", "Suspeito"] as const;
+const DOCUMENTO_TIPOS = ["RG", "CPF"] as const;
 
 export default function Reports() {
   const { data: reports, isLoading: isLoadingReports } = useReports();
@@ -92,17 +93,27 @@ export default function Reports() {
     },
   });
 
-  const { fields: personFields, append: appendPerson, remove: removePerson, replace: replacePeople } = useFieldArray({
+  const { fields: personFields, append: appendPerson, remove: removePerson } = useFieldArray({
     control: form.control,
     name: "envolvidos",
   });
 
-  const { fields: materialFields, append: appendMaterial, remove: removeMaterial, replace: replaceMaterial } = useFieldArray({
+  const { fields: materialFields, append: appendMaterial, remove: removeMaterial } = useFieldArray({
     control: form.control,
     name: "material" as any,
   });
 
   const watchedData = form.watch() as InsertReport;
+
+  const calculateAge = (birthDate: string) => {
+    if (!birthDate) return "";
+    try {
+      const date = parseISO(birthDate);
+      return differenceInYears(new Date(), date).toString();
+    } catch (e) {
+      return "";
+    }
+  };
 
   const handleUnidadeChange = (value: string) => {
     form.setValue("unidade", value);
@@ -452,7 +463,7 @@ export default function Reports() {
                           <UserPlus className="w-5 h-5 text-blue-600" />
                           <h3 className="font-semibold text-lg">Envolvidos</h3>
                         </div>
-                        <Button type="button" variant="secondary" size="sm" onClick={() => appendPerson({ role: "Vítima", nome: "", antecedentes: "", orcrim: "" })} className="h-8">
+                        <Button type="button" variant="secondary" size="sm" onClick={() => appendPerson({ role: "Vítima", nome: "", documentoTipo: "RG", documentoNumero: "", dataNascimento: "", antecedentes: "", orcrim: "" })} className="h-8">
                           <Plus className="w-4 h-4 mr-1" /> Adicionar
                         </Button>
                       </div>
@@ -460,30 +471,61 @@ export default function Reports() {
                       <div className="space-y-3">
                         {personFields.map((field, index) => (
                           <Card key={field.id} className="relative overflow-hidden group border-dashed">
-                            <CardContent className="p-4 pt-4 grid gap-4 md:grid-cols-12">
-                              <div className="md:col-span-3">
-                                <FormLabel className="text-xs text-muted-foreground mb-1 block">Tipo</FormLabel>
-                                <Select onValueChange={(value) => form.setValue(`envolvidos.${index}.role` as any, value)} defaultValue={field.role}>
-                                  <SelectTrigger className="h-9">
-                                    <SelectValue />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {ROLES.map(role => <SelectItem key={role} value={role}>{role}</SelectItem>)}
-                                  </SelectContent>
-                                </Select>
+                            <CardContent className="p-4 pt-4 flex flex-col gap-4">
+                              <div className="grid gap-4 md:grid-cols-12">
+                                <div className="md:col-span-3">
+                                  <FormLabel className="text-xs text-muted-foreground mb-1 block">Tipo</FormLabel>
+                                  <Select onValueChange={(value) => form.setValue(`envolvidos.${index}.role` as any, value)} defaultValue={(field as any).role}>
+                                    <SelectTrigger className="h-9">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {ROLES.map(role => <SelectItem key={role} value={role}>{role}</SelectItem>)}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                                <div className="md:col-span-4">
+                                  <FormLabel className="text-xs text-muted-foreground mb-1 block">Identificação</FormLabel>
+                                  <Input {...form.register(`envolvidos.${index}.nome` as any)} placeholder="Nome completo" className="h-9" />
+                                </div>
+                                <div className="md:col-span-2">
+                                  <FormLabel className="text-xs text-muted-foreground mb-1 block">Doc. Tipo</FormLabel>
+                                  <Select onValueChange={(value) => form.setValue(`envolvidos.${index}.documentoTipo` as any, value)} defaultValue={(field as any).documentoTipo || "RG"}>
+                                    <SelectTrigger className="h-9">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {DOCUMENTO_TIPOS.map(tipo => <SelectItem key={tipo} value={tipo}>{tipo}</SelectItem>)}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                                <div className="md:col-span-3">
+                                  <FormLabel className="text-xs text-muted-foreground mb-1 block">Número Doc.</FormLabel>
+                                  <Input {...form.register(`envolvidos.${index}.documentoNumero` as any)} placeholder="Número" className="h-9" />
+                                </div>
                               </div>
-                              <div className="md:col-span-4">
-                                <FormLabel className="text-xs text-muted-foreground mb-1 block">Identificação</FormLabel>
-                                <Input {...form.register(`envolvidos.${index}.nome` as any)} placeholder="Nome completo" className="h-9" />
-                              </div>
-                              <div className="md:col-span-4 flex flex-col gap-2">
-                                <Input {...form.register(`envolvidos.${index}.antecedentes` as any)} placeholder="Antecedentes" className="h-9" />
-                                <Input {...form.register(`envolvidos.${index}.orcrim` as any)} placeholder="ORCRIM" className="h-9" />
-                              </div>
-                              <div className="md:col-span-1 flex items-end justify-end pb-0.5">
-                                <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-red-500 hover:bg-red-50" onClick={() => removePerson(index)}>
-                                  <X className="w-4 h-4" />
-                                </Button>
+                              <div className="grid gap-4 md:grid-cols-12">
+                                <div className="md:col-span-4">
+                                  <FormLabel className="text-xs text-muted-foreground mb-1 block">Nascimento</FormLabel>
+                                  <Input type="date" {...form.register(`envolvidos.${index}.dataNascimento` as any)} className="h-9" />
+                                </div>
+                                <div className="md:col-span-2">
+                                  <FormLabel className="text-xs text-muted-foreground mb-1 block">Idade</FormLabel>
+                                  <Input value={calculateAge(watchedData.envolvidos?.[index]?.dataNascimento || "")} readOnly className="h-9 bg-muted" />
+                                </div>
+                                <div className="md:col-span-3">
+                                  <FormLabel className="text-xs text-muted-foreground mb-1 block">Antecedentes</FormLabel>
+                                  <Input {...form.register(`envolvidos.${index}.antecedentes` as any)} placeholder="Antecedentes" className="h-9" />
+                                </div>
+                                <div className="md:col-span-2">
+                                  <FormLabel className="text-xs text-muted-foreground mb-1 block">ORCRIM</FormLabel>
+                                  <Input {...form.register(`envolvidos.${index}.orcrim` as any)} placeholder="ORCRIM" className="h-9" />
+                                </div>
+                                <div className="md:col-span-1 flex items-end justify-end pb-0.5">
+                                  <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-red-500 hover:bg-red-50" onClick={() => removePerson(index)}>
+                                    <X className="w-4 h-4" />
+                                  </Button>
+                                </div>
                               </div>
                             </CardContent>
                           </Card>

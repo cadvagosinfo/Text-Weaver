@@ -11,7 +11,15 @@ export const reports = pgTable("reports", {
   dataHora: timestamp("data_hora").notNull(),
   local: text("local").notNull(),
   // Storing involved people as a JSONB array
-  envolvidos: jsonb("envolvidos").notNull().$type<{ role: string, nome: string, antecedentes: string, orcrim: string }[]>(),
+  envolvidos: jsonb("envolvidos").notNull().$type<{ 
+    role: string, 
+    nome: string, 
+    documentoTipo: "RG" | "CPF",
+    documentoNumero: string,
+    dataNascimento: string,
+    antecedentes: string, 
+    orcrim: string 
+  }[]>(),
   oficial: text("oficial").notNull(),
   material: jsonb("material").notNull().$type<string[]>(),
   resumo: text("resumo").notNull(),

@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import { format, differenceInYears, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import type { InsertReport } from "@shared/schema";
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,16 @@ interface ReportFormatterProps {
 export function ReportFormatter({ data, isPreliminar }: ReportFormatterProps) {
   const [copied, setCopied] = useState(false);
 
+  const calculateAge = (birthDate: string) => {
+    if (!birthDate) return "N/A";
+    try {
+      const date = parseISO(birthDate);
+      return differenceInYears(new Date(), date).toString();
+    } catch (e) {
+      return "N/A";
+    }
+  };
+
   // Safeguard against partial data during form filling
   const safeData = {
     fato: data.fato || "[FATO]",
@@ -32,16 +42,20 @@ export function ReportFormatter({ data, isPreliminar }: ReportFormatterProps) {
     cidade: data.cidade || "[CIDADE]",
     dataHora: data.dataHora ? formatMilitaryDate(data.dataHora) : "[DATA/HORA]",
     local: data.local || "[LOCAL]",
-    envolvidos: data.envolvidos || [],
+    envolvidos: (data.envolvidos as any[]) || [],
     oficial: data.oficial || "[OFICIAL]",
     material: data.material || [],
     resumo: data.resumo || "[RESUMO]",
     motivacao: data.motivacao || "[MOTIVAÇÃO]",
   };
 
-  const involvedBlocks = safeData.envolvidos.map(p => {
-    const roleUpper = p.role.toUpperCase();
-    return `*${roleUpper}:* ${p.nome}
+  const involvedBlocks = safeData.envolvidos.map((p: any) => {
+    const roleUpper = (p.role || "ENVOLVIDO").toUpperCase();
+    const age = calculateAge(p.dataNascimento);
+    const docTipo = p.documentoTipo || "RG";
+    const docNum = p.documentoNumero || "Não informado";
+    
+    return `*${roleUpper}:* ${p.nome || "[NOME]"}; *${docTipo}:* ${docNum}; *Idade:* ${age}
 *ANTECEDENTES:* ${p.antecedentes || "Nada consta"}
 *ORCRIM:* ${p.orcrim || "Nada consta"}`;
   }).join("\n\n");
