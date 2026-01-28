@@ -58,9 +58,13 @@ export function ReportFormatter({ data, isPreliminar }: ReportFormatterProps) {
     const nameLower = (p.nome || "[NOME]").toLowerCase();
     const docTipo = (p.documentoTipo || "RG").toUpperCase();
     const docNum = p.documentoNumero || "Não informado";
+    const antecedentesLower = (p.antecedentes || "Nada consta").toLowerCase();
+    const orcrimLower = (p.orcrim || "Nada consta").toLowerCase();
     
-    return `*${roleUpper}:* ${nameLower}; *${docTipo}:* ${docNum}; ${ageStr}`;
-  }).join("\n");
+    return `*${roleUpper}:* ${nameLower}; *${docTipo}:* ${docNum}; ${ageStr}
+*ANTECEDENTES:* ${antecedentesLower}
+*ORCRIM:* ${orcrimLower}`;
+  }).join("\n\n");
 
   const fatoText = safeData.fatoComplementar 
     ? `*${safeData.fato.toUpperCase()}*\n*${safeData.fatoComplementar.toUpperCase()}*`
