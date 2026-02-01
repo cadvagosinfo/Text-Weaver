@@ -80,8 +80,13 @@ export function WordReportTab({ reports }: WordReportTabProps) {
           const dateStr = format(d, "dd/MM/yyyy");
           const timeStr = format(d, "HH'h'mm'min'");
           
-          output += `${dateStr} at ${timeStr} - ${report.fato.toUpperCase()}\n`;
-          output += `At ${report.localRua.toLowerCase()}, nº ${report.localNumero.toLowerCase()}, neighborhood ${report.localBairro.toLowerCase()}, in ${report.cidade},\n`;
+          let fatoCompleto = report.fato.toUpperCase();
+          if (report.fatoComplementar) {
+            fatoCompleto += ` / ${report.fatoComplementar.toUpperCase()}`;
+          }
+          
+          output += `${dateStr} às ${timeStr} - ${fatoCompleto}\n`;
+          output += `Na ${report.localRua.toLowerCase()}, nº ${report.localNumero.toLowerCase()}, bairro ${report.localBairro.toLowerCase()}, em ${report.cidade},\n`;
           output += `${report.resumo}\n\n`;
 
           if (Array.isArray(report.material) && report.material.length > 0) {
@@ -96,8 +101,8 @@ export function WordReportTab({ reports }: WordReportTabProps) {
             report.envolvidos.forEach((p: any) => {
               const role = p.role.charAt(0).toUpperCase() + p.role.slice(1).toLowerCase();
               const age = calculateAge(p.dataNascimento);
-              output += `${role}: ${p.nome.toLowerCase()}; ${p.documentoTipo}: ${p.documentoNumero} ; ${age} years\n`;
-              output += `Antecedents: ${p.antecedentes.toLowerCase()}\n`;
+              output += `${role}: ${p.nome.toLowerCase()}; ${p.documentoTipo}: ${p.documentoNumero} ; ${age} anos\n`;
+              output += `Antecedentes: ${p.antecedentes.toLowerCase()}\n`;
               output += `Orcrim: ${p.orcrim.toLowerCase()}\n\n`;
             });
           }
@@ -124,16 +129,35 @@ export function WordReportTab({ reports }: WordReportTabProps) {
     const lines = plainText.split("\n");
     return lines.map((line, i) => {
       const isHeader = CITY_UNIT_ORDER.includes(line) || line === "SN.";
-      const isTitle = [
-        "Material apreendido:",
-        "Victim:", "Author:", "Witness:", "Preso:", "Menor Apreendido:", "Condutor:", "Atendido:", "Suspeito:",
-        "Antecedents:",
-        "Orcrim:"
-      ].some(title => line.startsWith(title));
+      
+      // Check for incident title line (Date às Time - FATO)
+      const isIncidentTitle = /^\d{2}\/\d{2}\/\d{4} às \d{2}h\d{2}min - .*/.test(line);
 
-      if (isHeader || isTitle) {
+      // Check for role labels
+      const isRoleLine = /^(Vítima|Autor|Testemunha|Preso|Menor apreendido|Condutor|Atendido|Suspeito):/.test(line);
+      
+      // Check for Antecedentes/Orcrim/Material
+      const isOtherTitle = line.startsWith("Antecedentes:") || line.startsWith("Orcrim:") || line.startsWith("Material apreendido:");
+
+      if (isHeader || isIncidentTitle) {
         return <div key={i} className="font-bold">{line}</div>;
       }
+      
+      if (isRoleLine || isOtherTitle) {
+        const colonIndex = line.indexOf(":");
+        if (colonIndex !== -1) {
+          const titlePart = line.substring(0, colonIndex + 1);
+          const restPart = line.substring(colonIndex + 1);
+          return (
+            <div key={i}>
+              <span className="font-bold">{titlePart}</span>
+              <span>{restPart}</span>
+            </div>
+          );
+        }
+        return <div key={i} className="font-bold">{line}</div>;
+      }
+
       return <div key={i}>{line || "\u00A0"}</div>;
     });
   };

@@ -225,6 +225,15 @@ export default function Reports() {
     }
   };
 
+  const handleDelete = (id: number) => {
+    const password = prompt("Informe a senha para autorizar a exclusão:");
+    if (password === "1837") {
+      deleteReport.mutate(id);
+    } else {
+      alert("Senha incorreta. A exclusão não foi autorizada.");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col md:flex-row">
       <aside className="w-full md:w-80 border-r bg-white dark:bg-slate-900 flex flex-col h-[400px] md:h-screen sticky top-0">
@@ -276,7 +285,7 @@ export default function Reports() {
                         <Edit2 className="w-3.5 h-3.5" />
                       </button>
                       <button 
-                        onClick={() => deleteReport.mutate(report.id)}
+                        onClick={() => handleDelete(report.id)}
                         className="text-slate-400 hover:text-red-500 p-1 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
                         title="Excluir"
                       >
