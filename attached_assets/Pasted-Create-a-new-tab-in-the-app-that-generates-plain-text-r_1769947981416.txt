@@ -1,0 +1,90 @@
+Create a new tab in the app that generates plain text reports from the last 24 hours, ready to paste into Word. Do not modify any other part of the app. The tab must:
+
+Read all saved reports.
+
+Filter only reports from the last 24 hours.
+
+Group reports by city/unit in this fixed order:
+
+1ª CIA - GRAMADO
+3º PEL - NOVA PETRÓPOLIS
+4º GPM - PICADA CAFÉ
+2ª CIA – CANELA
+3º PEL - SÃO FRANCISCO DE PAULA
+4º GPM - CAMBARÁ DO SUL
+2ª CIA IND PM TAQUARA
+3º PEL – ROLANTE
+4º GPM - RIOZINHO
+4º PEL – IGREJINHA
+5º PEL - TRÊS COROAS
+
+
+For cities with no reports, display only:
+
+SN.
+
+
+Output must be plain text, without asterisks, underscores, Markdown, or HTML.
+
+Apply visual bold only to city/unit names, "SN.", and titles:
+
+Material apreendido
+
+Victim / Author / Witness
+
+Antecedents
+
+Orcrim
+
+All other text (numbers, street numbers, document numbers, ages, dates, times, material lists, summaries) remains normal.
+
+Multiple reports in the same city must be stacked, separated by a blank line.
+
+Example Input (single report):
+FACT: ATTEMPTED HOMICIDE
+CITY: 3º PEL - NOVA PETRÓPOLIS
+DATE/TIME: 010720FEV26
+STREET: r. vicente prieto
+NUMBER: 3595
+NEIGHBORHOOD: linha imperial
+SUMMARY: Samu requested support for a victim shot by a firearm, victim will be taken to the hospital. Incident occurred around 21:30 on 31/01/2026.
+MATERIAL: 2 knives, 1 revolver
+PARTICIPANTS:
+  TYPE: Victim
+  NAME: carlos sergio pott
+  DOCUMENT: 6111861198
+  AGE: 33
+  ANTECEDENTS: injury, threat, possession of drugs, drug trafficking
+  ORCRIM: unknown
+
+Example Output (plain text ready for Word):
+1ª CIA - GRAMADO
+SN.
+
+3º PEL - NOVA PETRÓPOLIS
+01/02/2026 at 07h20min - ATTEMPTED HOMICIDE
+At r. vicente prieto, nº 3595, neighborhood linha imperial, in Nova Petrópolis, Samu requested support for a victim shot by a firearm, victim will be taken to the hospital.
+
+Material apreendido:
+2 knives
+1 revolver
+
+Victim: carlos sergio pott; RG: 6111861198 ; 33 years
+Antecedents: injury, threat, possession of drugs, drug trafficking
+Orcrim: unknown
+
+4º GPM - PICADA CAFÉ
+SN.
+
+2ª CIA – CANELA
+SN.
+...
+
+
+Keep the fixed city order.
+
+Ensure the Material apreendido section appears only if items exist.
+
+Use the format DD/MM/YYYY at HHhMMmin - [FACT], followed by location, summary, material (if any), participants, antecedents, and Orcrim.
+
+Return plain text ready to paste into Word.
