@@ -86,8 +86,7 @@ export function WordReportTab({ reports }: WordReportTabProps) {
           }
           
           output += `${dateStr} às ${timeStr} - ${fatoCompleto}\n`;
-          output += `Na ${report.localRua.toLowerCase()}, nº ${report.localNumero.toLowerCase()}, bairro ${report.localBairro.toLowerCase()}, em ${report.cidade},\n`;
-          output += `${report.resumo}\n\n`;
+          output += `Na ${report.localRua.toLowerCase()}, nº ${report.localNumero.toLowerCase()}, bairro ${report.localBairro.toLowerCase()}, em ${report.cidade}, ${report.resumo}\n\n`;
 
           if (Array.isArray(report.material) && report.material.length > 0) {
             output += "Material apreendido:\n";
