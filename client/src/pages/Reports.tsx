@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertReportSchema, type InsertReport } from "@shared/schema";
@@ -69,6 +69,17 @@ const CIDADES_BY_UNIDADE: Record<string, string[]> = {
 
 const ROLES = ["VÍTIMA", "AUTOR", "TESTEMUNHA", "PRESO", "MENOR APREENDIDO", "CONDUTOR", "ATENDIDO", "SUSPEITO"] as const;
 const DOCUMENTO_TIPOS = ["RG", "CPF"] as const;
+
+const QUICK_FACTS = [
+  "HOMICÍDIO DOLOSO",
+  "ROUBO A PEDESTRE",
+  "ROUBO DE VEÍCULO",
+  "ROUBO A ESTABELECIMENTO COMERCIAL E DE ENSINO",
+  "ROUBO A RESIDÊNCIA",
+  "FURTO DE VEÍCULO",
+  "FURTO EM VEÍCULO",
+  "HOMICÍDIO CULPOSO EM DIREÇÃO DE VEÍCULO AUTOMOTOR"
+];
 
 export default function Reports() {
   const { data: reports, isLoading: isLoadingReports } = useReports();
@@ -152,6 +163,11 @@ export default function Reports() {
       envolvidos: report.envolvidos,
       dataHora: new Date(report.dataHora),
     });
+    
+    // Crucial fix: ensure city is set after a short delay to allow unidade-dependent select to render
+    setTimeout(() => {
+      form.setValue("cidade", report.cidade);
+    }, 50);
   };
 
   const cancelEdit = () => {
@@ -355,10 +371,10 @@ export default function Reports() {
             <div className="px-8 border-b bg-white dark:bg-slate-900">
               <TabsList className="h-12 bg-transparent gap-6">
                 <TabsTrigger value="editor" className="data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none h-full bg-transparent px-0 text-sm font-semibold">
-                  <FileText className="w-4 h-4 mr-2" /> Editor de Relatório
+                  <FileText className="w-4 h-4 mr-2" /> RELEASE
                 </TabsTrigger>
                 <TabsTrigger value="word" className="data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none h-full bg-transparent px-0 text-sm font-semibold">
-                  <FileSpreadsheet className="w-4 h-4 mr-2" /> Relatório 24h (Word)
+                  <FileSpreadsheet className="w-4 h-4 mr-2" /> RELATÓRIO RPI
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -394,9 +410,30 @@ export default function Reports() {
                                       />
                                     </div>
                                   </div>
-                                  <FormControl>
-                                    <Input placeholder="Ex: Homicídio Doloso" className="bg-white uppercase" {...field} />
-                                  </FormControl>
+                                  <div className="space-y-2">
+                                    <Select 
+                                      onValueChange={(val) => field.onChange(val)}
+                                      value={QUICK_FACTS.includes(field.value) ? field.value : ""}
+                                    >
+                                      <FormControl>
+                                        <SelectTrigger className="bg-white uppercase text-xs">
+                                          <SelectValue placeholder="Opções rápidas..." />
+                                        </SelectTrigger>
+                                      </FormControl>
+                                      <SelectContent>
+                                        {QUICK_FACTS.map(f => (
+                                          <SelectItem key={f} value={f} className="uppercase text-xs">{f}</SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
+                                    <FormControl>
+                                      <Input 
+                                        placeholder="Preenchimento livre..." 
+                                        className="bg-white uppercase" 
+                                        {...field} 
+                                      />
+                                    </FormControl>
+                                  </div>
                                   <FormMessage />
                                 </FormItem>
                               )}
@@ -590,7 +627,7 @@ export default function Reports() {
                                         <Input 
                                           {...form.register(`envolvidos.${index}.nome` as any)} 
                                           placeholder="Nome completo" 
-                                          className="h-9 lowercase" 
+                                          className="h-9 uppercase" 
                                         />
                                       </div>
                                       <div className="md:col-span-2">

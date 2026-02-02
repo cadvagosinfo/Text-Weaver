@@ -55,15 +55,19 @@ export function ReportFormatter({ data, isPreliminar }: ReportFormatterProps) {
     const roleUpper = (p.role || "ENVOLVIDO").toUpperCase();
     const ageVal = calculateAge(p.dataNascimento);
     const ageStr = ageVal !== "N/A" ? `${ageVal} anos` : "idade não informada";
-    const nameLower = (p.nome || "[NOME]").toLowerCase();
+    const nameUpper = (p.nome || "[NOME]").toUpperCase();
     const docTipo = (p.documentoTipo || "RG").toUpperCase();
     const docNum = p.documentoNumero || "Não informado";
-    const antecedentesLower = (p.antecedentes || "Nada consta").toLowerCase();
-    const orcrimLower = (p.orcrim || "Nada consta").toLowerCase();
+    const antecedentesVal = (p.antecedentes || "Nada consta").toLowerCase();
+    const orcrimVal = (p.orcrim || "Nada consta").toLowerCase();
     
-    return `*${roleUpper}:* ${nameLower}; *${docTipo}:* ${docNum}; ${ageStr}
-*ANTECEDENTES:* ${antecedentesLower}
-*ORCRIM:* ${orcrimLower}`;
+    const capitalize = (text: string) => {
+      return text.replace(/(^\s*\w|[.!?]\s+\w)/g, (c) => c.toUpperCase());
+    };
+
+    return `*${roleUpper}:* ${nameUpper}; *${docTipo}:* ${docNum}; ${ageStr}
+*ANTECEDENTES:* ${capitalize(antecedentesVal)}
+*ORCRIM:* ${capitalize(orcrimVal)}`;
   }).join("\n\n");
 
   const fatoText = safeData.fatoComplementar 
@@ -71,6 +75,10 @@ export function ReportFormatter({ data, isPreliminar }: ReportFormatterProps) {
     : `*${safeData.fato.toUpperCase()}*`;
 
   const locationText = `*LOCAL:* ${safeData.localRua.toLowerCase()}, nº ${safeData.localNumero.toLowerCase()}, bairro ${safeData.localBairro.toLowerCase()}`;
+
+  const capitalize = (text: string) => {
+    return text.replace(/(^\s*\w|[.!?]\s+\w)/g, (c) => c.toUpperCase());
+  };
 
   const formattedText = `${isPreliminar ? "*PRELIMINAR*\n\n" : ""}${fatoText}
 
@@ -82,17 +90,15 @@ ${locationText}
 
 ${involvedBlocks}
 
-*MOTIVAÇÃO:* ${safeData.motivacao.toLowerCase()}
+*MOTIVAÇÃO:* ${capitalize(safeData.motivacao.toLowerCase())}
 
 *MATERIAL APREENDIDO:*
-${Array.isArray(safeData.material) && safeData.material.length > 0 ? safeData.material.map(m => m.toLowerCase()).join("\n") : "nenhum"}
+${Array.isArray(safeData.material) && safeData.material.length > 0 ? safeData.material.map(m => capitalize(m.toLowerCase())).join("\n") : "nenhum"}
 
 *OFICIAL:* ${safeData.oficial.toUpperCase()}
 
 *RESUMO DO FATO:*
-${safeData.resumo.toLowerCase()}
-
-*OCORRÊNCIA EM ANDAMENTO / AGUARDANDO MAIORES DADOS*`;
+${capitalize(safeData.resumo.toLowerCase())}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AGUARDANDO MAIORES DADOS*" : ""}`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(formattedText);

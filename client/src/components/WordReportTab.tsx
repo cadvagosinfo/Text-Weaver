@@ -3,9 +3,11 @@ import { ptBR } from "date-fns/locale";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { Copy, Check, FileText } from "lucide-react";
+import { Copy, Check, FileText, Download } from "lucide-react";
 import { useState } from "react";
 import type { Report } from "@shared/schema";
+import { Document, Packer, Paragraph, TextRun, AlignmentType } from "docx";
+import { saveAs } from "file-saver";
 
 const CITY_UNIT_ORDER = [
   "1ª CIA - GRAMADO",
@@ -65,10 +67,15 @@ export function WordReportTab({ reports }: WordReportTabProps) {
     }
   };
 
+  const capitalizeSentence = (text: string) => {
+    if (!text) return "";
+    return text.replace(/(^\s*\w|[.!?]\s+\w)/g, (c) => c.toUpperCase());
+  };
+
   const generatePlainText = () => {
     let output = "";
 
-    CITY_UNIT_ORDER.forEach((unit, index) => {
+    CITY_UNIT_ORDER.forEach((unit) => {
       output += `${unit}\n`;
       const reportsInUnit = groupedReports[unit];
 
@@ -86,12 +93,12 @@ export function WordReportTab({ reports }: WordReportTabProps) {
           }
           
           output += `${dateStr} às ${timeStr} - ${fatoCompleto}\n`;
-          output += `Na ${report.localRua.toLowerCase()}, nº ${report.localNumero.toLowerCase()}, bairro ${report.localBairro.toLowerCase()}, em ${report.cidade}, ${report.resumo}\n\n`;
+          output += `Na ${report.localRua.toLowerCase()}, nº ${report.localNumero.toLowerCase()}, bairro ${report.localBairro.toLowerCase()}, em ${report.cidade}, ${capitalizeSentence(report.resumo.toLowerCase())}\n\n`;
 
           if (Array.isArray(report.material) && report.material.length > 0) {
             output += "Material apreendido:\n";
             report.material.forEach((m) => {
-              output += `${m}\n`;
+              output += `${capitalizeSentence(m.toLowerCase())}\n`;
             });
             output += "\n";
           }
@@ -101,8 +108,8 @@ export function WordReportTab({ reports }: WordReportTabProps) {
               const role = p.role.charAt(0).toUpperCase() + p.role.slice(1).toLowerCase();
               const age = calculateAge(p.dataNascimento);
               output += `${role}: ${p.nome.toLowerCase()}; ${p.documentoTipo}: ${p.documentoNumero} ; ${age} anos\n`;
-              output += `Antecedentes: ${p.antecedentes.toLowerCase()}\n`;
-              output += `Orcrim: ${p.orcrim.toLowerCase()}\n\n`;
+              output += `Antecedentes: ${capitalizeSentence(p.antecedentes.toLowerCase())}\n`;
+              output += `Orcrim: ${capitalizeSentence(p.orcrim.toLowerCase())}\n\n`;
             });
           }
           
@@ -124,18 +131,56 @@ export function WordReportTab({ reports }: WordReportTabProps) {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleDownloadDocx = async () => {
+    const sections = [];
+    const lines = plainText.split("\n");
+
+    const children = lines.map((line) => {
+      const isHeader = CITY_UNIT_ORDER.includes(line) || line === "SN.";
+      const isIncidentTitle = /^\d{2}\/\d{2}\/\d{4} às \d{2}h\d{2}min - .*/.test(line);
+      const isRoleLine = /^(Vítima|Autor|Testemunha|Preso|Menor apreendido|Condutor|Atendido|Suspeito):/.test(line);
+      const isOtherTitle = line.startsWith("Antecedentes:") || line.startsWith("Orcrim:") || line.startsWith("Material apreendido:");
+
+      if (isHeader || isIncidentTitle) {
+        return new Paragraph({
+          children: [new TextRun({ text: line, bold: true })],
+          spacing: { after: 120 },
+        });
+      }
+
+      if (isRoleLine || isOtherTitle) {
+        const colonIndex = line.indexOf(":");
+        const titlePart = line.substring(0, colonIndex + 1);
+        const restPart = line.substring(colonIndex + 1);
+        return new Paragraph({
+          children: [
+            new TextRun({ text: titlePart, bold: true }),
+            new TextRun({ text: restPart }),
+          ],
+          spacing: { after: 120 },
+        });
+      }
+
+      return new Paragraph({
+        children: [new TextRun({ text: line || " " })],
+        spacing: { after: 120 },
+      });
+    });
+
+    const doc = new Document({
+      sections: [{ children }],
+    });
+
+    const blob = await Packer.toBlob(doc);
+    saveAs(blob, `Relatorio_RPI_${format(new Date(), "ddMMyyyy_HHmm")}.docx`);
+  };
+
   const renderWithBolds = () => {
     const lines = plainText.split("\n");
     return lines.map((line, i) => {
       const isHeader = CITY_UNIT_ORDER.includes(line) || line === "SN.";
-      
-      // Check for incident title line (Date às Time - FATO)
       const isIncidentTitle = /^\d{2}\/\d{2}\/\d{4} às \d{2}h\d{2}min - .*/.test(line);
-
-      // Check for role labels
       const isRoleLine = /^(Vítima|Autor|Testemunha|Preso|Menor apreendido|Condutor|Atendido|Suspeito):/.test(line);
-      
-      // Check for Antecedentes/Orcrim/Material
       const isOtherTitle = line.startsWith("Antecedentes:") || line.startsWith("Orcrim:") || line.startsWith("Material apreendido:");
 
       if (isHeader || isIncidentTitle) {
@@ -164,11 +209,16 @@ export function WordReportTab({ reports }: WordReportTabProps) {
   return (
     <Card className="h-full flex flex-col">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">Relatório para Word (Últimas 24h)</CardTitle>
-        <Button size="sm" onClick={handleCopy} disabled={!plainText}>
-          {copied ? <Check className="w-4 h-4 mr-2" /> : <Copy className="w-4 h-4 mr-2" />}
-          {copied ? "Copiado" : "Copiar Tudo"}
-        </Button>
+        <CardTitle className="text-sm font-medium">Relatório RPI (Últimas 24h)</CardTitle>
+        <div className="flex gap-2">
+          <Button size="sm" variant="outline" onClick={handleDownloadDocx} disabled={!plainText}>
+            <Download className="w-4 h-4 mr-2" /> Baixar Word
+          </Button>
+          <Button size="sm" onClick={handleCopy} disabled={!plainText}>
+            {copied ? <Check className="w-4 h-4 mr-2" /> : <Copy className="w-4 h-4 mr-2" />}
+            {copied ? "Copiado" : "Copiar Tudo"}
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="flex-1 overflow-hidden p-0">
         <ScrollArea className="h-full p-4">
