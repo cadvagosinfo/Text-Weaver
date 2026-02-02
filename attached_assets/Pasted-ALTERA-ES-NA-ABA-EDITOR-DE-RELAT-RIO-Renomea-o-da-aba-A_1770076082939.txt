@@ -1,0 +1,186 @@
+ALTERAÇÕES NA ABA “EDITOR DE RELATÓRIO”
+
+Renomeação da aba
+
+Alterar o nome da aba “Editor de Relatório” para “RELEASE” (caixa alta).
+
+Classificação dos documentos
+
+Os documentos gerados nesta página devem ser classificados como “release” (nome, tipo ou categoria).
+
+Nomes dos envolvidos
+
+Garantir que todos os nomes dos envolvidos apareçam em LETRAS MAIÚSCULAS na resposta final desta aba.
+
+Frase condicional
+
+A frase:
+“OCORRÊNCIA EM ANDAMENTO / AGUARDANDO MAIORES DADOS”
+deverá aparecer somente se a opção “preliminar” estiver selecionada.
+
+Caso não esteja selecionada, não deverá aparecer no texto final.
+
+Correção de bug (cidade desmarcada)
+
+Ao abrir um relatório já salvo para edição, foi identificado um bug em que a cidade previamente selecionada é automaticamente desmarcada.
+
+Investigar a causa e corrigir exclusivamente esse problema, garantindo persistência do valor salvo.
+
+Padronização de capitalização
+
+Garantir que:
+
+Início de respostas
+
+Primeira letra após pontos finais
+
+Primeira letra após parágrafos
+estejam sempre em letra maiúscula.
+
+Campo “Fato” com opções rápidas
+
+Criar opções de preenchimento rápido:
+
+HOMICÍDIO DOLOSO
+
+ROUBO A PEDESTRE
+
+ROUBO DE VEÍCULO
+
+ROUBO A ESTABELECIMENTO COMERCIAL E DE ENSINO
+
+ROUBO A RESIDÊNCIA
+
+FURTO DE VEÍCULO
+
+FURTO EM VEÍCULO
+
+HOMICÍDIO CULPOSO EM DIREÇÃO DE VEÍCULO AUTOMOTOR
+
+Caso nenhuma opção seja selecionada, permitir preenchimento manual livre, sem alterar outras regras do formulário.
+
+🔷 ALTERAÇÕES NA ABA “RELATÓRIO 24HR (WORD)”
+
+Renomeação da aba
+
+Alterar o nome da aba para “RELATÓRIO RPI”.
+
+Padrão de escrita
+
+As respostas devem ser escritas em letras minúsculas, exceto:
+
+Início de frases
+
+Nomes próprios
+
+Início de parágrafos
+
+Após pontos finais
+
+Exportação Word
+
+Criar exclusivamente um botão para gerar e baixar um arquivo Word (.docx), sem alterar a estrutura atual da aba.
+
+🆕 CRIAÇÃO DE NOVA ABA: “RESUMO SEMANAL”
+1. Critério de inclusão
+
+Nesta aba deverão constar apenas releases dos seguintes fatos:
+
+HOMICÍDIO DOLOSO
+
+ROUBO A PEDESTRE
+
+ROUBO DE VEÍCULO
+
+ROUBO A ESTABELECIMENTO COMERCIAL E DE ENSINO
+
+ROUBO A RESIDÊNCIA
+
+FURTO DE VEÍCULO
+
+FURTO EM VEÍCULO
+
+HOMICÍDIO CULPOSO EM DIREÇÃO DE VEÍCULO AUTOMOTOR
+
+Considerar somente registros realizados nos últimos 7 dias.
+
+2. Regra de permanência e expiração
+
+O release deverá permanecer visível por 8 dias completos.
+
+Ao final do 8º dia, no início do 9º dia, o release deverá deixar automaticamente de constar no Resumo Semanal.
+
+A exclusão deve afetar apenas a exibição no Resumo Semanal, não devendo apagar ou alterar o registro original.
+
+3. Organização das tabelas
+
+Os fatos deverão ser agrupados por tipo, sendo que cada tipo possuirá sua própria tabela.
+
+4. Estrutura das tabelas
+
+Cada tabela deverá conter:
+
+6 colunas
+
+1 linha para cada fato registrado na semana
+
+5. Cabeçalho da tabela
+
+Formato obrigatório:
+
+[FATO] - [nº destes fatos registrados no intervalo] REGISTRADO(S) NA SEMANA
+
+6. Colunas da tabela (ordem obrigatória)
+
+HORÁRIO
+
+TURNO
+
+DATA
+
+ENDEREÇO
+
+BAIRRO / CIDADE
+
+FATO
+
+7. Regras de formatação
+
+Horário: HH:MM
+
+Turno: calculado automaticamente conforme horário
+
+Data: DD/MM/AAAA
+
+Endereço: [Endereço, nº]
+
+Bairro / Cidade: [BAIRRO / CIDADE]
+
+8. Conteúdo da coluna “Fato”
+
+Conter:
+
+Resumo do fato conforme padrões já existentes
+
+Pessoas qualificadas logo abaixo, no formato:
+
+[tipo do envolvido]: NOME
+[documento]: número
+[antecedentes]: resposta
+
+
+Permitir quebra de texto, sem alterar layout das demais abas.
+
+9. Padronização geral
+
+As respostas desta aba devem seguir as mesmas normas já existentes no sistema, sem criar novos padrões não solicitados.
+
+10. Exportação Word
+
+Criar exclusivamente um botão para gerar e baixar um arquivo Word (.docx) contendo as tabelas do Resumo Semanal.
+
+📄 EXEMPLO DE SAÍDA
+FURTO EM VEÍCULO - 1 REGISTRO NA SEMANA
+
+HORA     TURNO      DATA        ENDEREÇO        BAIRRO / CIDADE          HISTÓRICO
+12:05    2º TURNO   02/02/2026  RUA XXX, 123    CANELINHA / GRAMADO       XXXXXXXXXXX
