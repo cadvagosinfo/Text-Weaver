@@ -5,6 +5,7 @@ import { insertReportSchema, type InsertReport } from "@shared/schema";
 import { useReports, useCreateReport, useUpdateReport, useDeleteReport } from "@/hooks/use-reports";
 import { ReportFormatter } from "@/components/ReportFormatter";
 import { WordReportTab } from "@/components/WordReportTab";
+import { WeeklySummaryTab } from "@/components/WeeklySummaryTab";
 import { differenceInYears, parseISO, format, isFuture } from "date-fns";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -380,6 +381,9 @@ export default function Reports() {
                 </TabsTrigger>
                 <TabsTrigger value="word" className="data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none h-full bg-transparent px-0 text-sm font-semibold">
                   <FileSpreadsheet className="w-4 h-4 mr-2" /> RELATÓRIO RPI
+                </TabsTrigger>
+                <TabsTrigger value="weekly" className="data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none h-full bg-transparent px-0 text-sm font-semibold">
+                  <Calendar className="w-4 h-4 mr-2" /> RESUMO SEMANAL
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -788,6 +792,10 @@ export default function Reports() {
 
             <TabsContent value="word" className="flex-1 overflow-hidden m-0 p-8 bg-slate-50 dark:bg-slate-950">
               <WordReportTab reports={reports || []} />
+            </TabsContent>
+
+            <TabsContent value="weekly" className="flex-1 overflow-hidden m-0 p-8 bg-slate-50 dark:bg-slate-950">
+              <WeeklySummaryTab reports={reports || []} />
             </TabsContent>
           </Tabs>
         </div>
