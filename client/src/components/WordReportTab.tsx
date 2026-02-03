@@ -107,7 +107,8 @@ export function WordReportTab({ reports }: WordReportTabProps) {
             report.envolvidos.forEach((p: any) => {
               const role = p.role.charAt(0).toUpperCase() + p.role.slice(1).toLowerCase();
               const age = calculateAge(p.dataNascimento);
-              output += `${role}: ${p.nome.toLowerCase()}; ${p.documentoTipo}: ${p.documentoNumero} ; ${age} anos\n`;
+              const nameCapitalized = p.nome.toLowerCase().replace(/(^\w|\s\w)/g, (m: string) => m.toUpperCase());
+              output += `${role}: ${nameCapitalized}, ${p.documentoTipo}: ${p.documentoNumero}, ${age} anos\n`;
               output += `Antecedentes: ${capitalizeSentence(p.antecedentes.toLowerCase())}\n`;
               output += `Orcrim: ${capitalizeSentence(p.orcrim.toLowerCase())}\n\n`;
             });
@@ -141,10 +142,16 @@ export function WordReportTab({ reports }: WordReportTabProps) {
       const isRoleLine = /^(Vítima|Autor|Testemunha|Preso|Menor apreendido|Condutor|Atendido|Suspeito):/.test(line);
       const isOtherTitle = line.startsWith("Antecedentes:") || line.startsWith("Orcrim:") || line.startsWith("Material apreendido:");
 
+      const textRunOptions = {
+        text: line || " ",
+        font: "Times New Roman",
+        size: 24, // 12pt = 24 half-points
+      };
+
       if (isHeader || isIncidentTitle) {
         return new Paragraph({
-          children: [new TextRun({ text: line, bold: true })],
-          spacing: { after: 120 },
+          children: [new TextRun({ ...textRunOptions, bold: true })],
+          spacing: { before: 0, after: 0, line: 240 }, // simple spacing (approx 240 twips)
         });
       }
 
@@ -154,16 +161,16 @@ export function WordReportTab({ reports }: WordReportTabProps) {
         const restPart = line.substring(colonIndex + 1);
         return new Paragraph({
           children: [
-            new TextRun({ text: titlePart, bold: true }),
-            new TextRun({ text: restPart }),
+            new TextRun({ ...textRunOptions, text: titlePart, bold: true }),
+            new TextRun({ ...textRunOptions, text: restPart }),
           ],
-          spacing: { after: 120 },
+          spacing: { before: 0, after: 0, line: 240 },
         });
       }
 
       return new Paragraph({
-        children: [new TextRun({ text: line || " " })],
-        spacing: { after: 120 },
+        children: [new TextRun(textRunOptions)],
+        spacing: { before: 0, after: 0, line: 240 },
       });
     });
 
