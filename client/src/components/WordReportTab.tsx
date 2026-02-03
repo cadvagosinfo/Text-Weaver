@@ -179,7 +179,7 @@ export function WordReportTab({ reports }: WordReportTabProps) {
     });
 
     const blob = await Packer.toBlob(doc);
-    saveAs(blob, `Relatorio_RPI_${format(new Date(), "ddMMyyyy_HHmm")}.docx`);
+    saveAs(blob, `RPI ${format(new Date(), "dd/MM/yyyy")}.docx`);
   };
 
   const renderWithBolds = () => {

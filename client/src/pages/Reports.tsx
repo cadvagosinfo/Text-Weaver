@@ -145,6 +145,8 @@ export default function Reports() {
       .replace(/(-\d{2})\d+?$/, "$1");
   };
 
+  const [activeTab, setActiveTab] = useState("editor");
+
   const startEdit = (report: any) => {
     setEditingId(report.id);
     setShowFatoComplementar(!!report.fatoComplementar);
@@ -168,6 +170,9 @@ export default function Reports() {
     setTimeout(() => {
       form.setValue("cidade", report.cidade);
     }, 50);
+
+    // Redirect to RELEASE tab
+    setActiveTab("editor");
   };
 
   const cancelEdit = () => {
@@ -367,7 +372,7 @@ export default function Reports() {
         </header>
 
         <div className="flex-1 overflow-hidden">
-          <Tabs defaultValue="editor" className="h-full flex flex-col">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col">
             <div className="px-8 border-b bg-white dark:bg-slate-900">
               <TabsList className="h-12 bg-transparent gap-6">
                 <TabsTrigger value="editor" className="data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none h-full bg-transparent px-0 text-sm font-semibold">
