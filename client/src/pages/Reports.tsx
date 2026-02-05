@@ -429,7 +429,7 @@ export default function Reports() {
                                           <SelectValue placeholder="Opções rápidas..." />
                                         </SelectTrigger>
                                       </FormControl>
-                                      <SelectContent>
+                                      <SelectContent className="bg-white">
                                         {QUICK_FACTS.map(f => (
                                           <SelectItem key={f} value={f} className="uppercase text-xs">{f}</SelectItem>
                                         ))}
@@ -478,7 +478,7 @@ export default function Reports() {
                                         <SelectValue placeholder="Selecione a unidade" />
                                       </SelectTrigger>
                                     </FormControl>
-                                    <SelectContent>
+                                    <SelectContent className="bg-white">
                                       {UNIDADES.map(u => <SelectItem key={u} value={u} className="uppercase">{u}</SelectItem>)}
                                     </SelectContent>
                                   </Select>
@@ -499,7 +499,7 @@ export default function Reports() {
                                         <SelectValue placeholder={form.watch("unidade") ? "Selecione a cidade" : "Selecione a unidade primeiro"} />
                                       </SelectTrigger>
                                     </FormControl>
-                                    <SelectContent>
+                                    <SelectContent className="bg-white">
                                       {form.watch("unidade") && CIDADES_BY_UNIDADE[form.watch("unidade") as string]?.map(c => (
                                         <SelectItem key={c} value={c} className="uppercase">{c}</SelectItem>
                                       ))}
@@ -623,10 +623,10 @@ export default function Reports() {
                                           onValueChange={(value) => form.setValue(`envolvidos.${index}.role` as any, value)} 
                                           defaultValue={(field as any).role}
                                         >
-                                          <SelectTrigger className="h-9 uppercase text-xs font-semibold">
+                                          <SelectTrigger className="h-9 uppercase text-xs font-semibold bg-white">
                                             <SelectValue />
                                           </SelectTrigger>
-                                          <SelectContent>
+                                          <SelectContent className="bg-white">
                                             {ROLES.map(role => <SelectItem key={role} value={role} className="uppercase text-xs">{role}</SelectItem>)}
                                           </SelectContent>
                                         </Select>
@@ -651,10 +651,10 @@ export default function Reports() {
                                           }} 
                                           defaultValue={(field as any).documentoTipo || "RG"}
                                         >
-                                          <SelectTrigger className="h-9 uppercase text-xs font-semibold">
+                                          <SelectTrigger className="h-9 uppercase text-xs font-semibold bg-white">
                                             <SelectValue />
                                           </SelectTrigger>
-                                          <SelectContent>
+                                          <SelectContent className="bg-white">
                                             {DOCUMENTO_TIPOS.map(tipo => <SelectItem key={tipo} value={tipo} className="uppercase text-xs">{tipo}</SelectItem>)}
                                           </SelectContent>
                                         </Select>

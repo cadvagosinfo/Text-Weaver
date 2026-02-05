@@ -39,9 +39,13 @@ export function WeeklySummaryTab({ reports }: WeeklySummaryTabProps) {
 
   const getTurno = (dateStr: string) => {
     const hour = new Date(dateStr).getHours();
-    if (hour >= 6 && hour < 14) return "1º TURNO";
-    if (hour >= 14 && hour < 22) return "2º TURNO";
-    return "3º TURNO";
+    const minutes = new Date(dateStr).getMinutes();
+    const totalMinutes = hour * 60 + minutes;
+
+    if (totalMinutes >= 1 && totalMinutes <= 360) return "1º TURNO"; // 00:01 - 06:00
+    if (totalMinutes > 360 && totalMinutes <= 720) return "2º TURNO"; // 06:01 - 12:00
+    if (totalMinutes > 720 && totalMinutes <= 1080) return "3º TURNO"; // 12:01 - 18:00
+    return "4º TURNO"; // 18:01 - 24:00 (00:00)
   };
 
   const calculateAge = (birthDate: string) => {
@@ -70,10 +74,18 @@ export function WeeklySummaryTab({ reports }: WeeklySummaryTabProps) {
 
       const rows = [
         new TableRow({
-          children: ["HORA", "TURNO", "DATA", "ENDEREÇO", "BAIRRO / CIDADE", "HISTÓRICO"].map(text => 
+          children: [
+            { text: "HORA", width: 8 },
+            { text: "TURNO", width: 10 },
+            { text: "DATA", width: 12 },
+            { text: "ENDEREÇO", width: 18 },
+            { text: "BAIRRO / CIDADE", width: 18 },
+            { text: "HISTÓRICO", width: 34 }
+          ].map(col => 
             new TableCell({
-              children: [new Paragraph({ children: [new TextRun({ text, bold: true, size: 20, font: "Times New Roman" })] })],
-              shading: { fill: "F2F2F2" }
+              children: [new Paragraph({ children: [new TextRun({ text: col.text, bold: true, size: 20, font: "Times New Roman" })] })],
+              shading: { fill: "F2F2F2" },
+              width: { size: col.width, type: WidthType.PERCENTAGE }
             })
           )
         })
@@ -81,10 +93,25 @@ export function WeeklySummaryTab({ reports }: WeeklySummaryTabProps) {
 
       factReports.forEach(r => {
         const d = new Date(r.dataHora);
-        const involvedText = (r.envolvidos as any[] || []).map(p => {
+        
+        const involvedParagraphs = (r.envolvidos as any[] || []).map(p => {
           const nameCap = p.nome.toLowerCase().replace(/(^\w|\s\w)/g, (m: string) => m.toUpperCase());
-          return `${p.role}: ${nameCap}\n${p.documentoTipo}: ${p.documentoNumero}\nantecedentes: ${p.antecedentes}`;
-        }).join("\n\n");
+          const age = calculateAge(p.dataNascimento);
+          
+          return new Paragraph({
+            children: [
+              new TextRun({ text: `${p.role.toLowerCase()}: `, bold: true, size: 18, font: "Times New Roman" }),
+              new TextRun({ text: `${nameCap}, `, size: 18, font: "Times New Roman" }),
+              new TextRun({ text: `documento: `, bold: true, size: 18, font: "Times New Roman" }),
+              new TextRun({ text: `${p.documentoNumero}, `, size: 18, font: "Times New Roman" }),
+              new TextRun({ text: `${age} anos`, size: 18, font: "Times New Roman" }),
+              new TextRun({ text: "\n", size: 18, font: "Times New Roman" }),
+              new TextRun({ text: `Antecedentes: `, bold: true, size: 18, font: "Times New Roman" }),
+              new TextRun({ text: `${p.antecedentes}`, size: 18, font: "Times New Roman" })
+            ],
+            spacing: { after: 120 }
+          });
+        });
 
         rows.push(new TableRow({
           children: [
@@ -93,10 +120,18 @@ export function WeeklySummaryTab({ reports }: WeeklySummaryTabProps) {
             format(d, "dd/MM/yyyy"),
             `${r.localRua}, ${r.localNumero}`,
             `${r.localBairro.toUpperCase()} / ${r.cidade.toUpperCase()}`,
-            `${capitalizeSentence(r.resumo.toLowerCase())}\n\n${involvedText}`
-          ].map(text => 
+            `${capitalizeSentence(r.resumo.toLowerCase())}`
+          ].map((text, idx) => 
             new TableCell({
-              children: text.split("\n").map(line => new Paragraph({ children: [new TextRun({ text: line, size: 18, font: "Times New Roman" })] }))
+              children: idx === 5 
+                ? [
+                    new Paragraph({ 
+                      children: [new TextRun({ text, size: 18, font: "Times New Roman" })],
+                      spacing: { after: 240 }
+                    }),
+                    ...involvedParagraphs
+                  ]
+                : [new Paragraph({ children: [new TextRun({ text: String(text), size: 18, font: "Times New Roman" })] })]
             })
           )
         }));
@@ -109,7 +144,10 @@ export function WeeklySummaryTab({ reports }: WeeklySummaryTabProps) {
     });
 
     const doc = new Document({
-      sections: [{ children }]
+      sections: [{ 
+        properties: { page: { orientation: "landscape" as any } },
+        children 
+      }]
     });
 
     const blob = await Packer.toBlob(doc);
@@ -139,12 +177,12 @@ export function WeeklySummaryTab({ reports }: WeeklySummaryTabProps) {
                     <table className="w-full text-[10px] border-collapse">
                       <thead>
                         <tr className="bg-slate-50 border-b">
-                          <th className="p-2 border-r text-left w-12">HORA</th>
-                          <th className="p-2 border-r text-left w-20">TURNO</th>
-                          <th className="p-2 border-r text-left w-20">DATA</th>
-                          <th className="p-2 border-r text-left w-32">ENDEREÇO</th>
-                          <th className="p-2 border-r text-left w-32">BAIRRO / CIDADE</th>
-                          <th className="p-2 text-left">HISTÓRICO</th>
+                          <th className="p-2 border-r text-left w-[8%]">HORA</th>
+                          <th className="p-2 border-r text-left w-[10%]">TURNO</th>
+                          <th className="p-2 border-r text-left w-[12%]">DATA</th>
+                          <th className="p-2 border-r text-left w-[18%]">ENDEREÇO</th>
+                          <th className="p-2 border-r text-left w-[18%]">BAIRRO / CIDADE</th>
+                          <th className="p-2 text-left w-[34%]">HISTÓRICO</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -156,13 +194,21 @@ export function WeeklySummaryTab({ reports }: WeeklySummaryTabProps) {
                             <td className="p-2 border-r align-top">{r.localRua}, {r.localNumero}</td>
                             <td className="p-2 border-r align-top font-bold">{r.localBairro.toUpperCase()} / {r.cidade.toUpperCase()}</td>
                             <td className="p-2 align-top whitespace-pre-wrap">
-                              <div className="mb-2 italic">{capitalizeSentence(r.resumo.toLowerCase())}</div>
-                              <div className="space-y-1">
+                              <div className="mb-4 italic">{capitalizeSentence(r.resumo.toLowerCase())}</div>
+                              <div className="space-y-3">
                                 {(r.envolvidos as any[] || []).map((p, pi) => (
-                                  <div key={pi} className="border-t pt-1 first:border-0">
-                                    <div className="font-bold">{p.role}: {p.nome.toLowerCase().replace(/(^\w|\s\w)/g, (m: string) => m.toUpperCase())}</div>
-                                    <div>{p.documentoTipo}: {p.documentoNumero}</div>
-                                    <div className="text-slate-500">antecedentes: {p.antecedentes}</div>
+                                  <div key={pi} className="border-t pt-2 first:border-0">
+                                    <div>
+                                      <span className="font-bold">{p.role.toLowerCase()}: </span>
+                                      <span>{p.nome.toLowerCase().replace(/(^\w|\s\w)/g, (m: string) => m.toUpperCase())}, </span>
+                                      <span className="font-bold">documento: </span>
+                                      <span>{p.documentoNumero}, </span>
+                                      <span>{calculateAge(p.dataNascimento)} anos</span>
+                                    </div>
+                                    <div>
+                                      <span className="font-bold">Antecedentes: </span>
+                                      <span>{p.antecedentes}</span>
+                                    </div>
                                   </div>
                                 ))}
                               </div>
