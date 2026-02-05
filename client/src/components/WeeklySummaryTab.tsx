@@ -75,17 +75,17 @@ export function WeeklySummaryTab({ reports }: WeeklySummaryTabProps) {
       const rows = [
         new TableRow({
           children: [
-            { text: "HORA", width: 8 },
-            { text: "TURNO", width: 10 },
-            { text: "DATA", width: 12 },
-            { text: "ENDEREÇO", width: 18 },
-            { text: "BAIRRO / CIDADE", width: 18 },
-            { text: "HISTÓRICO", width: 34 }
+            { text: "HORA", width: 800 }, // approx twips for fixed width
+            { text: "TURNO", width: 1000 },
+            { text: "DATA", width: 1200 },
+            { text: "ENDEREÇO", width: 2500 },
+            { text: "BAIRRO / CIDADE", width: 2500 },
+            { text: "HISTÓRICO", width: 4500 }
           ].map(col => 
             new TableCell({
               children: [new Paragraph({ children: [new TextRun({ text: col.text, bold: true, size: 20, font: "Times New Roman" })] })],
               shading: { fill: "F2F2F2" },
-              width: { size: col.width, type: WidthType.PERCENTAGE }
+              width: { size: col.width, type: WidthType.DXA } // DXA for fixed width in twips
             })
           )
         })
@@ -100,9 +100,9 @@ export function WeeklySummaryTab({ reports }: WeeklySummaryTabProps) {
           
           return new Paragraph({
             children: [
-              new TextRun({ text: `${p.role.toLowerCase()}: `, bold: true, size: 18, font: "Times New Roman" }),
+              new TextRun({ text: `${p.role.toUpperCase()}: `, bold: true, size: 18, font: "Times New Roman" }),
               new TextRun({ text: `${nameCap}, `, size: 18, font: "Times New Roman" }),
-              new TextRun({ text: `documento: `, bold: true, size: 18, font: "Times New Roman" }),
+              new TextRun({ text: `${p.documentoTipo.toUpperCase()}: `, bold: true, size: 18, font: "Times New Roman" }),
               new TextRun({ text: `${p.documentoNumero}, `, size: 18, font: "Times New Roman" }),
               new TextRun({ text: `${age} anos`, size: 18, font: "Times New Roman" }),
               new TextRun({ text: "\n", size: 18, font: "Times New Roman" }),
@@ -123,10 +123,11 @@ export function WeeklySummaryTab({ reports }: WeeklySummaryTabProps) {
             `${capitalizeSentence(r.resumo.toLowerCase())}`
           ].map((text, idx) => 
             new TableCell({
+              width: { size: [800, 1000, 1200, 2500, 2500, 4500][idx], type: WidthType.DXA },
               children: idx === 5 
                 ? [
                     new Paragraph({ 
-                      children: [new TextRun({ text, size: 18, font: "Times New Roman" })],
+                      children: [new TextRun({ text: String(text), size: 18, font: "Times New Roman" })],
                       spacing: { after: 240 }
                     }),
                     ...involvedParagraphs
@@ -177,12 +178,12 @@ export function WeeklySummaryTab({ reports }: WeeklySummaryTabProps) {
                     <table className="w-full text-[10px] border-collapse">
                       <thead>
                         <tr className="bg-slate-50 border-b">
-                          <th className="p-2 border-r text-left w-[8%]">HORA</th>
-                          <th className="p-2 border-r text-left w-[10%]">TURNO</th>
-                          <th className="p-2 border-r text-left w-[12%]">DATA</th>
-                          <th className="p-2 border-r text-left w-[18%]">ENDEREÇO</th>
-                          <th className="p-2 border-r text-left w-[18%]">BAIRRO / CIDADE</th>
-                          <th className="p-2 text-left w-[34%]">HISTÓRICO</th>
+                          <th className="p-2 border-r text-left w-16">HORA</th>
+                          <th className="p-2 border-r text-left w-24">TURNO</th>
+                          <th className="p-2 border-r text-left w-24">DATA</th>
+                          <th className="p-2 border-r text-left w-48">ENDEREÇO</th>
+                          <th className="p-2 border-r text-left w-48">BAIRRO / CIDADE</th>
+                          <th className="p-2 text-left">HISTÓRICO</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -192,16 +193,16 @@ export function WeeklySummaryTab({ reports }: WeeklySummaryTabProps) {
                             <td className="p-2 border-r align-top">{getTurno(String(r.dataHora))}</td>
                             <td className="p-2 border-r align-top">{format(new Date(r.dataHora), "dd/MM/yyyy")}</td>
                             <td className="p-2 border-r align-top">{r.localRua}, {r.localNumero}</td>
-                            <td className="p-2 border-r align-top font-bold">{r.localBairro.toUpperCase()} / {r.cidade.toUpperCase()}</td>
+                            <td className="p-2 border-r align-top uppercase">{r.localBairro} / {r.cidade}</td>
                             <td className="p-2 align-top whitespace-pre-wrap">
                               <div className="mb-4 italic">{capitalizeSentence(r.resumo.toLowerCase())}</div>
                               <div className="space-y-3">
                                 {(r.envolvidos as any[] || []).map((p, pi) => (
                                   <div key={pi} className="border-t pt-2 first:border-0">
                                     <div>
-                                      <span className="font-bold">{p.role.toLowerCase()}: </span>
+                                      <span className="font-bold uppercase">{p.role}: </span>
                                       <span>{p.nome.toLowerCase().replace(/(^\w|\s\w)/g, (m: string) => m.toUpperCase())}, </span>
-                                      <span className="font-bold">documento: </span>
+                                      <span className="font-bold uppercase">{p.documentoTipo}: </span>
                                       <span>{p.documentoNumero}, </span>
                                       <span>{calculateAge(p.dataNascimento)} anos</span>
                                     </div>
