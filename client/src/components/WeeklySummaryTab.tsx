@@ -97,17 +97,18 @@ export function WeeklySummaryTab({ reports }: WeeklySummaryTabProps) {
         const involvedParagraphs = (r.envolvidos as any[] || []).map(p => {
           const nameCap = p.nome.toLowerCase().replace(/(^\w|\s\w)/g, (m: string) => m.toUpperCase());
           const age = calculateAge(p.dataNascimento);
+          const roleTitle = p.role.charAt(0).toUpperCase() + p.role.slice(1).toLowerCase();
           
           return new Paragraph({
             children: [
-              new TextRun({ text: `${p.role.toUpperCase()}: `, bold: true, size: 18, font: "Times New Roman" }),
+              new TextRun({ text: `${roleTitle}: `, bold: true, size: 18, font: "Times New Roman" }),
               new TextRun({ text: `${nameCap}, `, size: 18, font: "Times New Roman" }),
               new TextRun({ text: `${p.documentoTipo.toUpperCase()}: `, bold: true, size: 18, font: "Times New Roman" }),
               new TextRun({ text: `${p.documentoNumero}, `, size: 18, font: "Times New Roman" }),
               new TextRun({ text: `${age} anos`, size: 18, font: "Times New Roman" }),
               new TextRun({ text: "\n", size: 18, font: "Times New Roman" }),
               new TextRun({ text: `Antecedentes: `, bold: true, size: 18, font: "Times New Roman" }),
-              new TextRun({ text: `${p.antecedentes}`, size: 18, font: "Times New Roman" })
+              new TextRun({ text: `${p.antecedentes.toLowerCase()}`, size: 18, font: "Times New Roman" })
             ],
             spacing: { after: 120 }
           });
@@ -200,7 +201,7 @@ export function WeeklySummaryTab({ reports }: WeeklySummaryTabProps) {
                                 {(r.envolvidos as any[] || []).map((p, pi) => (
                                   <div key={pi} className="border-t pt-2 first:border-0">
                                     <div>
-                                      <span className="font-bold uppercase">{p.role}: </span>
+                                      <span className="font-bold">{p.role.charAt(0).toUpperCase() + p.role.slice(1).toLowerCase()}: </span>
                                       <span>{p.nome.toLowerCase().replace(/(^\w|\s\w)/g, (m: string) => m.toUpperCase())}, </span>
                                       <span className="font-bold uppercase">{p.documentoTipo}: </span>
                                       <span>{p.documentoNumero}, </span>
@@ -208,7 +209,7 @@ export function WeeklySummaryTab({ reports }: WeeklySummaryTabProps) {
                                     </div>
                                     <div>
                                       <span className="font-bold">Antecedentes: </span>
-                                      <span>{p.antecedentes}</span>
+                                      <span className="lowercase">{p.antecedentes}</span>
                                     </div>
                                   </div>
                                 ))}

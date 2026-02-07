@@ -1,0 +1,130 @@
+Você está atuando exclusivamente sobre um aplicativo já existente.
+Não refatore, não reorganize, não otimize e não altere qualquer código, estilo, lógica, dependência, layout ou comportamento já implementado.
+Implemente somente o que está descrito abaixo.
+
+OBJETIVO
+
+Criar uma nova aba denominada “CARTORIAL”, integrada ao aplicativo existente, sem modificar qualquer outra funcionalidade, aba, lógica, layout, estilo global ou estrutura do sistema.
+
+1. ESTRUTURA DA ABA CARTORIAL
+
+A aba CARTORIAL deve ser adicionada ao sistema de navegação já existente, mantendo o padrão atual do aplicativo.
+
+Ao ser acessada, a aba deve gerar automaticamente tabelas com base nos participantes cadastrados na aba RELEASE.
+
+Deve ser criada uma tabela para cada participante existente na aba RELEASE.
+
+Caso existam múltiplos participantes, as tabelas devem ser renderizadas sequencialmente, uma abaixo da outra, com espaçamento visual adequado.
+
+As tabelas devem possuir dimensões fixas, sem possibilidade de redimensionamento pelo usuário.
+
+O layout da tabela deve replicar fielmente o modelo fornecido, sem ajustes, adaptações ou variações.
+
+2. DADOS COM PREENCHIMENTO AUTOMÁTICO (ORIGEM: ABA RELEASE)
+
+Para cada participante da aba RELEASE, preencher automaticamente os seguintes campos, somente se houver dados disponíveis:
+
+NOME: nome do envolvido
+
+RG: resposta de RG
+
+CPF: resposta de CPF
+
+DN: data de nascimento
+
+OC: resposta de antecedentes
+
+ORCRIM: resposta de organização criminosa
+
+Não criar dados fictícios.
+Não alterar dados de origem.
+
+3. DADOS DE PREENCHIMENTO MANUAL
+
+Os campos abaixo não devem ser preenchidos automaticamente:
+
+ALCUNHA
+
+SITUAÇÃO
+
+CÓDIGO PRESO
+
+FILIAÇÃO
+
+ENDEREÇO
+
+OBSERVAÇÕES
+
+ESPAÇO PARA FOTO (campo reservado para inserção manual de imagem)
+
+Esses campos devem:
+
+Permanecer vazios na criação da tabela
+
+Ser editáveis somente por meio de um botão de edição associado à tabela correspondente
+
+Não interferir nos dados oriundos da aba RELEASE
+
+4. FORMATAÇÃO OBRIGATÓRIA
+Títulos dos campos
+
+CAIXA ALTA
+
+NEGRITO
+
+ITÁLICO
+
+Fonte: Times New Roman
+
+Tamanho: 10
+
+Respostas dos campos
+
+CAIXA ALTA
+
+ITÁLICO
+
+Fonte: Times New Roman
+
+Tamanho: 9
+
+SEM NEGRITO
+
+Essa formatação deve ser aplicada tanto na visualização da aba quanto no arquivo exportado.
+
+5. FUNCIONALIDADES EXTRAS
+Botão de edição
+
+Deve existir um botão para habilitar a edição apenas dos campos manuais
+
+O botão não deve permitir alteração dos campos preenchidos automaticamente
+
+Exportação para Word
+
+Criar um botão para baixar todo o conteúdo da aba CARTORIAL em formato .docx
+
+O arquivo exportado deve preservar integralmente:
+
+Estrutura das tabelas
+
+Dimensões fixas
+
+Formatação tipográfica
+
+Organização conforme o modelo fornecido
+
+6. RESTRIÇÕES OBRIGATÓRIAS
+
+Não alterar código existente fora da implementação da aba CARTORIAL
+
+Não modificar estilos globais
+
+Não alterar componentes reutilizáveis
+
+Não alterar fluxos de dados existentes
+
+Não introduzir novas dependências sem necessidade explícita
+
+Não assumir comportamentos não descritos neste prompt
+
+Implemente exclusivamente o que foi solicitado acima.

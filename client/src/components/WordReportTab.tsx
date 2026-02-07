@@ -95,7 +95,8 @@ export function WordReportTab({ reports }: WordReportTabProps) {
           output += `${dateStr} às ${timeStr} - ${fatoCompleto}\n`;
           output += `Na ${report.localRua.toLowerCase()}, nº ${report.localNumero.toLowerCase()}, bairro ${report.localBairro.toLowerCase()}, em ${report.cidade}, ${capitalizeSentence(report.resumo.toLowerCase())}\n\n`;
 
-          if (Array.isArray(report.material) && report.material.length > 0) {
+          const hasMaterial = Array.isArray(report.material) && report.material.length > 0;
+          if (hasMaterial) {
             output += "Material apreendido:\n";
             report.material.forEach((m) => {
               output += `${capitalizeSentence(m.toLowerCase())}\n`;
