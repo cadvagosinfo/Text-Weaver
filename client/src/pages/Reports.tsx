@@ -7,7 +7,7 @@ import { useReports, useCreateReport, useUpdateReport, useDeleteReport } from "@
 import { ReportFormatter } from "@/components/ReportFormatter";
 import { WordReportTab } from "@/components/WordReportTab";
 import { WeeklySummaryTab } from "@/components/WeeklySummaryTab";
-import { differenceInYears, parseISO, format, isFuture } from "date-fns";
+import { differenceInYears, parseISO, format } from "date-fns";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -30,7 +30,6 @@ import {
   Briefcase,
   FileText,
   Package,
-  AlertTriangle,
   FileSpreadsheet,
   ArrowLeft
 } from "lucide-react";
@@ -122,7 +121,7 @@ export default function Reports() {
     name: "material" as any,
   });
 
-  const watchedData = form.watch() as InsertReport;
+  const watchedData = form.watch();
 
   const calculateAge = (birthDate: string) => {
     if (!birthDate) return null;
@@ -177,12 +176,10 @@ export default function Reports() {
       dataHora: new Date(report.dataHora),
     });
     
-    // Crucial fix: ensure city is set after a short delay to allow unidade-dependent select to render
     setTimeout(() => {
       form.setValue("cidade", report.cidade);
     }, 50);
 
-    // Redirect to RELEASE tab
     setActiveTab("editor");
   };
 
@@ -354,6 +351,7 @@ export default function Reports() {
         </ScrollArea>
       </aside>
 
+      <main className="flex-1 flex flex-col h-screen overflow-hidden">
         <header className="px-8 py-5 border-b bg-white dark:bg-slate-900 flex justify-between items-center z-10 shadow-sm">
           <div className="flex items-center gap-6">
             <Link href="/">
@@ -566,9 +564,7 @@ export default function Reports() {
                                 render={({ field }) => (
                                   <FormItem className="md:col-span-2">
                                     <FormLabel className="text-slate-700 font-medium uppercase text-xs">Logradouro (Rua/Av)</FormLabel>
-                                    <FormControl>
-                                      <Input placeholder="Rua/Av" className="bg-white" {...field} />
-                                    </FormControl>
+                                    <FormControl><Input placeholder="Ex: Av. Central" className="bg-white uppercase" {...field} /></FormControl>
                                     <FormMessage />
                                   </FormItem>
                                 )}
@@ -578,10 +574,8 @@ export default function Reports() {
                                 name="localNumero"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel className="text-slate-700 font-medium uppercase text-xs">Número</FormLabel>
-                                    <FormControl>
-                                      <Input placeholder="Nº" className="bg-white" {...field} />
-                                    </FormControl>
+                                    <FormLabel className="text-slate-700 font-medium uppercase text-xs">Nº</FormLabel>
+                                    <FormControl><Input placeholder="S/N" className="bg-white uppercase" {...field} /></FormControl>
                                     <FormMessage />
                                   </FormItem>
                                 )}
@@ -595,157 +589,134 @@ export default function Reports() {
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel className="text-slate-700 font-medium uppercase text-xs">Bairro</FormLabel>
-                                <FormControl>
-                                  <Input placeholder="Bairro" className="bg-white" {...field} />
-                                </FormControl>
+                                <FormControl><Input placeholder="Ex: Centro" className="bg-white uppercase" {...field} /></FormControl>
                                 <FormMessage />
                               </FormItem>
                             )}
                           />
                         </div>
 
-                        <div className="space-y-5">
+                        <div className="space-y-6 pt-4">
                           <div className="flex items-center justify-between pb-2 border-b">
                             <div className="flex items-center gap-2">
                               <UserPlus className="w-5 h-5 text-blue-600" />
-                              <h3 className="font-semibold text-lg uppercase tracking-tight">Envolvidos</h3>
+                              <h3 className="font-semibold text-lg uppercase tracking-tight">Partes Envolvidas</h3>
                             </div>
-                            <Button type="button" variant="secondary" size="sm" onClick={() => appendPerson({ role: "VÍTIMA", nome: "", documentoTipo: "RG", documentoNumero: "", dataNascimento: "", antecedentes: "", orcrim: "" })} className="h-8 uppercase text-[10px] font-bold">
-                              <Plus className="w-4 h-4 mr-1" /> Adicionar
+                            <Button type="button" variant="outline" size="sm" onClick={() => appendPerson({ role: "VÍTIMA", nome: "", documentoTipo: "RG", documentoNumero: "", dataNascimento: "", criminalHistory: false, crimeOrg: false, antecedentes: "" })} className="h-8 uppercase text-[10px] font-bold border-blue-200 text-blue-700 hover:bg-blue-50">
+                              <Plus className="w-4 h-4 mr-1" /> Adicionar Parte
                             </Button>
                           </div>
 
-                          <div className="space-y-3">
-                            {personFields.map((field, index) => {
-                              const personRole = watchedData.envolvidos?.[index]?.role;
-                              const birthDate = watchedData.envolvidos?.[index]?.dataNascimento;
-                              const age = calculateAge(birthDate || "");
-                              const docTipo = watchedData.envolvidos?.[index]?.documentoTipo;
-                              
-                              let validationMessage = null;
-                              let isError = false;
-
-                              if (age !== null) {
-                                if (personRole === "MENOR APREENDIDO" && age >= 18) {
-                                  validationMessage = "ERRO: Idade igual ou superior a 18 anos. Altere o status do envolvido.";
-                                  isError = true;
-                                } else if ((personRole === "PRESO" || personRole === "AUTOR") && age < 18) {
-                                  validationMessage = "AVISO: Envolvido menor de 18 anos. Sugestão: alterar para MENOR APREENDIDO.";
-                                  isError = false;
-                                }
-                              }
-
-                              return (
-                                <Card key={field.id} className={`relative overflow-hidden group border-dashed ${isError ? 'border-red-300 bg-red-50/30' : validationMessage ? 'border-amber-300 bg-amber-50/30' : ''}`}>
-                                  <CardContent className="p-4 pt-4 flex flex-col gap-4">
-                                    {validationMessage && (
-                                      <div className={`flex items-center gap-2 text-[10px] font-bold uppercase p-2 rounded border ${isError ? 'bg-red-100 border-red-200 text-red-700' : 'bg-amber-100 border-amber-200 text-amber-700'}`}>
-                                        <AlertTriangle className="w-3 h-3" />
-                                        <span>{validationMessage}</span>
-                                      </div>
+                          <div className="space-y-4">
+                            {personFields.map((field, index) => (
+                              <Card key={field.id} className="border-blue-100 shadow-sm overflow-hidden">
+                                <div className="bg-slate-50 border-b px-4 py-2 flex justify-between items-center">
+                                  <span className="text-[10px] font-bold text-slate-500 uppercase">PARTE #{index + 1}</span>
+                                  <Button type="button" variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-red-500" onClick={() => removePerson(index)}>
+                                    <X className="w-4 h-4" />
+                                  </Button>
+                                </div>
+                                <CardContent className="p-4 space-y-4">
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <FormField
+                                      control={form.control}
+                                      name={`envolvidos.${index}.role`}
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Qualificação</FormLabel>
+                                          <Select onValueChange={field.onChange} value={(field.value as string) || ""}>
+                                            <FormControl><SelectTrigger className="bg-white h-9 uppercase text-xs"><SelectValue /></SelectTrigger></FormControl>
+                                            <SelectContent className="bg-white">
+                                              {ROLES.map(r => <SelectItem key={r} value={r} className="uppercase text-xs">{r}</SelectItem>)}
+                                            </SelectContent>
+                                          </Select>
+                                        </FormItem>
+                                      )}
+                                    />
+                                    <FormField
+                                      control={form.control}
+                                      name={`envolvidos.${index}.nome`}
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Nome Completo</FormLabel>
+                                          <FormControl><Input className="bg-white h-9 uppercase text-xs" {...field} /></FormControl>
+                                        </FormItem>
+                                      )}
+                                    />
+                                  </div>
+                                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <FormField
+                                      control={form.control}
+                                      name={`envolvidos.${index}.documentoTipo`}
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Documento</FormLabel>
+                                          <Select onValueChange={field.onChange} value={(field.value as string) || ""}>
+                                            <FormControl><SelectTrigger className="bg-white h-9 text-xs"><SelectValue /></SelectTrigger></FormControl>
+                                            <SelectContent className="bg-white">
+                                              {DOCUMENTO_TIPOS.map(t => <SelectItem key={t} value={t} className="text-xs">{t}</SelectItem>)}
+                                            </SelectContent>
+                                          </Select>
+                                        </FormItem>
+                                      )}
+                                    />
+                                    <FormField
+                                      control={form.control}
+                                      name={`envolvidos.${index}.documentoNumero`}
+                                      render={({ field }) => (
+                                        <FormItem className="md:col-span-1">
+                                          <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Número</FormLabel>
+                                          <FormControl>
+                                            <Input 
+                                              className="bg-white h-9 text-xs" 
+                                              {...field} 
+                                              value={(field.value as string) || ""}
+                                              onChange={(e) => {
+                                                const val = form.getValues(`envolvidos.${index}.documentoTipo`) === "CPF" 
+                                                  ? applyCPFMask(e.target.value) 
+                                                  : e.target.value;
+                                                field.onChange(val);
+                                              }}
+                                            />
+                                          </FormControl>
+                                        </FormItem>
+                                      )}
+                                    />
+                                    <FormField
+                                      control={form.control}
+                                      name={`envolvidos.${index}.dataNascimento`}
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <div className="flex items-center justify-between">
+                                            <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Nascimento</FormLabel>
+                                            {field.value && (
+                                              <Badge variant="secondary" className="text-[9px] h-4 px-1.5 font-bold">
+                                                {calculateAge(field.value as string)} ANOS
+                                              </Badge>
+                                            )}
+                                          </div>
+                                          <FormControl><Input type="date" className="bg-white h-9 text-xs" {...field} value={(field.value as string) || ""} /></FormControl>
+                                        </FormItem>
+                                      )}
+                                    />
+                                  </div>
+                                  <FormField
+                                    control={form.control}
+                                    name={`envolvidos.${index}.antecedentes`}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Antecedentes Criminais</FormLabel>
+                                        <FormControl><Input placeholder="Descreva os antecedentes..." className="bg-white h-9 text-xs lowercase" {...field} value={(field.value as string) || ""} /></FormControl>
+                                      </FormItem>
                                     )}
-                                    <div className="grid gap-4 md:grid-cols-12">
-                                      <div className="md:col-span-3">
-                                        <FormLabel className="text-[10px] uppercase font-bold text-muted-foreground mb-1 block">Tipo</FormLabel>
-                                        <Select 
-                                          onValueChange={(value) => form.setValue(`envolvidos.${index}.role` as any, value)} 
-                                          defaultValue={(field as any).role}
-                                        >
-                                          <SelectTrigger className="h-9 uppercase text-xs font-semibold bg-white">
-                                            <SelectValue />
-                                          </SelectTrigger>
-                                          <SelectContent className="bg-white">
-                                            {ROLES.map(role => <SelectItem key={role} value={role} className="uppercase text-xs">{role}</SelectItem>)}
-                                          </SelectContent>
-                                        </Select>
-                                      </div>
-                                      <div className="md:col-span-4">
-                                        <FormLabel className="text-[10px] uppercase font-bold text-muted-foreground mb-1 block">Nome Completo</FormLabel>
-                                        <Input 
-                                          {...form.register(`envolvidos.${index}.nome` as any)} 
-                                          placeholder="Nome completo" 
-                                          className="h-9 uppercase" 
-                                        />
-                                      </div>
-                                      <div className="md:col-span-2">
-                                        <FormLabel className="text-[10px] uppercase font-bold text-muted-foreground mb-1 block">Doc. Tipo</FormLabel>
-                                        <Select 
-                                          onValueChange={(value) => {
-                                            form.setValue(`envolvidos.${index}.documentoTipo` as any, value);
-                                            if (value === "CPF") {
-                                              const current = form.getValues(`envolvidos.${index}.documentoNumero` as any);
-                                              form.setValue(`envolvidos.${index}.documentoNumero` as any, applyCPFMask(current));
-                                            }
-                                          }} 
-                                          defaultValue={(field as any).documentoTipo || "RG"}
-                                        >
-                                          <SelectTrigger className="h-9 uppercase text-xs font-semibold bg-white">
-                                            <SelectValue />
-                                          </SelectTrigger>
-                                          <SelectContent className="bg-white">
-                                            {DOCUMENTO_TIPOS.map(tipo => <SelectItem key={tipo} value={tipo} className="uppercase text-xs">{tipo}</SelectItem>)}
-                                          </SelectContent>
-                                        </Select>
-                                      </div>
-                                      <div className="md:col-span-3">
-                                        <FormLabel className="text-[10px] uppercase font-bold text-muted-foreground mb-1 block">Nº Documento</FormLabel>
-                                        <Input 
-                                          {...form.register(`envolvidos.${index}.documentoNumero` as any)} 
-                                          placeholder="Número" 
-                                          className="h-9 uppercase font-mono text-xs"
-                                          onChange={(e) => {
-                                            let val = e.target.value;
-                                            if (docTipo === "CPF") {
-                                              val = applyCPFMask(val);
-                                            }
-                                            form.setValue(`envolvidos.${index}.documentoNumero` as any, val);
-                                          }}
-                                        />
-                                      </div>
-                                    </div>
-                                    <div className="grid gap-4 md:grid-cols-12">
-                                      <div className="md:col-span-4">
-                                        <FormLabel className="text-[10px] uppercase font-bold text-muted-foreground mb-1 block">Nascimento</FormLabel>
-                                        <Input 
-                                          type="date" 
-                                          {...form.register(`envolvidos.${index}.dataNascimento` as any)} 
-                                          className="h-9"
-                                          max={format(new Date(), "yyyy-MM-dd")}
-                                          onChange={(e) => {
-                                            const val = e.target.value;
-                                            if (val && isFuture(parseISO(val))) {
-                                              return; // Block future dates
-                                            }
-                                            form.setValue(`envolvidos.${index}.dataNascimento` as any, val);
-                                          }}
-                                        />
-                                      </div>
-                                      <div className="md:col-span-2">
-                                        <FormLabel className="text-[10px] uppercase font-bold text-muted-foreground mb-1 block">Idade</FormLabel>
-                                        <Input 
-                                          value={age !== null ? `${age} anos` : ""} 
-                                          readOnly 
-                                          className="h-9 bg-muted font-bold text-xs" 
-                                        />
-                                      </div>
-                                      <div className="md:col-span-5 flex flex-col gap-2">
-                                        <Input {...form.register(`envolvidos.${index}.antecedentes` as any)} placeholder="Antecedentes" className="h-9 lowercase text-xs" />
-                                        <Input {...form.register(`envolvidos.${index}.orcrim` as any)} placeholder="ORCRIM" className="h-9 lowercase text-xs" />
-                                      </div>
-                                      <div className="md:col-span-1 flex items-end justify-end pb-0.5">
-                                        <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-red-500 hover:bg-red-50" onClick={() => removePerson(index)}>
-                                          <X className="w-4 h-4" />
-                                        </Button>
-                                      </div>
-                                    </div>
-                                  </CardContent>
-                                </Card>
-                              );
-                            })}
+                                  />
+                                </CardContent>
+                              </Card>
+                            ))}
                           </div>
                         </div>
 
-                        <div className="space-y-5">
+                        <div className="space-y-6 pt-4">
                           <div className="flex items-center justify-between pb-2 border-b">
                             <div className="flex items-center gap-2">
                               <Package className="w-5 h-5 text-blue-600" />
@@ -813,7 +784,7 @@ export default function Reports() {
                 </ScrollArea>
 
                 <div className="h-full bg-slate-200/50 dark:bg-slate-900/50 p-8 border-l flex flex-col">
-                  <ReportFormatter data={watchedData} isPreliminar={isPreliminar} />
+                  <ReportFormatter data={watchedData as any} isPreliminar={isPreliminar} />
                 </div>
               </div>
             </TabsContent>
