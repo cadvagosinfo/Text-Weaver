@@ -16,7 +16,7 @@ const CITY_UNIT_ORDER = [
   "2ª CIA – CANELA",
   "3º PEL - SÃO FRANCISCO DE PAULA",
   "4º GPM - CAMBARÁ DO SUL",
-  "2ª CIA IND PM TAQUARA",
+  "2ª CIA TAQUARA",
   "3º PEL – ROLANTE",
   "4º GPM - RIOZINHO",
   "4º PEL – IGREJINHA",
@@ -30,7 +30,7 @@ const CITY_MAPPING: Record<string, string> = {
   "Canela": "2ª CIA – CANELA",
   "São Francisco de Paula": "3º PEL - SÃO FRANCISCO DE PAULA",
   "Cambará do Sul": "4º GPM - CAMBARÁ DO SUL",
-  "Taquara": "2ª CIA IND PM TAQUARA",
+  "Taquara": "2ª CIA TAQUARA",
   "Rolante": "3º PEL – ROLANTE",
   "Riozinho": "4º GPM - RIOZINHO",
   "Igrejinha": "4º PEL – IGREJINHA",
@@ -47,7 +47,8 @@ export function WordReportTab({ reports }: WordReportTabProps) {
   const now = new Date();
   const twentyFourHoursAgo = subHours(now, 24);
 
-  const recentReports = reports.filter((r) => {
+  const recentReports = (reports || []).filter((r) => {
+    if (!r.dataHora) return false;
     const reportDate = new Date(r.dataHora);
     return isWithinInterval(reportDate, { start: twentyFourHoursAgo, end: now });
   });
@@ -77,7 +78,7 @@ export function WordReportTab({ reports }: WordReportTabProps) {
 
     CITY_UNIT_ORDER.forEach((unit) => {
       output += `${unit}\n`;
-      const reportsInUnit = groupedReports[unit];
+      const reportsInUnit = groupedReports[unit] || [];
 
       if (reportsInUnit.length === 0) {
         output += "SN.\n\n";
@@ -87,31 +88,31 @@ export function WordReportTab({ reports }: WordReportTabProps) {
           const dateStr = format(d, "dd/MM/yyyy");
           const timeStr = format(d, "HH'h'mm'min'");
           
-          let fatoCompleto = report.fato.toUpperCase();
+          let fatoCompleto = (report.fato || "").toUpperCase();
           if (report.fatoComplementar) {
             fatoCompleto += ` / ${report.fatoComplementar.toUpperCase()}`;
           }
           
           output += `${dateStr} às ${timeStr} - ${fatoCompleto}\n`;
-          output += `Na ${report.localRua.toLowerCase()}, nº ${report.localNumero.toLowerCase()}, bairro ${report.localBairro.toLowerCase()}, em ${report.cidade}, ${capitalizeSentence(report.resumo.toLowerCase())}\n\n`;
+          output += `Na ${(report.localRua || "").toLowerCase()}, nº ${(report.localNumero || "").toLowerCase()}, bairro ${(report.localBairro || "").toLowerCase()}, em ${report.cidade}, ${capitalizeSentence((report.resumo || "").toLowerCase())}\n\n`;
 
           const hasMaterial = Array.isArray(report.material) && report.material.length > 0;
           if (hasMaterial) {
             output += "Material apreendido:\n";
-            report.material.forEach((m) => {
-              output += `${capitalizeSentence(m.toLowerCase())}\n`;
+            report.material.forEach((m: string) => {
+              output += `${capitalizeSentence((m || "").toLowerCase())}\n`;
             });
             output += "\n";
           }
 
           if (Array.isArray(report.envolvidos) && report.envolvidos.length > 0) {
             report.envolvidos.forEach((p: any) => {
-              const role = p.role.charAt(0).toUpperCase() + p.role.slice(1).toLowerCase();
+              const role = (p.role || "Envolvido").charAt(0).toUpperCase() + (p.role || "").slice(1).toLowerCase();
               const age = calculateAge(p.dataNascimento);
-              const nameCapitalized = p.nome.toLowerCase().replace(/(^\w|\s\w)/g, (m: string) => m.toUpperCase());
+              const nameCapitalized = (p.nome || "").toLowerCase().replace(/(^\w|\s\w)/g, (m: string) => m.toUpperCase());
               output += `${role}: ${nameCapitalized}, ${p.documentoTipo}: ${p.documentoNumero}, ${age} anos\n`;
-              output += `Antecedentes: ${capitalizeSentence(p.antecedentes.toLowerCase())}\n`;
-              output += `Orcrim: ${capitalizeSentence(p.orcrim.toLowerCase())}\n\n`;
+              output += `Antecedentes: ${capitalizeSentence((p.antecedentes || "").toLowerCase())}\n`;
+              output += `Orcrim: ${capitalizeSentence((p.orcrim || "").toLowerCase())}\n\n`;
             });
           }
           
@@ -134,7 +135,6 @@ export function WordReportTab({ reports }: WordReportTabProps) {
   };
 
   const handleDownloadDocx = async () => {
-    const sections = [];
     const lines = plainText.split("\n");
 
     const children = lines.map((line) => {

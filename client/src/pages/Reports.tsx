@@ -276,9 +276,9 @@ export default function Reports() {
             <div className="p-2 bg-blue-600 rounded-lg shadow-lg shadow-blue-900/50">
               <ShieldAlert className="w-5 h-5 text-white" />
             </div>
-            <h1 className="font-bold text-lg tracking-tight uppercase">Polícia Militar</h1>
+            <h1 className="font-bold text-lg tracking-tight uppercase">Gerador de Texto</h1>
           </div>
-          <p className="text-xs text-blue-200/80 uppercase tracking-widest pl-[3.25rem]">Gerador de Ocorrências</p>
+          <p className="text-xs text-blue-200/80 uppercase tracking-widest pl-[3.25rem]">Sistema de Ocorrências</p>
           <button 
             onClick={handleSignOut}
             className="absolute top-2 right-2 p-1 text-white/20 hover:text-white transition-colors"

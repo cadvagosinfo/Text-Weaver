@@ -44,8 +44,8 @@ export default function Home() {
             <ShieldAlert className="w-8 h-8 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold uppercase tracking-tight text-slate-900 dark:text-slate-100">Polícia Militar</h1>
-            <p className="text-sm text-blue-600 font-bold uppercase tracking-widest">Gerador de Ocorrências</p>
+            <h1 className="text-2xl font-bold uppercase tracking-tight text-slate-900 dark:text-slate-100">Gerador de Texto</h1>
+            <p className="text-sm text-blue-600 font-bold uppercase tracking-widest">Sistema de Ocorrências</p>
           </div>
         </div>
       </header>
@@ -74,7 +74,7 @@ export default function Home() {
       </main>
 
       <footer className="p-8 text-center text-xs text-muted-foreground uppercase tracking-widest border-t bg-white dark:bg-slate-900">
-        Região das Hortênsias - CRPM
+        Gerador de Texto
       </footer>
     </div>
   );

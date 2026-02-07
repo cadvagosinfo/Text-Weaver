@@ -209,7 +209,7 @@ export function WeeklySummaryTab({ reports }: WeeklySummaryTabProps) {
                                     </div>
                                     <div>
                                       <span className="font-bold">Antecedentes: </span>
-                                      <span className="lowercase">{p.antecedentes}</span>
+                                      <span className="lowercase">{(p.antecedentes || "").toLowerCase()}</span>
                                     </div>
                                   </div>
                                 ))}

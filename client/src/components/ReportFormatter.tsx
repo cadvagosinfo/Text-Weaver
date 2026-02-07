@@ -82,7 +82,7 @@ export function ReportFormatter({ data, isPreliminar }: ReportFormatterProps) {
 
   const formattedText = `${isPreliminar ? "*PRELIMINAR*\n\n" : ""}${fatoText}
 
-*${safeData.cidade.toUpperCase()} - CRPM HORTÊNSIAS / ${safeData.unidade.toUpperCase()}*
+*${safeData.cidade.toUpperCase()} / ${safeData.unidade.toUpperCase()}*
 
 *DATA/HORA:* ${safeData.dataHora}
 
