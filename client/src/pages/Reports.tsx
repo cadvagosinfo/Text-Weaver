@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "wouter";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertReportSchema, type InsertReport } from "@shared/schema";
@@ -30,7 +31,8 @@ import {
   FileText,
   Package,
   AlertTriangle,
-  FileSpreadsheet
+  FileSpreadsheet,
+  ArrowLeft
 } from "lucide-react";
 import {
   Form,
@@ -148,6 +150,14 @@ export default function Reports() {
 
   const [activeTab, setActiveTab] = useState("editor");
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get("tab");
+    if (tab && ["editor", "word", "weekly"].includes(tab)) {
+      setActiveTab(tab);
+    }
+  }, []);
+
   const startEdit = (report: any) => {
     setEditingId(report.id);
     setShowFatoComplementar(!!report.fatoComplementar);
@@ -256,10 +266,15 @@ export default function Reports() {
     }
   };
 
+  const handleSignOut = () => {
+    localStorage.removeItem("auth");
+    window.location.href = "/";
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col md:flex-row">
       <aside className="w-full md:w-80 border-r bg-white dark:bg-slate-900 flex flex-col h-[400px] md:h-screen sticky top-0">
-        <div className="p-6 border-b bg-gradient-to-r from-slate-900 to-slate-800 text-white shadow-md">
+        <div className="p-6 border-b bg-gradient-to-r from-slate-900 to-slate-800 text-white shadow-md relative group">
           <div className="flex items-center gap-3 mb-1">
             <div className="p-2 bg-blue-600 rounded-lg shadow-lg shadow-blue-900/50">
               <ShieldAlert className="w-5 h-5 text-white" />
@@ -267,6 +282,13 @@ export default function Reports() {
             <h1 className="font-bold text-lg tracking-tight uppercase">Polícia Militar</h1>
           </div>
           <p className="text-xs text-blue-200/80 uppercase tracking-widest pl-[3.25rem]">Gerador de Ocorrências</p>
+          <button 
+            onClick={handleSignOut}
+            className="absolute top-2 right-2 p-1 text-white/20 hover:text-white transition-colors"
+            title="Sair"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
 
         <div className="p-4 border-b flex items-center justify-between bg-slate-50 dark:bg-slate-900">
@@ -332,13 +354,19 @@ export default function Reports() {
         </ScrollArea>
       </aside>
 
-      <main className="flex-1 flex flex-col h-screen overflow-hidden">
         <header className="px-8 py-5 border-b bg-white dark:bg-slate-900 flex justify-between items-center z-10 shadow-sm">
-          <div>
-            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 uppercase">
-              {editingId ? "Editando Relatório" : "Novo Relatório"}
-            </h2>
-            <p className="text-sm text-muted-foreground mt-0.5">Preencha os dados abaixo para gerar a mensagem padrão.</p>
+          <div className="flex items-center gap-6">
+            <Link href="/">
+              <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-100">
+                <ArrowLeft className="w-5 h-5 text-slate-600" />
+              </Button>
+            </Link>
+            <div>
+              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 uppercase">
+                {editingId ? "Editando Relatório" : "Novo Relatório"}
+              </h2>
+              <p className="text-sm text-muted-foreground mt-0.5">Preencha os dados abaixo para gerar a mensagem padrão.</p>
+            </div>
           </div>
           <div className="flex items-center gap-4">
             <div className="flex items-center space-x-2 bg-slate-100 dark:bg-slate-800 p-2 rounded-lg border">
