@@ -139,3 +139,35 @@ ${capitalize(safeData.resumo.toLowerCase())}${isPreliminar ? "\n\n*OCORRÊNCIA E
     </Card>
   );
 }
+function formatDateToISO(input: string): string {
+  const day = input.slice(0,2);
+  const hour = input.slice(2,4);
+  const minute = input.slice(4,6);
+  const monthStr = input.slice(6,9);
+  const year = "20" + input.slice(9,11);
+
+  const months: Record<string,string> = {
+    JAN:"01", FEV:"02", MAR:"03", ABR:"04", MAI:"05", JUN:"06",
+    JUL:"07", AGO:"08", SET:"09", OUT:"10", NOV:"11", DEZ:"12"
+  };
+
+  const month = months[monthStr];
+  return `${year}-${month}-${day}T${hour}:${minute}:00Z`;
+}
+const report = {
+  fato: formData.fato,
+  unidade: formData.unidade,
+  cidade: formData.cidade,
+  dataHora: formatDateToISO(formData.dataHora), // usa a função aqui
+  localRua: formData.localRua,
+  localNumero: formData.localNumero,
+  localBairro: formData.localBairro,
+  envolvidos: formData.envolvidos, // array de objetos
+  oficial: formData.oficial,
+  material: formData.material && formData.material.length 
+              ? formData.material.split(",").map(item => item.trim()) 
+              : ["nenhum"],
+  resumo: formData.resumo,
+  motivacao: formData.motivacao || "Desconhecida"
+};
+
