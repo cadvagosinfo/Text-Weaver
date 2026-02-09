@@ -155,19 +155,19 @@ function formatDateToISO(input: string): string {
   return `${year}-${month}-${day}T${hour}:${minute}:00Z`;
 }
 const report = {
-  fato: formData.fato,
-  unidade: formData.unidade,
-  cidade: formData.cidade,
-  dataHora: formatDateToISO(formData.dataHora), // usa a função aqui
-  localRua: formData.localRua,
-  localNumero: formData.localNumero,
-  localBairro: formData.localBairro,
-  envolvidos: formData.envolvidos, // array de objetos
-  oficial: formData.oficial,
-  material: formData.material && formData.material.length 
-              ? formData.material.split(",").map(item => item.trim()) 
-              : ["nenhum"],
-  resumo: formData.resumo,
-  motivacao: formData.motivacao || "Desconhecida"
+  fato: data.fato,
+  unidade: data.unidade,
+  cidade: data.cidade,
+  dataHora: formatDateToISO(data.dataHora),
+  localRua: data.localRua,
+  localNumero: data.localNumero,
+  localBairro: data.localBairro,
+  envolvidos: data.envolvidos,
+  oficial: data.oficial,
+  material: data.material && data.material.length
+    ? data.material.split(",").map(item => item.trim())
+    : ["nenhum"],
+  resumo: data.resumo,
+  motivacao: data.motivacao || "Desconhecida",
 };
 
