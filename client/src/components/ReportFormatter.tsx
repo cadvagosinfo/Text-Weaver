@@ -171,3 +171,55 @@ const report = {
   motivacao: data.motivacao || "Desconhecida",
 };
 
+import { format, differenceInYears, parseISO } from "date-fns";
+import ptBR from "date-fns/locale";
+import type { InsertReport } from "@shared/schema";
+import { useState } from "react";
+
+// Função para converter data no formato militar (DDHHMMYY)
+const formatMilitaryDate = (date: Date | string) => {
+  const d = new Date(date);
+  const day = format(d, "dd");
+  const time = format(d, "HHmm");
+  const month = format(d, "MMM", { locale: ptBR }).toUpperCase().replace(".", "");
+  const year = format(d, "yy");
+  return `${day}${time}${month}${year}`;
+};
+
+interface ReportFormatterProps {
+  data: Partial<InsertReport>;
+  isPreliminar?: boolean;
+}
+
+export function ReportFormatter({ data, isPreliminar }: ReportFormatterProps) {
+  const [copied, setCopied] = useState(false);
+
+  const calculateAge = (birthDate: string) => {
+    if (!birthDate) return "N/A";
+    try {
+      const date = parseISO(birthDate);
+      return differenceInYears(new Date(), date).toString();
+    } catch (e) {
+      return "N/A";
+    }
+  };
+
+  const report = {
+    fato: data?.fato || "",
+    unidade: data?.unidade || "",
+    cidade: data?.cidade || "",
+    dataHora: data?.dataHora ? formatMilitaryDate(data.dataHora) : "",
+    localRua: data?.localRua || "",
+    localNumero: data?.localNumero || "",
+    localBairro: data?.localBairro || "",
+    envolvidos: data?.envolvidos || [],
+    oficial: data?.oficial || "",
+    material: data?.material?.length
+      ? data.material.split(",").map(item => item.trim())
+      : ["nenhum"],
+    resumo: data?.resumo || "",
+    motivacao: data?.motivacao || "Desconhecida",
+  };
+
+  return <div>{JSON.stringify(report, null, 2)}</div>;
+}

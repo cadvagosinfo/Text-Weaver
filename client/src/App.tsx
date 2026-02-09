@@ -41,4 +41,32 @@ function App() {
   );
 }
 
+};
+
+import React from "react";
+import { ReportFormatter } from "./components/ReportFormatter";
+
+function App() {
+  const exemploData = {
+    fato: "Roubo a pedestre",
+    unidade: "2ª Cia Ind",
+    cidade: "Rolante",
+    dataHora: "091440FEV26",
+    localRua: "Rua 07 de Julho",
+    localNumero: "123",
+    localBairro: "Centro",
+    envolvidos: [],
+    oficial: "TEN FULANO",
+    material: "Nenhum",
+    resumo: "Resumo do fato...",
+    motivacao: "Desconhecida",
+  };
+
+  return (
+    <div>
+      <ReportFormatter data={exemploData} isPreliminar={true} />
+    </div>
+  );
+}
+
 export default App;
