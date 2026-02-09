@@ -36,3 +36,8 @@ export const insertReportSchema = createInsertSchema(reports, {
 
 export type InsertReport = z.infer<typeof insertReportSchema>;
 export type Report = typeof reports.$inferSelect;
+import { pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
+
+
+
+

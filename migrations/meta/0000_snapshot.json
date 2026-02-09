@@ -1,0 +1,124 @@
+{
+  "id": "d08e106a-80e3-48d4-a6a4-5dc809680f8e",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.reports": {
+      "name": "reports",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "fato": {
+          "name": "fato",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fato_complementar": {
+          "name": "fato_complementar",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "unidade": {
+          "name": "unidade",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cidade": {
+          "name": "cidade",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "data_hora": {
+          "name": "data_hora",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "local_rua": {
+          "name": "local_rua",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "local_numero": {
+          "name": "local_numero",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "local_bairro": {
+          "name": "local_bairro",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "envolvidos": {
+          "name": "envolvidos",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "oficial": {
+          "name": "oficial",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "material": {
+          "name": "material",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "resumo": {
+          "name": "resumo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "motivacao": {
+          "name": "motivacao",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
