@@ -34,6 +34,11 @@ export function ReportFormatter({ data, isPreliminar }: ReportFormatterProps) {
     }
   };
 
+  const capitalize = (text: string) => {
+    if (!text) return "";
+    return text.replace(/(^\s*\w|[.!?]\s+\w)/g, (c) => c.toUpperCase());
+  };
+
   // Safeguard against partial data during form filling
   const safeData = {
     fato: data.fato || "[FATO]",
@@ -59,15 +64,9 @@ export function ReportFormatter({ data, isPreliminar }: ReportFormatterProps) {
     const docTipo = (p.documentoTipo || "RG").toUpperCase();
     const docNum = p.documentoNumero || "Não informado";
     const antecedentesVal = (p.antecedentes || "Nada consta").toLowerCase();
-    const orcrimVal = (p.orcrim || "Nada consta").toLowerCase();
     
-    const capitalize = (text: string) => {
-      return text.replace(/(^\s*\w|[.!?]\s+\w)/g, (c) => c.toUpperCase());
-    };
-
     return `*${roleUpper}:* ${nameUpper}; *${docTipo}:* ${docNum}; ${ageStr}
-*ANTECEDENTES:* ${capitalize(antecedentesVal)}
-*ORCRIM:* ${capitalize(orcrimVal)}`;
+*ANTECEDENTES:* ${capitalize(antecedentesVal)}`;
   }).join("\n\n");
 
   const fatoText = safeData.fatoComplementar 
@@ -75,10 +74,6 @@ export function ReportFormatter({ data, isPreliminar }: ReportFormatterProps) {
     : `*${safeData.fato.toUpperCase()}*`;
 
   const locationText = `*LOCAL:* ${safeData.localRua.toLowerCase()}, nº ${safeData.localNumero.toLowerCase()}, bairro ${safeData.localBairro.toLowerCase()}`;
-
-  const capitalize = (text: string) => {
-    return text.replace(/(^\s*\w|[.!?]\s+\w)/g, (c) => c.toUpperCase());
-  };
 
   const formattedText = `${isPreliminar ? "*PRELIMINAR*\n\n" : ""}${fatoText}
 
@@ -138,88 +133,4 @@ ${capitalize(safeData.resumo.toLowerCase())}${isPreliminar ? "\n\n*OCORRÊNCIA E
       </div>
     </Card>
   );
-}
-function formatDateToISO(input: string): string {
-  const day = input.slice(0,2);
-  const hour = input.slice(2,4);
-  const minute = input.slice(4,6);
-  const monthStr = input.slice(6,9);
-  const year = "20" + input.slice(9,11);
-
-  const months: Record<string,string> = {
-    JAN:"01", FEV:"02", MAR:"03", ABR:"04", MAI:"05", JUN:"06",
-    JUL:"07", AGO:"08", SET:"09", OUT:"10", NOV:"11", DEZ:"12"
-  };
-
-  const month = months[monthStr];
-  return `${year}-${month}-${day}T${hour}:${minute}:00Z`;
-}
-const report = {
-  fato: data.fato,
-  unidade: data.unidade,
-  cidade: data.cidade,
-  dataHora: formatDateToISO(data.dataHora),
-  localRua: data.localRua,
-  localNumero: data.localNumero,
-  localBairro: data.localBairro,
-  envolvidos: data.envolvidos,
-  oficial: data.oficial,
-  material: data.material && data.material.length
-    ? data.material.split(",").map(item => item.trim())
-    : ["nenhum"],
-  resumo: data.resumo,
-  motivacao: data.motivacao || "Desconhecida",
-};
-
-import { format, differenceInYears, parseISO } from "date-fns";
-import ptBR from "date-fns/locale";
-import type { InsertReport } from "@shared/schema";
-import { useState } from "react";
-
-// Função para converter data no formato militar (DDHHMMYY)
-const formatMilitaryDate = (date: Date | string) => {
-  const d = new Date(date);
-  const day = format(d, "dd");
-  const time = format(d, "HHmm");
-  const month = format(d, "MMM", { locale: ptBR }).toUpperCase().replace(".", "");
-  const year = format(d, "yy");
-  return `${day}${time}${month}${year}`;
-};
-
-interface ReportFormatterProps {
-  data: Partial<InsertReport>;
-  isPreliminar?: boolean;
-}
-
-export function ReportFormatter({ data, isPreliminar }: ReportFormatterProps) {
-  const [copied, setCopied] = useState(false);
-
-  const calculateAge = (birthDate: string) => {
-    if (!birthDate) return "N/A";
-    try {
-      const date = parseISO(birthDate);
-      return differenceInYears(new Date(), date).toString();
-    } catch (e) {
-      return "N/A";
-    }
-  };
-
-  const report = {
-    fato: data?.fato || "",
-    unidade: data?.unidade || "",
-    cidade: data?.cidade || "",
-    dataHora: data?.dataHora ? formatMilitaryDate(data.dataHora) : "",
-    localRua: data?.localRua || "",
-    localNumero: data?.localNumero || "",
-    localBairro: data?.localBairro || "",
-    envolvidos: data?.envolvidos || [],
-    oficial: data?.oficial || "",
-    material: data?.material?.length
-      ? data.material.split(",").map(item => item.trim())
-      : ["nenhum"],
-    resumo: data?.resumo || "",
-    motivacao: data?.motivacao || "Desconhecida",
-  };
-
-  return <div>{JSON.stringify(report, null, 2)}</div>;
 }

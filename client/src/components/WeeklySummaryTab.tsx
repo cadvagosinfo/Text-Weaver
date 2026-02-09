@@ -1,10 +1,10 @@
-import { format, differenceInYears, parseISO, isWithinInterval, subDays, startOfHour } from "date-fns";
+import { format, differenceInYears, parseISO, isWithinInterval, subDays } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { Download, FileText } from "lucide-react";
+import { Download } from "lucide-react";
 import type { Report } from "@shared/schema";
-import { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, AlignmentType, BorderStyle } from "docx";
+import { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType } from "docx";
 import { saveAs } from "file-saver";
 
 const WEEKLY_FACTS = [
@@ -42,10 +42,10 @@ export function WeeklySummaryTab({ reports }: WeeklySummaryTabProps) {
     const minutes = new Date(dateStr).getMinutes();
     const totalMinutes = hour * 60 + minutes;
 
-    if (totalMinutes >= 1 && totalMinutes <= 360) return "1º TURNO"; // 00:01 - 06:00
-    if (totalMinutes > 360 && totalMinutes <= 720) return "2º TURNO"; // 06:01 - 12:00
-    if (totalMinutes > 720 && totalMinutes <= 1080) return "3º TURNO"; // 12:01 - 18:00
-    return "4º TURNO"; // 18:01 - 24:00 (00:00)
+    if (totalMinutes >= 1 && totalMinutes <= 360) return "1º TURNO";
+    if (totalMinutes > 360 && totalMinutes <= 720) return "2º TURNO";
+    if (totalMinutes > 720 && totalMinutes <= 1080) return "3º TURNO";
+    return "4º TURNO";
   };
 
   const calculateAge = (birthDate: string) => {
@@ -75,7 +75,7 @@ export function WeeklySummaryTab({ reports }: WeeklySummaryTabProps) {
       const rows = [
         new TableRow({
           children: [
-            { text: "HORA", width: 800 }, // approx twips for fixed width
+            { text: "HORA", width: 800 },
             { text: "TURNO", width: 1000 },
             { text: "DATA", width: 1200 },
             { text: "ENDEREÇO", width: 2500 },
@@ -85,7 +85,7 @@ export function WeeklySummaryTab({ reports }: WeeklySummaryTabProps) {
             new TableCell({
               children: [new Paragraph({ children: [new TextRun({ text: col.text, bold: true, size: 20, font: "Times New Roman" })] })],
               shading: { fill: "F2F2F2" },
-              width: { size: col.width, type: WidthType.DXA } // DXA for fixed width in twips
+              width: { size: col.width, type: WidthType.DXA }
             })
           )
         })
@@ -108,7 +108,7 @@ export function WeeklySummaryTab({ reports }: WeeklySummaryTabProps) {
               new TextRun({ text: `${age} anos`, size: 18, font: "Times New Roman" }),
               new TextRun({ text: "\n", size: 18, font: "Times New Roman" }),
               new TextRun({ text: `Antecedentes: `, bold: true, size: 18, font: "Times New Roman" }),
-              new TextRun({ text: `${p.antecedentes.toLowerCase()}`, size: 18, font: "Times New Roman" })
+              new TextRun({ text: `${(p.antecedentes || "").toLowerCase()}`, size: 18, font: "Times New Roman" })
             ],
             spacing: { after: 120 }
           });

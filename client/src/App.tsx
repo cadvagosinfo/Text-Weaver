@@ -1,23 +1,29 @@
-import { useState, useEffect } from "react";
-import { Switch, Route, useLocation } from "wouter";
+import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import NotFound from "@/pages/not-found";
-import Reports from "@/pages/Reports";
 import Home from "@/pages/Home";
+import Reports from "@/pages/Reports";
 import Login from "@/pages/Login";
+import { useState, useEffect } from "react";
 
 function Router() {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    return localStorage.getItem("auth") === "true";
-  });
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const auth = localStorage.getItem("auth");
+    setIsAuthenticated(auth === "true");
+  }, []);
+
+  if (isAuthenticated === null) return null;
 
   if (!isAuthenticated) {
     return <Login onLogin={() => {
-      setIsAuthenticated(true);
       localStorage.setItem("auth", "true");
+      setIsAuthenticated(true);
     }} />;
   }
 
@@ -30,43 +36,26 @@ function Router() {
   );
 }
 
-function App() {
+export default function App() {
+  const style = {
+    "--sidebar-width": "20rem",
+    "--sidebar-width-icon": "4rem",
+  };
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
+        <SidebarProvider style={style as React.CSSProperties}>
+          <div className="flex h-screen w-full overflow-hidden">
+            <div className="flex flex-col flex-1 overflow-hidden">
+              <main className="flex-1 overflow-hidden">
+                <Router />
+              </main>
+            </div>
+          </div>
+        </SidebarProvider>
         <Toaster />
-        <Router />
       </TooltipProvider>
     </QueryClientProvider>
   );
 }
-
-};
-
-import React from "react";
-import { ReportFormatter } from "./components/ReportFormatter";
-
-function App() {
-  const exemploData = {
-    fato: "Roubo a pedestre",
-    unidade: "2ª Cia Ind",
-    cidade: "Rolante",
-    dataHora: "091440FEV26",
-    localRua: "Rua 07 de Julho",
-    localNumero: "123",
-    localBairro: "Centro",
-    envolvidos: [],
-    oficial: "TEN FULANO",
-    material: "Nenhum",
-    resumo: "Resumo do fato...",
-    motivacao: "Desconhecida",
-  };
-
-  return (
-    <div>
-      <ReportFormatter data={exemploData} isPreliminar={true} />
-    </div>
-  );
-}
-
-export default App;

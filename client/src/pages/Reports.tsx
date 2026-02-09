@@ -31,7 +31,8 @@ import {
   FileText,
   Package,
   FileSpreadsheet,
-  ArrowLeft
+  ArrowLeft,
+  LogOut
 } from "lucide-react";
 import {
   Form,
@@ -118,7 +119,7 @@ export default function Reports() {
 
   const { fields: materialFields, append: appendMaterial, remove: removeMaterial } = useFieldArray({
     control: form.control,
-    name: "material" as any,
+    name: "material",
   });
 
   const watchedData = form.watch();
@@ -271,7 +272,7 @@ export default function Reports() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col md:flex-row">
       <aside className="w-full md:w-80 border-r bg-white dark:bg-slate-900 flex flex-col h-[400px] md:h-screen sticky top-0">
-        <div className="p-6 border-b bg-gradient-to-r from-slate-900 to-slate-800 text-white shadow-md relative group">
+        <div className="p-6 border-b bg-gradient-to-r from-slate-900 to-slate-800 text-white shadow-md relative">
           <div className="flex items-center gap-3 mb-1">
             <div className="p-2 bg-blue-600 rounded-lg shadow-lg shadow-blue-900/50">
               <ShieldAlert className="w-5 h-5 text-white" />
@@ -279,13 +280,18 @@ export default function Reports() {
             <h1 className="font-bold text-lg tracking-tight uppercase">Gerador de Texto</h1>
           </div>
           <p className="text-xs text-blue-200/80 uppercase tracking-widest pl-[3.25rem]">Sistema de Ocorrências</p>
-          <button 
-            onClick={handleSignOut}
-            className="absolute top-2 right-2 p-1 text-white/20 hover:text-white transition-colors"
-            title="Sair"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          <div className="absolute top-2 right-2">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={handleSignOut}
+              className="text-white/40 hover:text-white hover:bg-white/10 h-8 px-2 gap-2"
+              title="Sair do Sistema"
+            >
+              <span className="text-[10px] font-bold uppercase tracking-wider">Sair</span>
+              <LogOut className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
 
         <div className="p-4 border-b flex items-center justify-between bg-slate-50 dark:bg-slate-900">
@@ -368,7 +374,7 @@ export default function Reports() {
           </div>
           <div className="flex items-center gap-4">
             <div className="flex items-center space-x-2 bg-slate-100 dark:bg-slate-800 p-2 rounded-lg border">
-              <label htmlFor="preliminar" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer">
+              <label htmlFor="preliminar" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer text-xs font-bold uppercase">
                 PRELIMINAR
               </label>
               <input
@@ -383,7 +389,7 @@ export default function Reports() {
               <Button 
                 variant="ghost" 
                 onClick={cancelEdit}
-                className="text-muted-foreground"
+                className="text-muted-foreground uppercase text-xs font-bold"
               >
                 Cancelar Edição
               </Button>
@@ -391,9 +397,9 @@ export default function Reports() {
             <Button 
               onClick={form.handleSubmit(onSubmit)} 
               disabled={createReport.isPending || updateReport.isPending}
-              className="bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/20 text-white min-w-[140px]"
+              className="bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/20 text-white min-w-[140px] uppercase text-xs font-bold"
             >
-              {(createReport.isPending || updateReport.isPending) ? "Salvando..." : <><Save className="w-4 h-4 mr-2" /> {editingId ? "Atualizar Relatório" : "Salvar Relatório"}</>}
+              {(createReport.isPending || updateReport.isPending) ? "Salvando..." : <><Save className="w-4 h-4 mr-2" /> {editingId ? "Atualizar" : "Salvar"}</>}
             </Button>
           </div>
         </header>
@@ -402,13 +408,13 @@ export default function Reports() {
           <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col">
             <div className="px-8 border-b bg-white dark:bg-slate-900">
               <TabsList className="h-12 bg-transparent gap-6">
-                <TabsTrigger value="editor" className="data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none h-full bg-transparent px-0 text-sm font-semibold">
+                <TabsTrigger value="editor" className="data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none h-full bg-transparent px-0 text-sm font-semibold uppercase">
                   <FileText className="w-4 h-4 mr-2" /> RELEASE
                 </TabsTrigger>
-                <TabsTrigger value="word" className="data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none h-full bg-transparent px-0 text-sm font-semibold">
+                <TabsTrigger value="word" className="data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none h-full bg-transparent px-0 text-sm font-semibold uppercase">
                   <FileSpreadsheet className="w-4 h-4 mr-2" /> RELATÓRIO RPI
                 </TabsTrigger>
-                <TabsTrigger value="weekly" className="data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none h-full bg-transparent px-0 text-sm font-semibold">
+                <TabsTrigger value="weekly" className="data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none h-full bg-transparent px-0 text-sm font-semibold uppercase">
                   <Calendar className="w-4 h-4 mr-2" /> RESUMO SEMANAL
                 </TabsTrigger>
               </TabsList>
@@ -722,7 +728,7 @@ export default function Reports() {
                               <Package className="w-5 h-5 text-blue-600" />
                               <h3 className="font-semibold text-lg uppercase tracking-tight">Material Apreendido</h3>
                             </div>
-                            <Button type="button" variant="secondary" size="sm" onClick={() => appendMaterial("" as any)} className="h-8 uppercase text-[10px] font-bold">
+                            <Button type="button" variant="secondary" size="sm" onClick={() => appendMaterial("")} className="h-8 uppercase text-[10px] font-bold">
                               <Plus className="w-4 h-4 mr-1" /> Adicionar Item
                             </Button>
                           </div>
@@ -730,7 +736,7 @@ export default function Reports() {
                           <div className="space-y-3">
                             {materialFields.map((field, index) => (
                               <div key={field.id} className="flex items-center gap-2">
-                                <Input {...form.register(`material.${index}` as any)} placeholder="Descreva o item" className="bg-white h-9 lowercase" />
+                                <Input {...form.register(`material.${index}`)} placeholder="Descreva o item" className="bg-white h-9 lowercase" />
                                 <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-red-500" onClick={() => removeMaterial(index)}>
                                   <X className="w-4 h-4" />
                                 </Button>
