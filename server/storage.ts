@@ -1,6 +1,17 @@
 import { reports, type InsertReport, type Report } from "@shared/schema";
 import { db } from "./db";
-import { eq } from "drizzle-orm";
+import { eq, and, notInArray, lt, sql } from "drizzle-orm";
+
+const WEEKLY_FACTS = [
+  "HOMICÍDIO DOLOSO",
+  "ROUBO A PEDESTRE",
+  "ROUBO DE VEÍCULO",
+  "ROUBO A ESTABELECIMENTO COMERCIAL E DE ENSINO",
+  "ROUBO A RESIDÊNCIA",
+  "FURTO DE VEÍCULO",
+  "FURTO EM VEÍCULO",
+  "HOMICÍDIO CULPOSO EM DIREÇÃO DE VEÍCULO AUTOMOTOR"
+];
 
 export interface IStorage {
   getReports(): Promise<Report[]>;
@@ -12,6 +23,18 @@ export interface IStorage {
 
 export class DatabaseStorage implements IStorage {
   async getReports(): Promise<Report[]> {
+    // Auto-delete reports older than 24 hours that are not in WEEKLY_FACTS
+    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    try {
+      await db.delete(reports).where(
+        and(
+          notInArray(reports.fato, WEEKLY_FACTS),
+          lt(reports.dataHora, twentyFourHoursAgo)
+        )
+      );
+    } catch (error) {
+      console.error("Error auto-deleting reports:", error);
+    }
     return await db.select().from(reports).orderBy(reports.createdAt);
   }
 

@@ -706,17 +706,27 @@ export default function Reports() {
                                       )}
                                     />
                                   </div>
-                                  <FormField
-                                    control={form.control}
-                                    name={`envolvidos.${index}.antecedentes`}
-                                    render={({ field }) => (
-                                      <FormItem>
-                                        <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Antecedentes Criminais</FormLabel>
-                                        <FormControl><Input placeholder="Descreva os antecedentes..." className="bg-white h-9 text-xs lowercase" {...field} value={(field.value as string) || ""} /></FormControl>
-                                      </FormItem>
-                                    )}
-                                  />
-                                </CardContent>
+                                    <FormField
+                                      control={form.control}
+                                      name={`envolvidos.${index}.antecedentes`}
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Antecedentes Criminais</FormLabel>
+                                          <FormControl><Input placeholder="Descreva os antecedentes..." className="bg-white h-9 text-xs lowercase" {...field} value={(field.value as string) || ""} /></FormControl>
+                                        </FormItem>
+                                      )}
+                                    />
+                                    <FormField
+                                      control={form.control}
+                                      name={`envolvidos.${index}.orcrim`}
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Orcrim</FormLabel>
+                                          <FormControl><Input placeholder="Facção / Organização..." className="bg-white h-9 text-xs lowercase" {...field} value={(field.value as string) || ""} /></FormControl>
+                                        </FormItem>
+                                      )}
+                                    />
+                                  </CardContent>
                               </Card>
                             ))}
                           </div>

@@ -64,9 +64,11 @@ export function ReportFormatter({ data, isPreliminar }: ReportFormatterProps) {
     const docTipo = (p.documentoTipo || "RG").toUpperCase();
     const docNum = p.documentoNumero || "Não informado";
     const antecedentesVal = (p.antecedentes || "Nada consta").toLowerCase();
+    const orcrimVal = (p.orcrim || "Nada consta").toLowerCase();
     
     return `*${roleUpper}:* ${nameUpper}; *${docTipo}:* ${docNum}; ${ageStr}
-*ANTECEDENTES:* ${capitalize(antecedentesVal)}`;
+*ANTECEDENTES:* ${capitalize(antecedentesVal)}
+*ORCRIM:* ${capitalize(orcrimVal)}`;
   }).join("\n\n");
 
   const fatoText = safeData.fatoComplementar 
@@ -77,7 +79,7 @@ export function ReportFormatter({ data, isPreliminar }: ReportFormatterProps) {
 
   const formattedText = `${isPreliminar ? "*PRELIMINAR*\n\n" : ""}${fatoText}
 
-*${safeData.cidade.toUpperCase()} / ${safeData.unidade.toUpperCase()}*
+*${safeData.cidade.toUpperCase()} - CRPM HORTÊNSIAS / ${safeData.unidade.toUpperCase()}*
 
 *DATA/HORA:* ${safeData.dataHora}
 
