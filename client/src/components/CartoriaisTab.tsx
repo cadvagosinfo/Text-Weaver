@@ -62,7 +62,7 @@ export function CartoriaisTab({ reports }: CartoriaisTabProps) {
                 children: [new Paragraph({ 
                   children: [
                     new TextRun({ text: "RG: ", font: "Times New Roman", size: 18, bold: true }),
-                    new TextRun({ text: (p.documentoTipo === "RG" ? p.documentoNumero : "").toUpperCase(), font: "Times New Roman", size: 18, italic: true })
+                    new TextRun({ text: (p.documentoRg || "").toUpperCase(), font: "Times New Roman", size: 18, italic: true })
                   ] 
                 })],
               }),
@@ -82,7 +82,7 @@ export function CartoriaisTab({ reports }: CartoriaisTabProps) {
                 children: [new Paragraph({ 
                   children: [
                     new TextRun({ text: "CPF: ", font: "Times New Roman", size: 18, bold: true }),
-                    new TextRun({ text: (p.documentoTipo === "CPF" ? p.documentoNumero : "").toUpperCase(), font: "Times New Roman", size: 18, italic: true })
+                    new TextRun({ text: (p.documentoCpf || "").toUpperCase(), font: "Times New Roman", size: 18, italic: true })
                   ] 
                 })],
               }),
@@ -244,7 +244,7 @@ export function CartoriaisTab({ reports }: CartoriaisTabProps) {
                         </td>
                         <td className="border border-black w-1/4 p-1 px-2">
                           <span className="font-bold uppercase">RG: </span>
-                          <span className="italic uppercase">{p.documentoTipo === "RG" ? p.documentoNumero : ""}</span>
+                          <span className="italic uppercase">{p.documentoRg}</span>
                         </td>
                       </tr>
                       <tr>
@@ -254,7 +254,7 @@ export function CartoriaisTab({ reports }: CartoriaisTabProps) {
                         </td>
                         <td className="border border-black p-1 px-2">
                           <span className="font-bold uppercase">CPF: </span>
-                          <span className="italic uppercase">{p.documentoTipo === "CPF" ? p.documentoNumero : ""}</span>
+                          <span className="italic uppercase">{p.documentoCpf}</span>
                         </td>
                       </tr>
                       <tr>

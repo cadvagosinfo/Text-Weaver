@@ -737,39 +737,18 @@ export default function Reports() {
                                       )}
                                     />
                                   </div>
-                                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <FormField
                                       control={form.control}
-                                      name={`envolvidos.${index}.documentoTipo`}
+                                      name={`envolvidos.${index}.documentoRg`}
                                       render={({ field }) => (
                                         <FormItem>
-                                          <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Documento</FormLabel>
-                                          <Select onValueChange={field.onChange} value={(field.value as string) || ""}>
-                                            <FormControl><SelectTrigger className="bg-white h-9 text-xs"><SelectValue /></SelectTrigger></FormControl>
-                                            <SelectContent className="bg-white">
-                                              {DOCUMENTO_TIPOS.map(t => <SelectItem key={t} value={t} className="text-xs">{t}</SelectItem>)}
-                                            </SelectContent>
-                                          </Select>
-                                        </FormItem>
-                                      )}
-                                    />
-                                    <FormField
-                                      control={form.control}
-                                      name={`envolvidos.${index}.documentoNumero`}
-                                      render={({ field }) => (
-                                        <FormItem className="md:col-span-1">
-                                          <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Número</FormLabel>
+                                          <FormLabel className="text-[10px] font-bold uppercase text-slate-500">RG</FormLabel>
                                           <FormControl>
                                             <Input 
                                               className="bg-white h-9 text-xs" 
                                               {...field} 
                                               value={(field.value as string) || ""}
-                                              onChange={(e) => {
-                                                const val = form.getValues(`envolvidos.${index}.documentoTipo`) === "CPF" 
-                                                  ? applyCPFMask(e.target.value) 
-                                                  : e.target.value;
-                                                field.onChange(val);
-                                              }}
                                             />
                                           </FormControl>
                                         </FormItem>
@@ -777,18 +756,18 @@ export default function Reports() {
                                     />
                                     <FormField
                                       control={form.control}
-                                      name={`envolvidos.${index}.dataNascimento`}
+                                      name={`envolvidos.${index}.documentoCpf`}
                                       render={({ field }) => (
                                         <FormItem>
-                                          <div className="flex items-center justify-between">
-                                            <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Nascimento</FormLabel>
-                                            {field.value && (
-                                              <Badge variant="secondary" className="text-[9px] h-4 px-1.5 font-bold">
-                                                {calculateAge(field.value as string)} ANOS
-                                              </Badge>
-                                            )}
-                                          </div>
-                                          <FormControl><Input type="date" className="bg-white h-9 text-xs" {...field} value={(field.value as string) || ""} /></FormControl>
+                                          <FormLabel className="text-[10px] font-bold uppercase text-slate-500">CPF</FormLabel>
+                                          <FormControl>
+                                            <Input 
+                                              className="bg-white h-9 text-xs" 
+                                              {...field} 
+                                              value={(field.value as string) || ""}
+                                              onChange={(e) => field.onChange(applyCPFMask(e.target.value))}
+                                            />
+                                          </FormControl>
                                         </FormItem>
                                       )}
                                     />

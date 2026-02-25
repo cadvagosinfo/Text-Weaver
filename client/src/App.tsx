@@ -29,7 +29,7 @@ function Router() {
 
   return (
     <Switch>
-      <Route path="/" component={Home} />
+      <Route path="/" component={Reports} />
       <Route path="/reports" component={Reports} />
       <Route component={NotFound} />
     </Switch>
