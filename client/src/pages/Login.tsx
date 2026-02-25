@@ -30,9 +30,9 @@ export default function Login({ onLogin }: LoginProps) {
             <ShieldAlert className="w-8 h-8 text-white" />
           </div>
           <CardTitle className="text-2xl font-bold uppercase tracking-tight text-slate-900 dark:text-slate-100">
-            Gerador de Texto
+            Sistema de Ocorrências
           </CardTitle>
-          <p className="text-sm text-muted-foreground uppercase tracking-widest">Acesso Restrito</p>
+          <p className="text-sm text-muted-foreground uppercase tracking-widest">Gerenciamento Integrado</p>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">

@@ -16,11 +16,18 @@ export const reports = pgTable("reports", {
   envolvidos: jsonb("envolvidos").notNull().$type<{ 
     role: string, 
     nome: string, 
+    alcunha?: string,
     documentoTipo: "RG" | "CPF",
     documentoNumero: string,
     dataNascimento: string,
     antecedentes: string, 
-    orcrim: string 
+    orcrim: string,
+    situacao?: string,
+    pai?: string,
+    mae?: string,
+    codigoPreso?: string,
+    endereco?: string,
+    observacoes?: string
   }[]>(),
   oficial: text("oficial").notNull(),
   material: jsonb("material").notNull().$type<string[]>(),

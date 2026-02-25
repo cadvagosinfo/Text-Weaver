@@ -24,6 +24,8 @@ export function CartoriaisTab({ reports }: CartoriaisTabProps) {
     const children: any[] = [];
 
     for (const p of envolvidos) {
+      const filiacaoText = `${(p.pai || "-").toUpperCase()} / ${(p.mae || "").toUpperCase()}`;
+      
       const table = new Table({
         width: { size: 100, type: WidthType.PERCENTAGE },
         borders: {
@@ -70,7 +72,10 @@ export function CartoriaisTab({ reports }: CartoriaisTabProps) {
             children: [
               new TableCell({
                 children: [new Paragraph({ 
-                  children: [new TextRun({ text: "ALCUNHA: ", font: "Times New Roman", size: 18, bold: true })] 
+                  children: [
+                    new TextRun({ text: "ALCUNHA: ", font: "Times New Roman", size: 18, bold: true }),
+                    new TextRun({ text: (p.alcunha || "").toUpperCase(), font: "Times New Roman", size: 18, italic: true })
+                  ] 
                 })],
               }),
               new TableCell({
@@ -107,12 +112,18 @@ export function CartoriaisTab({ reports }: CartoriaisTabProps) {
             children: [
               new TableCell({
                 children: [new Paragraph({ 
-                  children: [new TextRun({ text: "SITUAÇÃO: ", font: "Times New Roman", size: 18, bold: true })] 
+                  children: [
+                    new TextRun({ text: "SITUAÇÃO: ", font: "Times New Roman", size: 18, bold: true }),
+                    new TextRun({ text: (p.situacao || "").toUpperCase(), font: "Times New Roman", size: 18, italic: true })
+                  ] 
                 })],
               }),
               new TableCell({
                 children: [new Paragraph({ 
-                  children: [new TextRun({ text: "CD: ", font: "Times New Roman", size: 18, bold: true })] 
+                  children: [
+                    new TextRun({ text: "CD: ", font: "Times New Roman", size: 18, bold: true }),
+                    new TextRun({ text: (p.codigoPreso || "").toUpperCase(), font: "Times New Roman", size: 18, italic: true })
+                  ] 
                 })],
               }),
             ],
@@ -122,7 +133,10 @@ export function CartoriaisTab({ reports }: CartoriaisTabProps) {
               new TableCell({
                 columnSpan: 2,
                 children: [new Paragraph({ 
-                  children: [new TextRun({ text: "FILIAÇÃO: ", font: "Times New Roman", size: 18, bold: true })] 
+                  children: [
+                    new TextRun({ text: "FILIAÇÃO: ", font: "Times New Roman", size: 18, bold: true }),
+                    new TextRun({ text: filiacaoText, font: "Times New Roman", size: 18, italic: true })
+                  ] 
                 })],
               }),
             ],
@@ -132,7 +146,10 @@ export function CartoriaisTab({ reports }: CartoriaisTabProps) {
               new TableCell({
                 columnSpan: 3,
                 children: [new Paragraph({ 
-                  children: [new TextRun({ text: "END.: ", font: "Times New Roman", size: 18, bold: true })] 
+                  children: [
+                    new TextRun({ text: "END.: ", font: "Times New Roman", size: 18, bold: true }),
+                    new TextRun({ text: (p.endereco || "").toUpperCase(), font: "Times New Roman", size: 18, italic: true })
+                  ] 
                 })],
               }),
             ],
@@ -155,7 +172,10 @@ export function CartoriaisTab({ reports }: CartoriaisTabProps) {
               new TableCell({
                 columnSpan: 3,
                 children: [new Paragraph({ 
-                  children: [new TextRun({ text: "OBS.: ", font: "Times New Roman", size: 18, bold: true })] 
+                  children: [
+                    new TextRun({ text: "OBS.: ", font: "Times New Roman", size: 18, bold: true }),
+                    new TextRun({ text: (p.observacoes || "").toUpperCase(), font: "Times New Roman", size: 18, italic: true })
+                  ] 
                 })],
               }),
             ],
@@ -194,7 +214,7 @@ export function CartoriaisTab({ reports }: CartoriaisTabProps) {
           </Select>
         </div>
         <Button size="sm" onClick={handleDownloadDocx} disabled={!selectedReport || envolvidos.length === 0} className="bg-blue-600 hover:bg-blue-700">
-          <Download className="w-4 h-4 mr-2" /> Baixar Tabelas (Word)
+          <Download className="w-4 h-4 mr-2" /> Baixar Word
         </Button>
       </CardHeader>
       <CardContent className="flex-1 overflow-hidden p-6 bg-slate-50/50">
@@ -208,7 +228,9 @@ export function CartoriaisTab({ reports }: CartoriaisTabProps) {
             <div className="text-center py-20 text-muted-foreground uppercase text-sm font-bold">Nenhum indivíduo encontrado neste release.</div>
           ) : (
             <div className="space-y-8 max-w-4xl mx-auto">
-              {envolvidos.map((p, idx) => (
+              {envolvidos.map((p, idx) => {
+                const filiacaoText = `${(p.pai || "-").toUpperCase()} / ${(p.mae || "").toUpperCase()}`;
+                return (
                 <div key={idx} className="bg-white border-2 border-black p-[1px] shadow-sm">
                   <table className="w-full border-collapse text-[9pt] font-['Times_New_Roman'] leading-tight">
                     <tbody>
@@ -228,6 +250,7 @@ export function CartoriaisTab({ reports }: CartoriaisTabProps) {
                       <tr>
                         <td className="border border-black p-1 px-2">
                           <span className="font-bold uppercase">ALCUNHA: </span>
+                          <span className="italic uppercase">{p.alcunha}</span>
                         </td>
                         <td className="border border-black p-1 px-2">
                           <span className="font-bold uppercase">CPF: </span>
@@ -247,19 +270,23 @@ export function CartoriaisTab({ reports }: CartoriaisTabProps) {
                       <tr>
                         <td className="border border-black p-1 px-2">
                           <span className="font-bold uppercase">SITUAÇÃO: </span>
+                          <span className="italic uppercase">{p.situacao}</span>
                         </td>
                         <td className="border border-black p-1 px-2">
                           <span className="font-bold uppercase">CD: </span>
+                          <span className="italic uppercase">{p.codigoPreso}</span>
                         </td>
                       </tr>
                       <tr>
                         <td colSpan={2} className="border border-black p-1 px-2">
                           <span className="font-bold uppercase">FILIAÇÃO: </span>
+                          <span className="italic uppercase">{filiacaoText}</span>
                         </td>
                       </tr>
                       <tr>
                         <td colSpan={3} className="border border-black p-1 px-2">
                           <span className="font-bold uppercase">END.: </span>
+                          <span className="italic uppercase">{p.endereco}</span>
                         </td>
                       </tr>
                       <tr>
@@ -271,12 +298,13 @@ export function CartoriaisTab({ reports }: CartoriaisTabProps) {
                       <tr>
                         <td colSpan={3} className="border border-black p-1 px-2">
                           <span className="font-bold uppercase">OBS.: </span>
+                          <span className="italic uppercase">{p.observacoes}</span>
                         </td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
-              ))}
+              )})}
             </div>
           )}
         </ScrollArea>

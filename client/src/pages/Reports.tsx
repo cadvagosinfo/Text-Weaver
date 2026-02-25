@@ -293,91 +293,81 @@ export default function Reports() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col md:flex-row">
-      <aside className="w-full md:w-80 border-r bg-white dark:bg-slate-900 flex flex-col h-[400px] md:h-screen sticky top-0">
-        <div className="p-6 border-b bg-gradient-to-r from-slate-900 to-slate-800 text-white shadow-md relative">
-          <div className="flex items-center gap-3 mb-1">
-            <div className="p-2 bg-blue-600 rounded-lg shadow-lg shadow-blue-900/50">
-              <ShieldAlert className="w-5 h-5 text-white" />
+      {!showMenu && activeTab === "editor" && (
+        <aside className="w-full md:w-80 border-r bg-white dark:bg-slate-900 flex flex-col h-[400px] md:h-screen sticky top-0">
+          <div className="p-6 border-b bg-gradient-to-r from-slate-900 to-slate-800 text-white shadow-md relative">
+            <div className="flex items-center gap-3 mb-1">
+              <div className="p-2 bg-blue-600 rounded-lg shadow-lg shadow-blue-900/50">
+                <ShieldAlert className="w-5 h-5 text-white" />
+              </div>
+              <h1 className="font-bold text-lg tracking-tight uppercase text-blue-100">Sistema de Ocorrências</h1>
             </div>
-            <h1 className="font-bold text-lg tracking-tight uppercase text-blue-100">Sistema de Ocorrências</h1>
+            <p className="text-[10px] text-blue-300/80 uppercase tracking-[0.2em] pl-[3.25rem] font-bold">Gerenciamento Integrado</p>
           </div>
-          <p className="text-[10px] text-blue-300/80 uppercase tracking-[0.2em] pl-[3.25rem] font-bold">Gerenciamento Integrado</p>
-          <div className="absolute top-2 right-2">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={handleSignOut}
-              className="text-white/40 hover:text-white hover:bg-white/10 h-8 px-2 gap-2"
-              title="Sair do Sistema"
-            >
-              <span className="text-[10px] font-bold uppercase tracking-wider">Sair</span>
-              <LogOut className="w-4 h-4" />
-            </Button>
-          </div>
-        </div>
 
-        <div className="p-4 border-b flex items-center justify-between bg-slate-50 dark:bg-slate-900">
-          <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-            <History className="w-4 h-4" />
-            <span>Histórico Recente</span>
+          <div className="p-4 border-b flex items-center justify-between bg-slate-50 dark:bg-slate-900">
+            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <History className="w-4 h-4" />
+              <span>Histórico Recente</span>
+            </div>
+            <Badge variant="secondary" className="font-mono text-xs">{reports?.length || 0}</Badge>
           </div>
-          <Badge variant="secondary" className="font-mono text-xs">{reports?.length || 0}</Badge>
-        </div>
 
-        <ScrollArea className="flex-1">
-          <div className="p-4 space-y-3">
-            {isLoadingReports ? (
-              <div className="space-y-3">
-                {[1, 2, 3].map(i => (
-                  <div key={i} className="h-24 bg-slate-100 dark:bg-slate-800 rounded-xl animate-pulse" />
-                ))}
-              </div>
-            ) : reports?.length === 0 ? (
-              <div className="text-center py-12 px-4 text-muted-foreground border-2 border-dashed rounded-xl">
-                <FileClock className="w-8 h-8 mx-auto mb-3 opacity-20" />
-                <p className="text-sm">Nenhum relatório salvo ainda.</p>
-              </div>
-            ) : (
-              reports?.map((report) => (
-                <div 
-                  key={report.id} 
-                  className={`group bg-white dark:bg-slate-800 p-4 rounded-xl border shadow-sm hover:shadow-md transition-all duration-200 relative ${editingId === report.id ? 'border-blue-500 ring-1 ring-blue-500' : 'hover:border-blue-200 dark:hover:border-blue-800'}`}
-                >
-                  <div className="flex justify-between items-start mb-2">
-                    <span className="font-semibold text-sm text-slate-900 dark:text-slate-100 line-clamp-1 uppercase">{report.fato}</span>
-                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button 
-                        onClick={() => startEdit(report)}
-                        className="text-slate-400 hover:text-blue-500 p-1 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded"
-                        title="Editar"
-                      >
-                        <Edit2 className="w-3.5 h-3.5" />
-                      </button>
-                      <button 
-                        onClick={() => handleDelete(report.id)}
-                        className="text-slate-400 hover:text-red-500 p-1 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
-                        title="Excluir"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </div>
-                  <div className="space-y-1 text-xs text-muted-foreground">
-                    <div className="flex items-center gap-1.5">
-                      <MapPin className="w-3 h-3" />
-                      <span className="uppercase">{report.cidade}</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <Calendar className="w-3 h-3" />
-                      <span>{format(new Date(report.dataHora), "dd/MM/yy HH:mm")}</span>
-                    </div>
-                  </div>
+          <ScrollArea className="flex-1">
+            <div className="p-4 space-y-3">
+              {isLoadingReports ? (
+                <div className="space-y-3">
+                  {[1, 2, 3].map(i => (
+                    <div key={i} className="h-24 bg-slate-100 dark:bg-slate-800 rounded-xl animate-pulse" />
+                  ))}
                 </div>
-              ))
-            )}
-          </div>
-        </ScrollArea>
-      </aside>
+              ) : reports?.length === 0 ? (
+                <div className="text-center py-12 px-4 text-muted-foreground border-2 border-dashed rounded-xl">
+                  <FileClock className="w-8 h-8 mx-auto mb-3 opacity-20" />
+                  <p className="text-sm">Nenhum relatório salvo ainda.</p>
+                </div>
+              ) : (
+                reports?.map((report) => (
+                  <div 
+                    key={report.id} 
+                    className={`group bg-white dark:bg-slate-800 p-4 rounded-xl border shadow-sm hover:shadow-md transition-all duration-200 relative ${editingId === report.id ? 'border-blue-500 ring-1 ring-blue-500' : 'hover:border-blue-200 dark:hover:border-blue-800'}`}
+                  >
+                    <div className="flex justify-between items-start mb-2">
+                      <span className="font-semibold text-sm text-slate-900 dark:text-slate-100 line-clamp-1 uppercase">{report.fato}</span>
+                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button 
+                          onClick={() => startEdit(report)}
+                          className="text-slate-400 hover:text-blue-500 p-1 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded"
+                          title="Editar"
+                        >
+                          <Edit2 className="w-3.5 h-3.5" />
+                        </button>
+                        <button 
+                          onClick={() => handleDelete(report.id)}
+                          className="text-slate-400 hover:text-red-500 p-1 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
+                          title="Excluir"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                    <div className="space-y-1 text-xs text-muted-foreground">
+                      <div className="flex items-center gap-1.5">
+                        <MapPin className="w-3 h-3" />
+                        <span className="uppercase">{report.cidade}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <Calendar className="w-3 h-3" />
+                        <span>{format(new Date(report.dataHora), "dd/MM/yy HH:mm")}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </ScrollArea>
+        </aside>
+      )}
 
       <main className="flex-1 flex flex-col h-screen overflow-hidden">
         <header className="px-8 py-5 border-b bg-white dark:bg-slate-900 flex justify-between items-center z-10 shadow-sm">
@@ -736,6 +726,16 @@ export default function Reports() {
                                         </FormItem>
                                       )}
                                     />
+                                    <FormField
+                                      control={form.control}
+                                      name={`envolvidos.${index}.alcunha`}
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Alcunha</FormLabel>
+                                          <FormControl><Input className="bg-white h-9 uppercase text-xs" {...field} value={field.value || ""} /></FormControl>
+                                        </FormItem>
+                                      )}
+                                    />
                                   </div>
                                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <FormField
@@ -793,27 +793,91 @@ export default function Reports() {
                                       )}
                                     />
                                   </div>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <FormField
                                       control={form.control}
-                                      name={`envolvidos.${index}.antecedentes`}
+                                      name={`envolvidos.${index}.situacao`}
                                       render={({ field }) => (
                                         <FormItem>
-                                          <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Antecedentes Criminais</FormLabel>
-                                          <FormControl><Input placeholder="Descreva os antecedentes..." className="bg-white h-9 text-xs lowercase" {...field} value={(field.value as string) || ""} /></FormControl>
+                                          <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Situação</FormLabel>
+                                          <FormControl><Input className="bg-white h-9 uppercase text-xs" {...field} value={field.value || ""} /></FormControl>
                                         </FormItem>
                                       )}
                                     />
                                     <FormField
                                       control={form.control}
-                                      name={`envolvidos.${index}.orcrim`}
+                                      name={`envolvidos.${index}.codigoPreso`}
                                       render={({ field }) => (
                                         <FormItem>
-                                          <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Orcrim</FormLabel>
-                                          <FormControl><Input placeholder="Facção / Organização..." className="bg-white h-9 text-xs lowercase" {...field} value={(field.value as string) || ""} /></FormControl>
+                                          <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Código de Preso (CD)</FormLabel>
+                                          <FormControl><Input className="bg-white h-9 uppercase text-xs" {...field} value={field.value || ""} /></FormControl>
                                         </FormItem>
                                       )}
                                     />
-                                  </CardContent>
+                                  </div>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <FormField
+                                      control={form.control}
+                                      name={`envolvidos.${index}.pai`}
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Nome do Pai</FormLabel>
+                                          <FormControl><Input className="bg-white h-9 uppercase text-xs" {...field} value={field.value || ""} /></FormControl>
+                                        </FormItem>
+                                      )}
+                                    />
+                                    <FormField
+                                      control={form.control}
+                                      name={`envolvidos.${index}.mae`}
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Nome da Mãe</FormLabel>
+                                          <FormControl><Input className="bg-white h-9 uppercase text-xs" {...field} value={field.value || ""} /></FormControl>
+                                        </FormItem>
+                                      )}
+                                    />
+                                  </div>
+                                  <FormField
+                                    control={form.control}
+                                    name={`envolvidos.${index}.endereco`}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Endereço</FormLabel>
+                                        <FormControl><Input className="bg-white h-9 uppercase text-xs" {...field} value={field.value || ""} /></FormControl>
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <FormField
+                                    control={form.control}
+                                    name={`envolvidos.${index}.antecedentes`}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Antecedentes Criminais (OC)</FormLabel>
+                                        <FormControl><Input placeholder="Descreva os antecedentes..." className="bg-white h-9 text-xs lowercase" {...field} value={(field.value as string) || ""} /></FormControl>
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <FormField
+                                    control={form.control}
+                                    name={`envolvidos.${index}.orcrim`}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Orcrim</FormLabel>
+                                        <FormControl><Input placeholder="Facção / Organização..." className="bg-white h-9 text-xs lowercase" {...field} value={(field.value as string) || ""} /></FormControl>
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <FormField
+                                    control={form.control}
+                                    name={`envolvidos.${index}.observacoes`}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Observações</FormLabel>
+                                        <FormControl><Textarea className="bg-white text-xs lowercase" {...field} value={field.value || ""} /></FormControl>
+                                      </FormItem>
+                                    )}
+                                  />
+                                </CardContent>
                               </Card>
                             ))}
                           </div>

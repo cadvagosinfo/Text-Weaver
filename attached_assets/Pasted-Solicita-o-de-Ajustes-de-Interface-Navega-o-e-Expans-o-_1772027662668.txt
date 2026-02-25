@@ -1,0 +1,53 @@
+Solicitação de Ajustes de Interface, Navegação e Expansão de Dados
+
+1. Identidade e Interface do Usuário (Login e Cabeçalho):
+
+Tela de Login: Na tela onde a senha é solicitada, exclua o nome "GERADOR DE TEXTO". Substitua pelo nome "SISTEMA DE OCORRÊNCIAS" com o slogan "GERENCIAMENTO INTEGRADO".
+
+Unificação do Botão SAIR: Atualmente existem dois botões "SAIR" (um à esquerda e outro à direita). Mantenha apenas o botão da direita (no cabeçalho), que é o mais intuitivo, e remova o botão da esquerda.
+
+Botão de Navegação: Ao lado do botão "SAIR" no cabeçalho, mantenha/crie o botão "VOLTAR AO MENU". Ambos devem ter um destaque visual intuitivo e diferenciado.
+
+2. Reestruturação da Navegação:
+
+Menu Direto: A página inicial que contém os botões RELEASE, RELATÓRIO RPI e RESUMO SEMANAL deve ser o Menu Principal definitivo após o login.
+
+Remova quaisquer páginas intermediárias para garantir que a navegação entre as funções do sistema seja rápida e direta.
+
+3. Lógica de Exibição do Histórico:
+
+O componente de "Histórico Recente" (localizado à esquerda) deve ser exibido exclusivamente na aba RELEASE.
+
+Em todas as outras abas (RPI, Resumo Semanal, Cartoriais), este painel lateral de histórico deve permanecer oculto.
+
+4. Expansão do Cadastro de Envolvidos:
+
+Adicione os seguintes campos ao formulário de cadastro e ao banco de dados (Drizzle): ALCUNHA, SITUAÇÃO, PAI, MÃE, CÓDIGO DE PRESO, ENDEREÇO e OBSERVAÇÕES.
+
+5. Ajustes na Aba CARTORIAIS e Tabela:
+
+Mapeie os novos campos para a tabela conforme a imagem anexada (image_2254e2.png).
+
+Lógica de FILIAÇÃO: Exiba PAI e MÃE juntos no campo FILIAÇÃO. Regra: Se o campo PAI não for preenchido, o retorno deve ser obrigatoriamente: "- / [NOME DA MÃE]".
+
+Mapeamento de Títulos na Tabela:
+
+CÓDIGO DE PRESO → campo CD.
+
+ENDEREÇO → campo END.
+
+OBSERVAÇÕES → campo OBS.
+
+Formatação Visual Estrita:
+
+Fonte: Times New Roman em toda a tabela, tamanho 9.
+
+Títulos: MAIÚSCULAS e Negrito.
+
+Respostas: MAIÚSCULAS e Itálico (sem negrito).
+
+6. Exportação para Documento:
+
+Na aba CARTORIAIS, o botão de exportação deve se chamar apenas: "BAIXAR WORD".
+
+O arquivo .docx gerado deve seguir fielmente todas as regras de formatação e a lógica de filiação descritas acima.
