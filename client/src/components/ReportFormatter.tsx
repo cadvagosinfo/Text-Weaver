@@ -53,7 +53,7 @@ export function ReportFormatter({ data, isPreliminar }: ReportFormatterProps) {
     oficial: data.oficial || "[OFICIAL]",
     material: data.material || [],
     resumo: data.resumo || "[RESUMO]",
-    motivacao: data.motivacao || "[MOTIVAÇÃO]",
+    motivacao: data.motivacao || "Desconhecida",
   };
 
   const involvedBlocks = safeData.envolvidos.map((p: any) => {

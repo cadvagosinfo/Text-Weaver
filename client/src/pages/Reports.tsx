@@ -50,6 +50,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import { CartoriaisTab } from "@/components/CartoriaisTab";
+
 const UNIDADES = ["41º BPM", "2ª Cia Ind"] as const;
 
 const CIDADES_BY_UNIDADE: Record<string, string[]> = {
@@ -149,6 +151,26 @@ export default function Reports() {
   };
 
   const [activeTab, setActiveTab] = useState("editor");
+  const [showMenu, setShowMenu] = useState(true);
+
+  const checkPassword = (tab: string) => {
+    const password = prompt("Informe a senha para acessar esta aba:");
+    if (password === "1837") {
+      setActiveTab(tab);
+      setShowMenu(false);
+    } else {
+      alert("Senha incorreta.");
+    }
+  };
+
+  const handleTabChange = (value: string) => {
+    if (value === "editor") {
+      setActiveTab(value);
+      setShowMenu(false);
+      return;
+    }
+    checkPassword(value);
+  };
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -277,9 +299,9 @@ export default function Reports() {
             <div className="p-2 bg-blue-600 rounded-lg shadow-lg shadow-blue-900/50">
               <ShieldAlert className="w-5 h-5 text-white" />
             </div>
-            <h1 className="font-bold text-lg tracking-tight uppercase">Gerador de Texto</h1>
+            <h1 className="font-bold text-lg tracking-tight uppercase text-blue-100">Sistema de Ocorrências</h1>
           </div>
-          <p className="text-xs text-blue-200/80 uppercase tracking-widest pl-[3.25rem]">Sistema de Ocorrências</p>
+          <p className="text-[10px] text-blue-300/80 uppercase tracking-[0.2em] pl-[3.25rem] font-bold">Gerenciamento Integrado</p>
           <div className="absolute top-2 right-2">
             <Button 
               variant="ghost" 
@@ -367,64 +389,129 @@ export default function Reports() {
             </Link>
             <div>
               <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 uppercase">
-                {editingId ? "Editando Relatório" : "Novo Relatório"}
+                {showMenu ? "Menu Principal" : editingId ? "Editando Relatório" : "Novo Relatório"}
               </h2>
-              <p className="text-sm text-muted-foreground mt-0.5">Preencha os dados abaixo para gerar a mensagem padrão.</p>
+              <p className="text-sm text-muted-foreground mt-0.5">
+                {showMenu ? "Selecione uma funcionalidade abaixo." : "Preencha os dados abaixo para gerar a mensagem padrão."}
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <div className="flex items-center space-x-2 bg-slate-100 dark:bg-slate-800 p-2 rounded-lg border">
-              <label htmlFor="preliminar" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer text-xs font-bold uppercase">
-                PRELIMINAR
-              </label>
-              <input
-                id="preliminar"
-                type="checkbox"
-                checked={isPreliminar}
-                onChange={(e) => setIsPreliminar(e.target.checked)}
-                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600"
-              />
-            </div>
-            {editingId && (
+            {!showMenu && (
               <Button 
-                variant="ghost" 
-                onClick={cancelEdit}
-                className="text-muted-foreground uppercase text-xs font-bold"
+                variant="outline" 
+                onClick={() => setShowMenu(true)}
+                className="border-orange-500 text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-950 font-bold uppercase text-xs px-6 border-2"
               >
-                Cancelar Edição
+                <ArrowLeft className="w-4 h-4 mr-2" /> Voltar ao Menu
               </Button>
             )}
             <Button 
-              onClick={form.handleSubmit(onSubmit)} 
-              disabled={createReport.isPending || updateReport.isPending}
-              className="bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/20 text-white min-w-[140px] uppercase text-xs font-bold"
+              variant="outline" 
+              onClick={handleSignOut}
+              className="border-red-500 text-red-600 hover:bg-red-50 dark:hover:bg-red-950 font-bold uppercase text-xs px-6 border-2"
             >
-              {(createReport.isPending || updateReport.isPending) ? "Salvando..." : <><Save className="w-4 h-4 mr-2" /> {editingId ? "Atualizar" : "Salvar"}</>}
+              <LogOut className="w-4 h-4 mr-2" /> Sair
             </Button>
+            {!showMenu && activeTab === "editor" && (
+              <Button 
+                onClick={form.handleSubmit(onSubmit)} 
+                disabled={createReport.isPending || updateReport.isPending}
+                className="bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/20 text-white min-w-[140px] uppercase text-xs font-bold"
+              >
+                {(createReport.isPending || updateReport.isPending) ? "Salvando..." : <><Save className="w-4 h-4 mr-2" /> {editingId ? "Atualizar" : "Salvar"}</>}
+              </Button>
+            )}
           </div>
         </header>
 
         <div className="flex-1 overflow-hidden">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col">
-            <div className="px-8 border-b bg-white dark:bg-slate-900">
-              <TabsList className="h-12 bg-transparent gap-6">
-                <TabsTrigger value="editor" className="data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none h-full bg-transparent px-0 text-sm font-semibold uppercase">
-                  <FileText className="w-4 h-4 mr-2" /> RELEASE
-                </TabsTrigger>
-                <TabsTrigger value="word" className="data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none h-full bg-transparent px-0 text-sm font-semibold uppercase">
-                  <FileSpreadsheet className="w-4 h-4 mr-2" /> RELATÓRIO RPI
-                </TabsTrigger>
-                <TabsTrigger value="weekly" className="data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none h-full bg-transparent px-0 text-sm font-semibold uppercase">
-                  <Calendar className="w-4 h-4 mr-2" /> RESUMO SEMANAL
-                </TabsTrigger>
-              </TabsList>
-            </div>
+          {showMenu ? (
+            <div className="h-full bg-slate-50 dark:bg-slate-950 p-12 overflow-auto">
+              <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <Card 
+                  className="hover:border-blue-500 cursor-pointer transition-all hover:shadow-xl group bg-white dark:bg-slate-900"
+                  onClick={() => { setActiveTab("editor"); setShowMenu(false); }}
+                >
+                  <CardContent className="pt-8 pb-8 flex flex-col items-center text-center gap-4">
+                    <div className="p-4 bg-blue-100 dark:bg-blue-900/30 rounded-2xl group-hover:scale-110 transition-transform">
+                      <FileText className="w-10 h-10 text-blue-600" />
+                    </div>
+                    <h3 className="font-bold uppercase tracking-wide text-lg">Release</h3>
+                    <p className="text-sm text-muted-foreground">Geração de texto para WhatsApp e redes sociais.</p>
+                  </CardContent>
+                </Card>
 
-            <TabsContent value="editor" className="flex-1 overflow-hidden m-0">
-              <div className="h-full grid grid-cols-1 lg:grid-cols-2 gap-0">
-                <ScrollArea className="h-full bg-slate-50 dark:bg-slate-950">
-                  <div className="p-8 pb-24 max-w-2xl mx-auto">
-                    <Form {...form}>
+                <Card 
+                  className="hover:border-blue-500 cursor-pointer transition-all hover:shadow-xl group bg-white dark:bg-slate-900"
+                  onClick={() => checkPassword("word")}
+                >
+                  <CardContent className="pt-8 pb-8 flex flex-col items-center text-center gap-4">
+                    <div className="p-4 bg-blue-100 dark:bg-blue-900/30 rounded-2xl group-hover:scale-110 transition-transform">
+                      <FileSpreadsheet className="w-10 h-10 text-blue-600" />
+                    </div>
+                    <h3 className="font-bold uppercase tracking-wide text-lg">Relatório RPI</h3>
+                    <p className="text-sm text-muted-foreground">Documento formatado para relatórios policiais internos.</p>
+                  </CardContent>
+                </Card>
+
+                <Card 
+                  className="hover:border-blue-500 cursor-pointer transition-all hover:shadow-xl group bg-white dark:bg-slate-900"
+                  onClick={() => checkPassword("weekly")}
+                >
+                  <CardContent className="pt-8 pb-8 flex flex-col items-center text-center gap-4">
+                    <div className="p-4 bg-blue-100 dark:bg-blue-900/30 rounded-2xl group-hover:scale-110 transition-transform">
+                      <Calendar className="w-10 h-10 text-blue-600" />
+                    </div>
+                    <h3 className="font-bold uppercase tracking-wide text-lg">Resumo Semanal</h3>
+                    <p className="text-sm text-muted-foreground">Estatísticas e registros criminais dos últimos 7 dias.</p>
+                  </CardContent>
+                </Card>
+
+                <Card 
+                  className="hover:border-blue-500 cursor-pointer transition-all hover:shadow-xl group bg-white dark:bg-slate-900"
+                  onClick={() => checkPassword("cartoriais")}
+                >
+                  <CardContent className="pt-8 pb-8 flex flex-col items-center text-center gap-4">
+                    <div className="p-4 bg-blue-100 dark:bg-blue-900/30 rounded-2xl group-hover:scale-110 transition-transform">
+                      <Briefcase className="w-10 h-10 text-blue-600" />
+                    </div>
+                    <h3 className="font-bold uppercase tracking-wide text-lg">Cartoriais</h3>
+                    <p className="text-sm text-muted-foreground">Geração de tabelas individuais para cartório.</p>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          ) : (
+            <Tabs value={activeTab} onValueChange={handleTabChange} className="h-full flex flex-col">
+              <div className="hidden">
+                <TabsList>
+                  <TabsTrigger value="editor" />
+                  <TabsTrigger value="word" />
+                  <TabsTrigger value="weekly" />
+                  <TabsTrigger value="cartoriais" />
+                </TabsList>
+              </div>
+
+              <TabsContent value="editor" className="flex-1 overflow-hidden m-0">
+                <div className="h-full grid grid-cols-1 lg:grid-cols-2 gap-0">
+                  <ScrollArea className="h-full bg-slate-50 dark:bg-slate-950">
+                    <div className="p-8 pb-24 max-w-2xl mx-auto">
+                      <div className="flex items-center gap-4 mb-8">
+                        <div className="flex items-center space-x-2 bg-slate-100 dark:bg-slate-800 p-2 rounded-lg border">
+                          <label htmlFor="preliminar" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer text-xs font-bold uppercase">
+                            PRELIMINAR
+                          </label>
+                          <input
+                            id="preliminar"
+                            type="checkbox"
+                            checked={isPreliminar}
+                            onChange={(e) => setIsPreliminar(e.target.checked)}
+                            className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600"
+                          />
+                        </div>
+                      </div>
+                      <Form {...form}>
                       <form className="space-y-8">
                         <div className="space-y-5">
                           <div className="flex items-center gap-2 pb-2 border-b">
@@ -812,7 +899,12 @@ export default function Reports() {
             <TabsContent value="weekly" className="flex-1 overflow-hidden m-0 p-8 bg-slate-50 dark:bg-slate-950">
               <WeeklySummaryTab reports={reports || []} />
             </TabsContent>
+
+            <TabsContent value="cartoriais" className="flex-1 overflow-hidden m-0 p-8 bg-slate-50 dark:bg-slate-950">
+              <CartoriaisTab reports={reports || []} />
+            </TabsContent>
           </Tabs>
+          )}
         </div>
       </main>
     </div>

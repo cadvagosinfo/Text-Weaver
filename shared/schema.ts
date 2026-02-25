@@ -31,7 +31,7 @@ export const reports = pgTable("reports", {
 
 export const insertReportSchema = createInsertSchema(reports, {
   dataHora: z.preprocess((val) => (typeof val === "string" ? new Date(val) : val), z.date()),
-  motivacao: z.string().min(1, "Motivação é obrigatória"),
+  motivacao: z.string().optional().default("Desconhecida"),
 }).omit({ id: true, createdAt: true });
 
 export type InsertReport = z.infer<typeof insertReportSchema>;
