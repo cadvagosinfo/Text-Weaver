@@ -114,6 +114,27 @@ export default function Reports() {
     },
   });
 
+  // Add validation for involved parties if needed, but the main issue might be default values
+  useEffect(() => {
+    if (editingId === null) {
+      form.reset({
+        fato: "",
+        fatoComplementar: "",
+        unidade: "",
+        cidade: "",
+        localRua: "",
+        localNumero: "",
+        localBairro: "",
+        oficial: "",
+        material: [],
+        resumo: "",
+        motivacao: "",
+        envolvidos: [],
+        dataHora: new Date(),
+      });
+    }
+  }, [editingId]);
+
   const { fields: personFields, append: appendPerson, remove: removePerson } = useFieldArray({
     control: form.control,
     name: "envolvidos",

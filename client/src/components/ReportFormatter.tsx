@@ -61,9 +61,7 @@ export function ReportFormatter({ data, isPreliminar }: ReportFormatterProps) {
     const ageVal = calculateAge(p.dataNascimento);
     const ageStr = ageVal !== "N/A" ? `${ageVal} anos` : "idade não informada";
     const nameUpper = (p.nome || "[NOME]").toUpperCase();
-    const rgStr = p.documentoRg ? `RG: ${p.documentoRg}` : "";
-    const cpfStr = p.documentoCpf ? `CPF: ${p.documentoCpf}` : "";
-    const docStr = [rgStr, cpfStr].filter(Boolean).join("; ");
+    const docStr = p.documentoRg ? `RG: ${p.documentoRg}` : (p.documentoCpf ? `CPF: ${p.documentoCpf}` : "");
     
     return `*${roleUpper}:* ${nameUpper}; ${docStr}; ${ageStr}
 *ANTECEDENTES:* ${capitalize(antecedentesVal)}
