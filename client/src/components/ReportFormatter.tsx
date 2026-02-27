@@ -62,10 +62,12 @@ export function ReportFormatter({ data, isPreliminar }: ReportFormatterProps) {
     const ageStr = ageVal !== "N/A" ? `${ageVal} anos` : "idade não informada";
     const nameUpper = (p.nome || "[NOME]").toUpperCase();
     const docStr = p.documentoRg ? `RG: ${p.documentoRg}` : (p.documentoCpf ? `CPF: ${p.documentoCpf}` : "");
+    const antecedentesVal = p.antecedentes || "NADA CONSTA";
+    const orcrimVal = p.orcrim || "NÃO CONSTA";
     
     return `*${roleUpper}:* ${nameUpper}; ${docStr}; ${ageStr}
-*ANTECEDENTES:* ${capitalize(antecedentesVal)}
-*ORCRIM:* ${capitalize(orcrimVal)}`;
+*ANTECEDENTES:* ${capitalize(antecedentesVal.toLowerCase())}
+*ORCRIM:* ${capitalize(orcrimVal.toLowerCase())}`;
   }).join("\n\n");
 
   const fatoText = safeData.fatoComplementar 
