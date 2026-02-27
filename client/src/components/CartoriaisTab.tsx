@@ -7,10 +7,23 @@ import type { Report } from "@shared/schema";
 import { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, BorderStyle, AlignmentType, VerticalAlign } from "docx";
 import { saveAs } from "file-saver";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { format, parseISO } from "date-fns";
 
 interface CartoriaisTabProps {
   reports: Report[];
 }
+
+const formatDate = (dateStr: string) => {
+  if (!dateStr) return "";
+  try {
+    // If it's already in DD/MM/YYYY format, return it
+    if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) return dateStr;
+    const date = parseISO(dateStr);
+    return format(date, "dd/MM/yyyy");
+  } catch (e) {
+    return dateStr;
+  }
+};
 
 export function CartoriaisTab({ reports }: CartoriaisTabProps) {
   const [selectedReportId, setSelectedReportId] = useState<string>("");
@@ -102,7 +115,7 @@ export function CartoriaisTab({ reports }: CartoriaisTabProps) {
                 children: [new Paragraph({ 
                   children: [
                     new TextRun({ text: "DN: ", font: "Times New Roman", size: 18, bold: true }),
-                    new TextRun({ text: (p.dataNascimento || "").toUpperCase(), font: "Times New Roman", size: 18, italic: true })
+                    new TextRun({ text: formatDate(p.dataNascimento).toUpperCase(), font: "Times New Roman", size: 18, italic: true })
                   ] 
                 })],
               }),
@@ -264,7 +277,7 @@ export function CartoriaisTab({ reports }: CartoriaisTabProps) {
                         </td>
                         <td className="border border-black p-1 px-2">
                           <span className="font-bold uppercase">DN: </span>
-                          <span className="italic uppercase">{p.dataNascimento}</span>
+                          <span className="italic uppercase">{formatDate(p.dataNascimento)}</span>
                         </td>
                       </tr>
                       <tr>
