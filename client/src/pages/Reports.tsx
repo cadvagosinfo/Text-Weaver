@@ -173,6 +173,7 @@ export default function Reports() {
 
   const [activeTab, setActiveTab] = useState("editor");
   const [showMenu, setShowMenu] = useState(true);
+  const [gerarCartorial, setGerarCartorial] = useState(false);
 
   const checkPassword = (tab: string) => {
     const password = prompt("Informe a senha para acessar esta aba:");
@@ -706,9 +707,23 @@ export default function Reports() {
                               <UserPlus className="w-5 h-5 text-blue-600" />
                               <h3 className="font-semibold text-lg uppercase tracking-tight">Partes Envolvidas</h3>
                             </div>
-                            <Button type="button" variant="outline" size="sm" onClick={() => appendPerson({ role: "VÍTIMA", nome: "", documentoTipo: "RG", documentoNumero: "", dataNascimento: "", criminalHistory: false, crimeOrg: false, antecedentes: "" })} className="h-8 uppercase text-[10px] font-bold border-blue-200 text-blue-700 hover:bg-blue-50">
-                              <Plus className="w-4 h-4 mr-1" /> Adicionar Parte
-                            </Button>
+                            <div className="flex items-center gap-4">
+                              <div className="flex items-center space-x-2 bg-blue-50 dark:bg-blue-900/20 p-2 rounded-lg border border-blue-100 dark:border-blue-800">
+                                <label htmlFor="gerar-cartorial" className="text-[10px] font-bold uppercase cursor-pointer text-blue-700 dark:text-blue-300">
+                                  GERAR CARTORIAL
+                                </label>
+                                <input
+                                  id="gerar-cartorial"
+                                  type="checkbox"
+                                  checked={gerarCartorial}
+                                  onChange={(e) => setGerarCartorial(e.target.checked)}
+                                  className="h-3.5 w-3.5 rounded border-blue-300 text-blue-600 focus:ring-blue-600"
+                                />
+                              </div>
+                              <Button type="button" variant="outline" size="sm" onClick={() => appendPerson({ role: "VÍTIMA", nome: "", documentoTipo: "RG", documentoNumero: "", dataNascimento: "", criminalHistory: false, crimeOrg: false, antecedentes: "" })} className="h-8 uppercase text-[10px] font-bold border-blue-200 text-blue-700 hover:bg-blue-50">
+                                <Plus className="w-4 h-4 mr-1" /> Adicionar Parte
+                              </Button>
+                            </div>
                           </div>
 
                           <div className="space-y-4">
@@ -747,16 +762,18 @@ export default function Reports() {
                                         </FormItem>
                                       )}
                                     />
-                                    <FormField
-                                      control={form.control}
-                                      name={`envolvidos.${index}.alcunha`}
-                                      render={({ field }) => (
-                                        <FormItem>
-                                          <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Alcunha</FormLabel>
-                                          <FormControl><Input className="bg-white h-9 uppercase text-xs" {...field} value={field.value || ""} /></FormControl>
-                                        </FormItem>
-                                      )}
-                                    />
+                                    {gerarCartorial && (
+                                      <FormField
+                                        control={form.control}
+                                        name={`envolvidos.${index}.alcunha`}
+                                        render={({ field }) => (
+                                          <FormItem>
+                                            <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Alcunha</FormLabel>
+                                            <FormControl><Input className="bg-white h-9 uppercase text-xs" {...field} value={field.value || ""} /></FormControl>
+                                          </FormItem>
+                                        )}
+                                      />
+                                    )}
                                   </div>
                                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <FormField
@@ -793,60 +810,66 @@ export default function Reports() {
                                       )}
                                     />
                                   </div>
-                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                  {gerarCartorial && (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                      <FormField
+                                        control={form.control}
+                                        name={`envolvidos.${index}.situacao`}
+                                        render={({ field }) => (
+                                          <FormItem>
+                                            <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Situação</FormLabel>
+                                            <FormControl><Input className="bg-white h-9 uppercase text-xs" {...field} value={field.value || ""} /></FormControl>
+                                          </FormItem>
+                                        )}
+                                      />
+                                      <FormField
+                                        control={form.control}
+                                        name={`envolvidos.${index}.codigoPreso`}
+                                        render={({ field }) => (
+                                          <FormItem>
+                                            <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Código de Preso (CD)</FormLabel>
+                                            <FormControl><Input className="bg-white h-9 uppercase text-xs" {...field} value={field.value || ""} /></FormControl>
+                                          </FormItem>
+                                        )}
+                                      />
+                                    </div>
+                                  )}
+                                  {gerarCartorial && (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                      <FormField
+                                        control={form.control}
+                                        name={`envolvidos.${index}.pai`}
+                                        render={({ field }) => (
+                                          <FormItem>
+                                            <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Nome do Pai</FormLabel>
+                                            <FormControl><Input className="bg-white h-9 uppercase text-xs" {...field} value={field.value || ""} /></FormControl>
+                                          </FormItem>
+                                        )}
+                                      />
+                                      <FormField
+                                        control={form.control}
+                                        name={`envolvidos.${index}.mae`}
+                                        render={({ field }) => (
+                                          <FormItem>
+                                            <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Nome da Mãe</FormLabel>
+                                            <FormControl><Input className="bg-white h-9 uppercase text-xs" {...field} value={field.value || ""} /></FormControl>
+                                          </FormItem>
+                                        )}
+                                      />
+                                    </div>
+                                  )}
+                                  {gerarCartorial && (
                                     <FormField
                                       control={form.control}
-                                      name={`envolvidos.${index}.situacao`}
+                                      name={`envolvidos.${index}.endereco`}
                                       render={({ field }) => (
                                         <FormItem>
-                                          <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Situação</FormLabel>
+                                          <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Endereço</FormLabel>
                                           <FormControl><Input className="bg-white h-9 uppercase text-xs" {...field} value={field.value || ""} /></FormControl>
                                         </FormItem>
                                       )}
                                     />
-                                    <FormField
-                                      control={form.control}
-                                      name={`envolvidos.${index}.codigoPreso`}
-                                      render={({ field }) => (
-                                        <FormItem>
-                                          <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Código de Preso (CD)</FormLabel>
-                                          <FormControl><Input className="bg-white h-9 uppercase text-xs" {...field} value={field.value || ""} /></FormControl>
-                                        </FormItem>
-                                      )}
-                                    />
-                                  </div>
-                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <FormField
-                                      control={form.control}
-                                      name={`envolvidos.${index}.pai`}
-                                      render={({ field }) => (
-                                        <FormItem>
-                                          <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Nome do Pai</FormLabel>
-                                          <FormControl><Input className="bg-white h-9 uppercase text-xs" {...field} value={field.value || ""} /></FormControl>
-                                        </FormItem>
-                                      )}
-                                    />
-                                    <FormField
-                                      control={form.control}
-                                      name={`envolvidos.${index}.mae`}
-                                      render={({ field }) => (
-                                        <FormItem>
-                                          <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Nome da Mãe</FormLabel>
-                                          <FormControl><Input className="bg-white h-9 uppercase text-xs" {...field} value={field.value || ""} /></FormControl>
-                                        </FormItem>
-                                      )}
-                                    />
-                                  </div>
-                                  <FormField
-                                    control={form.control}
-                                    name={`envolvidos.${index}.endereco`}
-                                    render={({ field }) => (
-                                      <FormItem>
-                                        <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Endereço</FormLabel>
-                                        <FormControl><Input className="bg-white h-9 uppercase text-xs" {...field} value={field.value || ""} /></FormControl>
-                                      </FormItem>
-                                    )}
-                                  />
+                                  )}
                                   <FormField
                                     control={form.control}
                                     name={`envolvidos.${index}.antecedentes`}
@@ -867,16 +890,18 @@ export default function Reports() {
                                       </FormItem>
                                     )}
                                   />
-                                  <FormField
-                                    control={form.control}
-                                    name={`envolvidos.${index}.observacoes`}
-                                    render={({ field }) => (
-                                      <FormItem>
-                                        <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Observações</FormLabel>
-                                        <FormControl><Textarea className="bg-white text-xs lowercase" {...field} value={field.value || ""} /></FormControl>
-                                      </FormItem>
-                                    )}
-                                  />
+                                  {gerarCartorial && (
+                                    <FormField
+                                      control={form.control}
+                                      name={`envolvidos.${index}.observacoes`}
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Observações</FormLabel>
+                                          <FormControl><Textarea className="bg-white text-xs lowercase" {...field} value={field.value || ""} /></FormControl>
+                                        </FormItem>
+                                      )}
+                                    />
+                                  )}
                                 </CardContent>
                               </Card>
                             ))}
