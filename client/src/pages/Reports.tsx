@@ -171,6 +171,9 @@ export default function Reports() {
       .replace(/(-\d{2})\d+?$/, "$1");
   };
 
+  const [activeTab, setActiveTab] = useState("editor");
+  const [showMenu, setShowMenu] = useState(true);
+  const [gerarCartorial, setGerarCartorial] = useState(false);
   const [showPasswordDialog, setShowPasswordDialog] = useState<{ open: boolean, tab: string }>({ open: false, tab: "" });
   const [passwordInput, setPasswordInput] = useState("");
 
