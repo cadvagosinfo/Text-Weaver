@@ -171,15 +171,19 @@ export default function Reports() {
       .replace(/(-\d{2})\d+?$/, "$1");
   };
 
-  const [activeTab, setActiveTab] = useState("editor");
-  const [showMenu, setShowMenu] = useState(true);
-  const [gerarCartorial, setGerarCartorial] = useState(false);
+  const [showPasswordDialog, setShowPasswordDialog] = useState<{ open: boolean, tab: string }>({ open: false, tab: "" });
+  const [passwordInput, setPasswordInput] = useState("");
 
   const checkPassword = (tab: string) => {
-    const password = prompt("Informe a senha para acessar esta aba:");
-    if (password === "1837") {
-      setActiveTab(tab);
+    setShowPasswordDialog({ open: true, tab });
+    setPasswordInput("");
+  };
+
+  const handlePasswordSubmit = () => {
+    if (passwordInput === "1837") {
+      setActiveTab(showPasswordDialog.tab);
       setShowMenu(false);
+      setShowPasswordDialog({ open: false, tab: "" });
     } else {
       alert("Senha incorreta.");
     }
@@ -315,6 +319,47 @@ export default function Reports() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col md:flex-row">
+      {showPasswordDialog.open && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <Card className="w-full max-w-sm border-2 border-blue-500 shadow-2xl animate-in zoom-in-95 duration-200">
+            <CardContent className="pt-8 pb-6 flex flex-col items-center gap-6">
+              <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-full">
+                <ShieldAlert className="w-8 h-8 text-blue-600" />
+              </div>
+              <div className="text-center space-y-1">
+                <h3 className="font-black text-xl tracking-tighter uppercase text-slate-900 dark:text-white">ACESSO RESTRITO</h3>
+                <p className="text-xs font-bold uppercase text-slate-500 tracking-wider">INSIRA A SENHA DE ACESSO</p>
+              </div>
+              <div className="w-full space-y-4">
+                <Input 
+                  type="password" 
+                  autoFocus
+                  placeholder="••••"
+                  className="text-center text-2xl tracking-[0.5em] h-14 border-2 focus-visible:ring-blue-500"
+                  value={passwordInput}
+                  onChange={(e) => setPasswordInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handlePasswordSubmit()}
+                />
+                <div className="flex gap-2">
+                  <Button 
+                    variant="outline" 
+                    className="flex-1 font-bold uppercase text-xs h-11"
+                    onClick={() => setShowPasswordDialog({ open: false, tab: "" })}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button 
+                    className="flex-1 bg-blue-600 hover:bg-blue-700 font-bold uppercase text-xs h-11"
+                    onClick={handlePasswordSubmit}
+                  >
+                    Acessar
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
       {!showMenu && activeTab === "editor" && (
         <aside className="w-full md:w-80 border-r bg-white dark:bg-slate-900 flex flex-col h-[400px] md:h-screen sticky top-0">
           <div className="p-6 border-b bg-gradient-to-r from-slate-900 to-slate-800 text-white shadow-md relative">
@@ -439,57 +484,85 @@ export default function Reports() {
 
         <div className="flex-1 overflow-hidden">
           {showMenu ? (
-            <div className="h-full bg-slate-50 dark:bg-slate-950 p-12 overflow-auto">
-              <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="h-full bg-slate-50 dark:bg-slate-950 p-12 overflow-auto flex items-center justify-center">
+              <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <Card 
-                  className="hover:border-blue-500 cursor-pointer transition-all hover:shadow-xl group bg-white dark:bg-slate-900"
+                  className="group relative overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer aspect-square"
                   onClick={() => { setActiveTab("editor"); setShowMenu(false); }}
                 >
-                  <CardContent className="pt-8 pb-8 flex flex-col items-center text-center gap-4">
-                    <div className="p-4 bg-blue-100 dark:bg-blue-900/30 rounded-2xl group-hover:scale-110 transition-transform">
-                      <FileText className="w-10 h-10 text-blue-600" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <CardContent className="h-full flex flex-col items-center justify-center text-center p-6 gap-6">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-blue-600 blur-2xl opacity-0 group-hover:opacity-20 transition-opacity" />
+                      <div className="relative p-5 bg-blue-50 dark:bg-blue-900/30 rounded-3xl group-hover:bg-blue-600 transition-colors duration-300">
+                        <FileText className="w-12 h-12 text-blue-600 group-hover:text-white transition-colors duration-300" />
+                      </div>
                     </div>
-                    <h3 className="font-bold uppercase tracking-wide text-lg">Release</h3>
-                    <p className="text-sm text-muted-foreground">Geração de texto para WhatsApp e redes sociais.</p>
+                    <div className="space-y-2">
+                      <h3 className="font-black uppercase tracking-tighter text-2xl text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">Release</h3>
+                      <div className="h-1 w-12 bg-blue-600 mx-auto rounded-full group-hover:w-20 transition-all duration-300" />
+                      <p className="text-[10px] font-bold uppercase text-slate-500 tracking-widest leading-tight px-4">WhatsApp & Redes Sociais</p>
+                    </div>
                   </CardContent>
                 </Card>
 
                 <Card 
-                  className="hover:border-blue-500 cursor-pointer transition-all hover:shadow-xl group bg-white dark:bg-slate-900"
+                  className="group relative overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer aspect-square"
                   onClick={() => checkPassword("word")}
                 >
-                  <CardContent className="pt-8 pb-8 flex flex-col items-center text-center gap-4">
-                    <div className="p-4 bg-blue-100 dark:bg-blue-900/30 rounded-2xl group-hover:scale-110 transition-transform">
-                      <FileSpreadsheet className="w-10 h-10 text-blue-600" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <CardContent className="h-full flex flex-col items-center justify-center text-center p-6 gap-6">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-blue-600 blur-2xl opacity-0 group-hover:opacity-20 transition-opacity" />
+                      <div className="relative p-5 bg-blue-50 dark:bg-blue-900/30 rounded-3xl group-hover:bg-blue-600 transition-colors duration-300">
+                        <FileSpreadsheet className="w-12 h-12 text-blue-600 group-hover:text-white transition-colors duration-300" />
+                      </div>
                     </div>
-                    <h3 className="font-bold uppercase tracking-wide text-lg">Relatório RPI</h3>
-                    <p className="text-sm text-muted-foreground">Documento formatado para relatórios policiais internos.</p>
+                    <div className="space-y-2">
+                      <h3 className="font-black uppercase tracking-tighter text-2xl text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">Relatório RPI</h3>
+                      <div className="h-1 w-12 bg-blue-600 mx-auto rounded-full group-hover:w-20 transition-all duration-300" />
+                      <p className="text-[10px] font-bold uppercase text-slate-500 tracking-widest leading-tight px-4">Relatórios Policiais Internos</p>
+                    </div>
                   </CardContent>
                 </Card>
 
                 <Card 
-                  className="hover:border-blue-500 cursor-pointer transition-all hover:shadow-xl group bg-white dark:bg-slate-900"
+                  className="group relative overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer aspect-square"
                   onClick={() => checkPassword("weekly")}
                 >
-                  <CardContent className="pt-8 pb-8 flex flex-col items-center text-center gap-4">
-                    <div className="p-4 bg-blue-100 dark:bg-blue-900/30 rounded-2xl group-hover:scale-110 transition-transform">
-                      <Calendar className="w-10 h-10 text-blue-600" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <CardContent className="h-full flex flex-col items-center justify-center text-center p-6 gap-6">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-blue-600 blur-2xl opacity-0 group-hover:opacity-20 transition-opacity" />
+                      <div className="relative p-5 bg-blue-50 dark:bg-blue-900/30 rounded-3xl group-hover:bg-blue-600 transition-colors duration-300">
+                        <Calendar className="w-12 h-12 text-blue-600 group-hover:text-white transition-colors duration-300" />
+                      </div>
                     </div>
-                    <h3 className="font-bold uppercase tracking-wide text-lg">Resumo Semanal</h3>
-                    <p className="text-sm text-muted-foreground">Estatísticas e registros criminais dos últimos 7 dias.</p>
+                    <div className="space-y-2">
+                      <h3 className="font-black uppercase tracking-tighter text-2xl text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">Resumo Semanal</h3>
+                      <div className="h-1 w-12 bg-blue-600 mx-auto rounded-full group-hover:w-20 transition-all duration-300" />
+                      <p className="text-[10px] font-bold uppercase text-slate-500 tracking-widest leading-tight px-4">Estatísticas dos últimos 7 dias</p>
+                    </div>
                   </CardContent>
                 </Card>
 
                 <Card 
-                  className="hover:border-blue-500 cursor-pointer transition-all hover:shadow-xl group bg-white dark:bg-slate-900"
+                  className="group relative overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer aspect-square"
                   onClick={() => checkPassword("cartoriais")}
                 >
-                  <CardContent className="pt-8 pb-8 flex flex-col items-center text-center gap-4">
-                    <div className="p-4 bg-blue-100 dark:bg-blue-900/30 rounded-2xl group-hover:scale-110 transition-transform">
-                      <Briefcase className="w-10 h-10 text-blue-600" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <CardContent className="h-full flex flex-col items-center justify-center text-center p-6 gap-6">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-blue-600 blur-2xl opacity-0 group-hover:opacity-20 transition-opacity" />
+                      <div className="relative p-5 bg-blue-50 dark:bg-blue-900/30 rounded-3xl group-hover:bg-blue-600 transition-colors duration-300">
+                        <Briefcase className="w-12 h-12 text-blue-600 group-hover:text-white transition-colors duration-300" />
+                      </div>
                     </div>
-                    <h3 className="font-bold uppercase tracking-wide text-lg">Cartoriais</h3>
-                    <p className="text-sm text-muted-foreground">Geração de tabelas individuais para cartório.</p>
+                    <div className="space-y-2">
+                      <h3 className="font-black uppercase tracking-tighter text-2xl text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">Cartoriais</h3>
+                      <div className="h-1 w-12 bg-blue-600 mx-auto rounded-full group-hover:w-20 transition-all duration-300" />
+                      <p className="text-[10px] font-bold uppercase text-slate-500 tracking-widest leading-tight px-4">Tabelas Individuais de Cartório</p>
+                    </div>
                   </CardContent>
                 </Card>
               </div>
@@ -1009,7 +1082,7 @@ export default function Reports() {
             </TabsContent>
 
             <TabsContent value="cartoriais" className="flex-1 overflow-hidden m-0 p-8 bg-slate-50 dark:bg-slate-950">
-              <CartoriaisTab reports={reports || []} />
+              <CartoriaisTab reports={reports || []} gerarCartorial={gerarCartorial} />
             </TabsContent>
           </Tabs>
           )}
