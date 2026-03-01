@@ -584,19 +584,15 @@ export default function Reports() {
                                 control={form.control}
                                 name="fatoComplementar"
                                 render={({ field }) => (
-                                  <FormItem className="animate-in fade-in slide-in-from-top-2 duration-200">
+                                  <FormItem>
                                     <FormLabel className="text-slate-700 font-medium uppercase text-xs">Fato Complementar</FormLabel>
-                                    <FormControl>
-                                      <Input placeholder="Ex: Tráfico de Entorpecentes" className="bg-white border-blue-100 uppercase" {...field} value={field.value || ""} />
-                                    </FormControl>
+                                    <FormControl><Input placeholder="Ex: Tráfico de Entorpecentes" className="bg-white uppercase" {...field} value={field.value || ""} /></FormControl>
                                     <FormMessage />
                                   </FormItem>
                                 )}
                               />
                             )}
-                          </div>
 
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                             <FormField
                               control={form.control}
                               name="unidade"
@@ -720,7 +716,7 @@ export default function Reports() {
                                   className="h-3.5 w-3.5 rounded border-blue-300 text-blue-600 focus:ring-blue-600"
                                 />
                               </div>
-                              <Button type="button" variant="outline" size="sm" onClick={() => appendPerson({ role: "VÍTIMA", nome: "", documentoTipo: "RG", documentoNumero: "", dataNascimento: "", criminalHistory: false, crimeOrg: false, antecedentes: "" })} className="h-8 uppercase text-[10px] font-bold border-blue-200 text-blue-700 hover:bg-blue-50">
+                              <Button type="button" variant="outline" size="sm" onClick={() => appendPerson({ role: "VÍTIMA", nome: "", documentoRg: "", documentoCpf: "", dataNascimento: "", criminalHistory: false, crimeOrg: false, antecedentes: "", orcrim: "" })} className="h-8 uppercase text-[10px] font-bold border-blue-200 text-blue-700 hover:bg-blue-50">
                                 <Plus className="w-4 h-4 mr-1" /> Adicionar Parte
                               </Button>
                             </div>
@@ -870,26 +866,49 @@ export default function Reports() {
                                       )}
                                     />
                                   )}
-                                  <FormField
-                                    control={form.control}
-                                    name={`envolvidos.${index}.antecedentes`}
-                                    render={({ field }) => (
-                                      <FormItem>
-                                        <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Antecedentes Criminais (OC)</FormLabel>
-                                        <FormControl><Input placeholder="Descreva os antecedentes..." className="bg-white h-9 text-xs lowercase" {...field} value={(field.value as string) || ""} /></FormControl>
-                                      </FormItem>
-                                    )}
-                                  />
-                                  <FormField
-                                    control={form.control}
-                                    name={`envolvidos.${index}.orcrim`}
-                                    render={({ field }) => (
-                                      <FormItem>
-                                        <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Orcrim</FormLabel>
-                                        <FormControl><Input placeholder="Facção / Organização..." className="bg-white h-9 text-xs lowercase" {...field} value={(field.value as string) || ""} /></FormControl>
-                                      </FormItem>
-                                    )}
-                                  />
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <FormField
+                                      control={form.control}
+                                      name={`envolvidos.${index}.dataNascimento`}
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <div className="flex items-center justify-between">
+                                            <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Data de Nascimento</FormLabel>
+                                            {field.value && (
+                                              <Badge variant="outline" className="text-[10px] font-mono">
+                                                {calculateAge(field.value)} ANOS
+                                              </Badge>
+                                            )}
+                                          </div>
+                                          <FormControl>
+                                            <Input type="date" className="bg-white h-9 text-xs" {...field} />
+                                          </FormControl>
+                                        </FormItem>
+                                      )}
+                                    />
+                                  </div>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <FormField
+                                      control={form.control}
+                                      name={`envolvidos.${index}.antecedentes`}
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Antecedentes Criminais (OC)</FormLabel>
+                                          <FormControl><Input placeholder="Descreva os antecedentes..." className="bg-white h-9 text-xs lowercase" {...field} value={(field.value as string) || ""} /></FormControl>
+                                        </FormItem>
+                                      )}
+                                    />
+                                    <FormField
+                                      control={form.control}
+                                      name={`envolvidos.${index}.orcrim`}
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormLabel className="text-[10px] font-bold uppercase text-slate-500">Orcrim</FormLabel>
+                                          <FormControl><Input placeholder="Facção / Organização..." className="bg-white h-9 text-xs lowercase" {...field} value={(field.value as string) || ""} /></FormControl>
+                                        </FormItem>
+                                      )}
+                                    />
+                                  </div>
                                   {gerarCartorial && (
                                     <FormField
                                       control={form.control}

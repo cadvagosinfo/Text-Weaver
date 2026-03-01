@@ -99,12 +99,15 @@ export function WeeklySummaryTab({ reports }: WeeklySummaryTabProps) {
           const age = calculateAge(p.dataNascimento);
           const roleTitle = p.role.charAt(0).toUpperCase() + p.role.slice(1).toLowerCase();
           
+          const docType = p.documentoRg ? "RG" : (p.documentoCpf ? "CPF" : (p.documentoTipo || "DOC")).toUpperCase();
+          const docNum = p.documentoRg || p.documentoCpf || p.documentoNumero || "N/I";
+          
           return new Paragraph({
             children: [
               new TextRun({ text: `${roleTitle}: `, bold: true, size: 18, font: "Times New Roman" }),
               new TextRun({ text: `${nameCap}, `, size: 18, font: "Times New Roman" }),
-              new TextRun({ text: `${p.documentoTipo.toUpperCase()}: `, bold: true, size: 18, font: "Times New Roman" }),
-              new TextRun({ text: `${p.documentoNumero}, `, size: 18, font: "Times New Roman" }),
+              new TextRun({ text: `${docType}: `, bold: true, size: 18, font: "Times New Roman" }),
+              new TextRun({ text: `${docNum}, `, size: 18, font: "Times New Roman" }),
               new TextRun({ text: `${age} anos`, size: 18, font: "Times New Roman" }),
               new TextRun({ text: "\n", size: 18, font: "Times New Roman" }),
               new TextRun({ text: `Antecedentes: `, bold: true, size: 18, font: "Times New Roman" }),
@@ -203,8 +206,8 @@ export function WeeklySummaryTab({ reports }: WeeklySummaryTabProps) {
                                     <div>
                                       <span className="font-bold">{p.role.charAt(0).toUpperCase() + p.role.slice(1).toLowerCase()}: </span>
                                       <span>{p.nome.toLowerCase().replace(/(^\w|\s\w)/g, (m: string) => m.toUpperCase())}, </span>
-                                      <span className="font-bold uppercase">{p.documentoTipo}: </span>
-                                      <span>{p.documentoNumero}, </span>
+                                      <span className="font-bold uppercase">{p.documentoRg ? "RG" : (p.documentoCpf ? "CPF" : p.documentoTipo)}: </span>
+                                      <span>{p.documentoRg || p.documentoCpf || p.documentoNumero}, </span>
                                       <span>{calculateAge(p.dataNascimento)} anos</span>
                                     </div>
                                     <div>

@@ -110,7 +110,9 @@ export function WordReportTab({ reports }: WordReportTabProps) {
               const role = (p.role || "Envolvido").charAt(0).toUpperCase() + (p.role || "").slice(1).toLowerCase();
               const age = calculateAge(p.dataNascimento);
               const nameCapitalized = (p.nome || "").toLowerCase().replace(/(^\w|\s\w)/g, (m: string) => m.toUpperCase());
-              output += `${role}: ${nameCapitalized}, ${p.documentoTipo}: ${p.documentoNumero}, ${age} anos\n`;
+              const docType = p.documentoRg ? "RG" : (p.documentoCpf ? "CPF" : p.documentoTipo || "DOC");
+              const docNum = p.documentoRg || p.documentoCpf || p.documentoNumero || "N/I";
+              output += `${role}: ${nameCapitalized}, ${docType}: ${docNum}, ${age} anos\n`;
               output += `Antecedentes: ${capitalizeSentence((p.antecedentes || "").toLowerCase())}\n`;
               output += `Orcrim: ${capitalizeSentence((p.orcrim || "").toLowerCase())}\n\n`;
             });
