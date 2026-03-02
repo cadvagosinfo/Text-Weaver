@@ -35,6 +35,7 @@ export const reports = pgTable("reports", {
   material: jsonb("material").notNull().$type<string[]>(),
   resumo: text("resumo").notNull(),
   motivacao: text("motivacao").notNull().default(""),
+  gerarCartorial: jsonb("gerar_cartorial").notNull().default(false).$type<boolean>(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

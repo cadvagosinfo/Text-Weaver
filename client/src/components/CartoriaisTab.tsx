@@ -11,7 +11,6 @@ import { format, parseISO } from "date-fns";
 
 interface CartoriaisTabProps {
   reports: Report[];
-  gerarCartorial?: boolean;
 }
 
 const formatDate = (dateStr: string) => {
@@ -26,11 +25,14 @@ const formatDate = (dateStr: string) => {
   }
 };
 
-export function CartoriaisTab({ reports, gerarCartorial }: CartoriaisTabProps) {
+export function CartoriaisTab({ reports }: CartoriaisTabProps) {
   const [selectedReportId, setSelectedReportId] = useState<string>("");
 
-  const selectedReport = reports.find(r => r.id.toString() === selectedReportId);
-  const envolvidos = gerarCartorial ? ((selectedReport?.envolvidos as any[]) || []) : [];
+  // Only show reports that were saved with gerarCartorial = true
+  const cartorialReports = reports.filter(r => r.gerarCartorial === true);
+
+  const selectedReport = cartorialReports.find(r => r.id.toString() === selectedReportId);
+  const envolvidos = (selectedReport?.envolvidos as any[]) || [];
 
   const handleDownloadDocx = async () => {
     if (!selectedReport) return;
@@ -219,7 +221,7 @@ export function CartoriaisTab({ reports, gerarCartorial }: CartoriaisTabProps) {
               <SelectValue placeholder="Selecione um Release..." />
             </SelectTrigger>
             <SelectContent>
-              {reports.map(r => (
+              {cartorialReports.map(r => (
                 <SelectItem key={r.id} value={r.id.toString()} className="uppercase text-xs">
                   {r.fato} - {r.cidade} ({new Date(r.dataHora).toLocaleDateString()})
                 </SelectItem>

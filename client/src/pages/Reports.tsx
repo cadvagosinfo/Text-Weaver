@@ -109,6 +109,7 @@ export default function Reports() {
       material: [],
       resumo: "",
       motivacao: "",
+      gerarCartorial: false,
       envolvidos: [],
       dataHora: new Date(),
     },
@@ -129,6 +130,7 @@ export default function Reports() {
         material: [],
         resumo: "",
         motivacao: "",
+        gerarCartorial: false,
         envolvidos: [],
         dataHora: new Date(),
       });
@@ -173,7 +175,6 @@ export default function Reports() {
 
   const [activeTab, setActiveTab] = useState("editor");
   const [showMenu, setShowMenu] = useState(true);
-  const [gerarCartorial, setGerarCartorial] = useState(false);
   const [showPasswordDialog, setShowPasswordDialog] = useState<{ open: boolean, tab: string }>({ open: false, tab: "" });
   const [passwordInput, setPasswordInput] = useState("");
 
@@ -224,6 +225,7 @@ export default function Reports() {
       material: report.material,
       resumo: report.resumo,
       motivacao: report.motivacao || "",
+      gerarCartorial: report.gerarCartorial || false,
       envolvidos: report.envolvidos,
       dataHora: new Date(report.dataHora),
     });
@@ -250,6 +252,7 @@ export default function Reports() {
       material: [],
       resumo: "",
       motivacao: "",
+      gerarCartorial: false,
       envolvidos: [],
       dataHora: new Date(),
     });
@@ -277,6 +280,7 @@ export default function Reports() {
             material: [],
             resumo: "",
             motivacao: "",
+            gerarCartorial: false,
             envolvidos: [],
             dataHora: new Date(),
           });
@@ -298,6 +302,7 @@ export default function Reports() {
             material: [],
             resumo: "",
             motivacao: "",
+            gerarCartorial: false,
             envolvidos: [],
             dataHora: new Date(),
           });
@@ -780,18 +785,25 @@ export default function Reports() {
                               <h3 className="font-semibold text-lg uppercase tracking-tight">Partes Envolvidas</h3>
                             </div>
                             <div className="flex items-center gap-4">
-                              <div className="flex items-center space-x-2 bg-blue-50 dark:bg-blue-900/20 p-2 rounded-lg border border-blue-100 dark:border-blue-800">
-                                <label htmlFor="gerar-cartorial" className="text-[10px] font-bold uppercase cursor-pointer text-blue-700 dark:text-blue-300">
-                                  GERAR CARTORIAL
-                                </label>
-                                <input
-                                  id="gerar-cartorial"
-                                  type="checkbox"
-                                  checked={gerarCartorial}
-                                  onChange={(e) => setGerarCartorial(e.target.checked)}
-                                  className="h-3.5 w-3.5 rounded border-blue-300 text-blue-600 focus:ring-blue-600"
-                                />
-                              </div>
+                              <FormField
+                                control={form.control}
+                                name="gerarCartorial"
+                                render={({ field }) => (
+                                  <FormItem className="flex items-center space-x-2 bg-blue-50 dark:bg-blue-900/20 p-2 rounded-lg border border-blue-100 dark:border-blue-800 space-y-0">
+                                    <FormLabel className="text-[10px] font-black uppercase cursor-pointer text-blue-700 dark:text-blue-300">
+                                      GERAR CARTORIAL
+                                    </FormLabel>
+                                    <FormControl>
+                                      <input
+                                        type="checkbox"
+                                        checked={field.value}
+                                        onChange={field.onChange}
+                                        className="h-3.5 w-3.5 rounded border-blue-300 text-blue-600 focus:ring-blue-600"
+                                      />
+                                    </FormControl>
+                                  </FormItem>
+                                )}
+                              />
                               <Button type="button" variant="outline" size="sm" onClick={() => appendPerson({ role: "VÍTIMA", nome: "", documentoRg: "", documentoCpf: "", dataNascimento: "", criminalHistory: false, crimeOrg: false, antecedentes: "", orcrim: "" })} className="h-8 uppercase text-[10px] font-bold border-blue-200 text-blue-700 hover:bg-blue-50">
                                 <Plus className="w-4 h-4 mr-1" /> Adicionar Parte
                               </Button>
@@ -834,7 +846,7 @@ export default function Reports() {
                                         </FormItem>
                                       )}
                                     />
-                                    {gerarCartorial && (
+                                    {watchedData.gerarCartorial && (
                                       <FormField
                                         control={form.control}
                                         name={`envolvidos.${index}.alcunha`}
@@ -882,7 +894,7 @@ export default function Reports() {
                                       )}
                                     />
                                   </div>
-                                  {gerarCartorial && (
+                                  {watchedData.gerarCartorial && (
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                       <FormField
                                         control={form.control}
@@ -906,7 +918,7 @@ export default function Reports() {
                                       />
                                     </div>
                                   )}
-                                  {gerarCartorial && (
+                                  {watchedData.gerarCartorial && (
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                       <FormField
                                         control={form.control}
@@ -930,7 +942,7 @@ export default function Reports() {
                                       />
                                     </div>
                                   )}
-                                  {gerarCartorial && (
+                                  {watchedData.gerarCartorial && (
                                     <FormField
                                       control={form.control}
                                       name={`envolvidos.${index}.endereco`}
@@ -985,7 +997,7 @@ export default function Reports() {
                                       )}
                                     />
                                   </div>
-                                  {gerarCartorial && (
+                                  {watchedData.gerarCartorial && (
                                     <FormField
                                       control={form.control}
                                       name={`envolvidos.${index}.observacoes`}
@@ -1085,7 +1097,7 @@ export default function Reports() {
             </TabsContent>
 
             <TabsContent value="cartoriais" className="flex-1 overflow-hidden m-0 p-8 bg-slate-50 dark:bg-slate-950">
-              <CartoriaisTab reports={reports || []} gerarCartorial={gerarCartorial} />
+              <CartoriaisTab reports={reports || []} />
             </TabsContent>
           </Tabs>
           )}
