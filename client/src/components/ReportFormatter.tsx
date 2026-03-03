@@ -76,7 +76,7 @@ export function ReportFormatter({ data, isPreliminar }: ReportFormatterProps) {
     ? `*${safeData.fato.toUpperCase()}*\n*${safeData.fatoComplementar.toUpperCase()}*`
     : `*${safeData.fato.toUpperCase()}*`;
 
-  const locationText = `*LOCAL:* ${safeData.localRua.toLowerCase()}, nº ${safeData.localNumero.toLowerCase()}, bairro ${safeData.localBairro.toLowerCase()}`;
+  const locationText = `*LOCAL:* ${safeData.localRua.toLowerCase()}, ${safeData.localNumero.toUpperCase() === "S/N" ? "S/N" : `nº ${safeData.localNumero.toLowerCase()}`}, bairro ${safeData.localBairro.toLowerCase()}`;
 
   const formattedText = `${isPreliminar ? "*PRELIMINAR*\n\n" : ""}${fatoText}
 

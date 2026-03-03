@@ -328,39 +328,49 @@ export default function Reports() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col md:flex-row">
       {showPasswordDialog.open && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <Card className="w-full max-w-sm border-2 border-blue-500 shadow-2xl animate-in zoom-in-95 duration-200">
-            <CardContent className="pt-8 pb-6 flex flex-col items-center gap-6">
-              <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-full">
-                <ShieldAlert className="w-8 h-8 text-blue-600" />
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-blue-600/10 backdrop-blur-md p-4">
+          <Card className="w-full max-w-sm border-0 shadow-2xl animate-in zoom-in-95 duration-200 bg-white dark:bg-slate-900 overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-400 via-blue-600 to-blue-400" />
+            <CardContent className="pt-10 pb-8 flex flex-col items-center gap-8 px-8">
+              <div className="relative">
+                <div className="absolute inset-0 bg-blue-600 blur-2xl opacity-20 animate-pulse" />
+                <div className="relative p-5 bg-blue-50 dark:bg-blue-900/30 rounded-2xl border border-blue-100 dark:border-blue-800">
+                  <ShieldAlert className="w-10 h-10 text-blue-600" />
+                </div>
               </div>
-              <div className="text-center space-y-1">
-                <h3 className="font-black text-xl tracking-tighter uppercase text-slate-900 dark:text-white">ACESSO RESTRITO</h3>
-                <p className="text-xs font-bold uppercase text-slate-500 tracking-wider">INSIRA A SENHA DE ACESSO</p>
+              
+              <div className="text-center space-y-2">
+                <h3 className="font-black text-2xl tracking-tight uppercase text-slate-900 dark:text-white leading-none">ACESSO RESTRITO</h3>
+                <p className="text-[10px] font-black uppercase text-blue-600 tracking-[0.2em]">SISTEMA DE SEGURANÇA</p>
               </div>
-              <div className="w-full space-y-4">
-                <Input 
-                  type="password" 
-                  autoFocus
-                  placeholder="••••"
-                  className="text-center text-2xl tracking-[0.5em] h-14 border-2 focus-visible:ring-blue-500"
-                  value={passwordInput}
-                  onChange={(e) => setPasswordInput(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handlePasswordSubmit()}
-                />
-                <div className="flex gap-2">
+
+              <div className="w-full space-y-6">
+                <div className="space-y-2">
+                  <p className="text-[9px] font-bold uppercase text-slate-400 text-center tracking-widest">INSIRA A SENHA DE ACESSO</p>
+                  <Input 
+                    type="password" 
+                    autoFocus
+                    placeholder="••••"
+                    className="text-center text-3xl tracking-[0.5em] h-16 border-2 border-slate-100 dark:border-slate-800 focus-visible:ring-blue-600 focus-visible:border-blue-600 bg-slate-50/50 dark:bg-slate-800/50 font-mono"
+                    value={passwordInput}
+                    onChange={(e) => setPasswordInput(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handlePasswordSubmit()}
+                  />
+                </div>
+                
+                <div className="flex gap-3">
                   <Button 
-                    variant="outline" 
-                    className="flex-1 font-bold uppercase text-xs h-11"
+                    variant="ghost" 
+                    className="flex-1 font-bold uppercase text-[10px] h-12 text-slate-500 hover:text-slate-900 hover:bg-slate-100"
                     onClick={() => setShowPasswordDialog({ open: false, tab: "" })}
                   >
                     Cancelar
                   </Button>
                   <Button 
-                    className="flex-1 bg-blue-600 hover:bg-blue-700 font-bold uppercase text-xs h-11"
+                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-black uppercase text-[10px] h-12 shadow-lg shadow-blue-600/20 tracking-wider"
                     onClick={handlePasswordSubmit}
                   >
-                    Acessar
+                    Acessar Sistema
                   </Button>
                 </div>
               </div>
@@ -492,196 +502,594 @@ export default function Reports() {
 
         <div className="flex-1 overflow-hidden">
           {showMenu ? (
-            <div className="h-full bg-slate-50 dark:bg-slate-950 p-12 overflow-auto flex items-center justify-center">
-              <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="h-full bg-slate-50 dark:bg-slate-950 p-12 overflow-auto flex items-center justify-center relative">
+              <div className="absolute inset-0 z-0 opacity-[0.05] pointer-events-none flex items-center justify-center overflow-hidden p-20">
+                <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full max-w-2xl text-blue-900 dark:text-blue-100">
+                  <path d="M12,2C10.89,2 10,2.89 10,4C10,4.55 10.22,5.05 10.59,5.42C10.03,6.29 9.17,6.86 8.24,7.18C8.5,7.63 8.64,8.14 8.64,8.68C8.64,10.27 7.36,11.55 5.77,11.55C5.45,11.55 5.14,11.5 4.86,11.41C4.5,12.33 4.29,13.33 4.29,14.38C4.29,18.59 7.71,22 11.91,22C16.11,22 19.53,18.59 19.53,14.38C19.53,13.33 19.32,12.33 18.96,11.41C18.68,11.5 18.37,11.55 18.05,11.55C16.46,11.55 15.18,10.27 15.18,8.68C15.18,8.14 15.32,7.63 15.58,7.18C14.65,6.86 13.79,6.29 13.23,5.42C13.6,5.05 13.82,4.55 13.82,4C13.82,2.89 12.93,2 11.82,2M12,4A1,1 0 0,1 13,5A1,1 0 0,1 12,6A1,1 0 0,1 11,5A1,1 0 0,1 12,4M8,8H16V9H8V8M5.77,9.55C6.25,9.55 6.64,9.94 6.64,10.42C6.64,10.9 6.25,11.29 5.77,11.29C5.29,11.29 4.9,10.9 4.9,10.42C4.9,9.94 5.29,9.55 5.77,9.55M18.05,9.55C18.53,9.55 18.92,9.94 18.92,10.42C18.92,10.9 18.53,11.29 18.05,11.29C17.57,11.29 17.18,10.9 17.18,10.42C17.18,9.94 17.57,9.55 18.05,9.55M11.91,12.38C13.01,12.38 13.91,13.28 13.91,14.38C13.91,15.48 13.01,16.38 11.91,16.38C10.81,16.38 9.91,15.48 9.91,14.38C9.91,13.28 10.81,12.38 11.91,12.38Z" />
+                </svg>
+              </div>
+              <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative z-10">
                 <Card 
-                  className="group relative overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer aspect-square"
+                  className="group relative overflow-hidden border-0 shadow-xl hover:shadow-2xl transition-all duration-500 cursor-pointer aspect-square bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm hover:-translate-y-2"
                   onClick={() => { setActiveTab("editor"); setShowMenu(false); }}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <CardContent className="h-full flex flex-col items-center justify-center text-center p-6 gap-6">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <CardContent className="h-full flex flex-col items-center justify-center text-center p-8 gap-8">
                     <div className="relative">
-                      <div className="absolute inset-0 bg-blue-600 blur-2xl opacity-0 group-hover:opacity-20 transition-opacity" />
-                      <div className="relative p-5 bg-blue-50 dark:bg-blue-900/30 rounded-3xl group-hover:bg-blue-600 transition-colors duration-300">
-                        <FileText className="w-12 h-12 text-blue-600 group-hover:text-white transition-colors duration-300" />
+                      <div className="absolute inset-0 bg-blue-600 blur-3xl opacity-0 group-hover:opacity-30 transition-all duration-500 scale-150" />
+                      <div className="relative p-6 bg-blue-50 dark:bg-blue-900/30 rounded-[2rem] group-hover:bg-blue-600 group-hover:rotate-6 transition-all duration-500 shadow-inner">
+                        <FileText className="w-14 h-14 text-blue-600 group-hover:text-white transition-colors duration-500" />
                       </div>
                     </div>
-                    <div className="space-y-2">
-                      <h3 className="font-black uppercase tracking-tighter text-2xl text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">Release</h3>
-                      <div className="h-1 w-12 bg-blue-600 mx-auto rounded-full group-hover:w-20 transition-all duration-300" />
-                      <p className="text-[10px] font-bold uppercase text-slate-500 tracking-widest leading-tight px-4">WhatsApp & Redes Sociais</p>
+                    <div className="space-y-3">
+                      <h3 className="font-black uppercase tracking-tighter text-2xl text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors duration-300">Release</h3>
+                      <div className="h-1.5 w-12 bg-blue-600 mx-auto rounded-full group-hover:w-24 transition-all duration-500" />
+                      <p className="text-[11px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-[0.2em] leading-tight">WhatsApp & Mídias</p>
                     </div>
                   </CardContent>
                 </Card>
 
                 <Card 
-                  className="group relative overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer aspect-square"
+                  className="group relative overflow-hidden border-0 shadow-xl hover:shadow-2xl transition-all duration-500 cursor-pointer aspect-square bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm hover:-translate-y-2"
                   onClick={() => checkPassword("word")}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <CardContent className="h-full flex flex-col items-center justify-center text-center p-6 gap-6">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <CardContent className="h-full flex flex-col items-center justify-center text-center p-8 gap-8">
                     <div className="relative">
-                      <div className="absolute inset-0 bg-blue-600 blur-2xl opacity-0 group-hover:opacity-20 transition-opacity" />
-                      <div className="relative p-5 bg-blue-50 dark:bg-blue-900/30 rounded-3xl group-hover:bg-blue-600 transition-colors duration-300">
-                        <FileSpreadsheet className="w-12 h-12 text-blue-600 group-hover:text-white transition-colors duration-300" />
+                      <div className="absolute inset-0 bg-blue-600 blur-3xl opacity-0 group-hover:opacity-30 transition-all duration-500 scale-150" />
+                      <div className="relative p-6 bg-blue-50 dark:bg-blue-900/30 rounded-[2rem] group-hover:bg-blue-600 group-hover:-rotate-6 transition-all duration-500 shadow-inner">
+                        <FileSpreadsheet className="w-14 h-14 text-blue-600 group-hover:text-white transition-colors duration-500" />
                       </div>
                     </div>
-                    <div className="space-y-2">
-                      <h3 className="font-black uppercase tracking-tighter text-2xl text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">Relatório RPI</h3>
-                      <div className="h-1 w-12 bg-blue-600 mx-auto rounded-full group-hover:w-20 transition-all duration-300" />
-                      <p className="text-[10px] font-bold uppercase text-slate-500 tracking-widest leading-tight px-4">Relatórios Policiais Internos</p>
+                    <div className="space-y-3">
+                      <h3 className="font-black uppercase tracking-tighter text-2xl text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors duration-300">Relatório RPI</h3>
+                      <div className="h-1.5 w-12 bg-blue-600 mx-auto rounded-full group-hover:w-24 transition-all duration-500" />
+                      <p className="text-[11px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-[0.2em] leading-tight">Documento Oficial</p>
                     </div>
                   </CardContent>
                 </Card>
 
                 <Card 
-                  className="group relative overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer aspect-square"
+                  className="group relative overflow-hidden border-0 shadow-xl hover:shadow-2xl transition-all duration-500 cursor-pointer aspect-square bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm hover:-translate-y-2"
                   onClick={() => checkPassword("weekly")}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <CardContent className="h-full flex flex-col items-center justify-center text-center p-6 gap-6">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <CardContent className="h-full flex flex-col items-center justify-center text-center p-8 gap-8">
                     <div className="relative">
-                      <div className="absolute inset-0 bg-blue-600 blur-2xl opacity-0 group-hover:opacity-20 transition-opacity" />
-                      <div className="relative p-5 bg-blue-50 dark:bg-blue-900/30 rounded-3xl group-hover:bg-blue-600 transition-colors duration-300">
-                        <Calendar className="w-12 h-12 text-blue-600 group-hover:text-white transition-colors duration-300" />
+                      <div className="absolute inset-0 bg-blue-600 blur-3xl opacity-0 group-hover:opacity-30 transition-all duration-500 scale-150" />
+                      <div className="relative p-6 bg-blue-50 dark:bg-blue-900/30 rounded-[2rem] group-hover:bg-blue-600 group-hover:rotate-6 transition-all duration-500 shadow-inner">
+                        <Calendar className="w-14 h-14 text-blue-600 group-hover:text-white transition-colors duration-500" />
                       </div>
                     </div>
-                    <div className="space-y-2">
-                      <h3 className="font-black uppercase tracking-tighter text-2xl text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">Resumo Semanal</h3>
-                      <div className="h-1 w-12 bg-blue-600 mx-auto rounded-full group-hover:w-20 transition-all duration-300" />
-                      <p className="text-[10px] font-bold uppercase text-slate-500 tracking-widest leading-tight px-4">Estatísticas dos últimos 7 dias</p>
+                    <div className="space-y-3">
+                      <h3 className="font-black uppercase tracking-tighter text-2xl text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors duration-300">Resumo Semanal</h3>
+                      <div className="h-1.5 w-12 bg-blue-600 mx-auto rounded-full group-hover:w-24 transition-all duration-500" />
+                      <p className="text-[11px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-[0.2em] leading-tight">Estatística 7 Dias</p>
                     </div>
                   </CardContent>
                 </Card>
 
                 <Card 
-                  className="group relative overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer aspect-square"
+                  className="group relative overflow-hidden border-0 shadow-xl hover:shadow-2xl transition-all duration-500 cursor-pointer aspect-square bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm hover:-translate-y-2"
                   onClick={() => checkPassword("cartoriais")}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <CardContent className="h-full flex flex-col items-center justify-center text-center p-6 gap-6">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <CardContent className="h-full flex flex-col items-center justify-center text-center p-8 gap-8">
                     <div className="relative">
-                      <div className="absolute inset-0 bg-blue-600 blur-2xl opacity-0 group-hover:opacity-20 transition-opacity" />
-                      <div className="relative p-5 bg-blue-50 dark:bg-blue-900/30 rounded-3xl group-hover:bg-blue-600 transition-colors duration-300">
-                        <Briefcase className="w-12 h-12 text-blue-600 group-hover:text-white transition-colors duration-300" />
+                      <div className="absolute inset-0 bg-blue-600 blur-3xl opacity-0 group-hover:opacity-30 transition-all duration-500 scale-150" />
+                      <div className="relative p-6 bg-blue-50 dark:bg-blue-900/30 rounded-[2rem] group-hover:bg-blue-600 group-hover:-rotate-6 transition-all duration-500 shadow-inner">
+                        <Briefcase className="w-14 h-14 text-blue-600 group-hover:text-white transition-colors duration-500" />
                       </div>
                     </div>
-                    <div className="space-y-2">
-                      <h3 className="font-black uppercase tracking-tighter text-2xl text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">Cartoriais</h3>
-                      <div className="h-1 w-12 bg-blue-600 mx-auto rounded-full group-hover:w-20 transition-all duration-300" />
-                      <p className="text-[10px] font-bold uppercase text-slate-500 tracking-widest leading-tight px-4">Tabelas Individuais de Cartório</p>
+                    <div className="space-y-3">
+                      <h3 className="font-black uppercase tracking-tighter text-2xl text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors duration-300">Cartoriais</h3>
+                      <div className="h-1.5 w-12 bg-blue-600 mx-auto rounded-full group-hover:w-24 transition-all duration-500" />
+                      <p className="text-[11px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-[0.2em] leading-tight">Gerenciamento de Dados</p>
                     </div>
                   </CardContent>
                 </Card>
               </div>
             </div>
           ) : (
-            <Tabs value={activeTab} onValueChange={handleTabChange} className="h-full flex flex-col">
-              <div className="hidden">
-                <TabsList>
-                  <TabsTrigger value="editor" />
-                  <TabsTrigger value="word" />
-                  <TabsTrigger value="weekly" />
-                  <TabsTrigger value="cartoriais" />
-                </TabsList>
-              </div>
-
-              <TabsContent value="editor" className="flex-1 overflow-hidden m-0">
-                <div className="h-full grid grid-cols-1 lg:grid-cols-2 gap-0">
-                  <ScrollArea className="h-full bg-slate-50 dark:bg-slate-950">
-                    <div className="p-8 pb-24 max-w-2xl mx-auto">
-                      <div className="flex items-center gap-4 mb-8">
-                        <div className="flex items-center space-x-2 bg-slate-100 dark:bg-slate-800 p-2 rounded-lg border">
-                          <label htmlFor="preliminar" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer text-xs font-bold uppercase">
-                            PRELIMINAR
-                          </label>
-                          <input
-                            id="preliminar"
-                            type="checkbox"
-                            checked={isPreliminar}
-                            onChange={(e) => setIsPreliminar(e.target.checked)}
-                            className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600"
-                          />
-                        </div>
-                      </div>
-                      <Form {...form}>
-                      <form className="space-y-8">
-                        <div className="space-y-5">
-                          <div className="flex items-center gap-2 pb-2 border-b">
-                            <Briefcase className="w-5 h-5 text-blue-600" />
-                            <h3 className="font-semibold text-lg uppercase tracking-tight">Dados da Ocorrência</h3>
-                          </div>
-
-                          <div className="space-y-4">
-                            <FormField
-                              control={form.control}
-                              name="fato"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <div className="flex items-center justify-between">
-                                    <FormLabel className="text-slate-700 font-medium uppercase text-xs">Fato (Natureza)</FormLabel>
-                                    <div className="flex items-center gap-2">
-                                      <label htmlFor="toggle-fato-comp" className="text-[10px] text-muted-foreground cursor-pointer uppercase font-bold">Fato Complementar?</label>
-                                      <input 
-                                        id="toggle-fato-comp"
-                                        type="checkbox" 
-                                        checked={showFatoComplementar}
-                                        onChange={(e) => setShowFatoComplementar(e.target.checked)}
-                                        className="h-3.5 w-3.5 rounded border-gray-300"
-                                      />
-                                    </div>
-                                  </div>
-                                  <div className="space-y-2">
-                                    <Select 
-                                      onValueChange={(val) => field.onChange(val)}
-                                      value={QUICK_FACTS.includes(field.value) ? field.value : ""}
-                                    >
+            <div className="flex-1 overflow-hidden flex flex-col md:flex-row">
+              {activeTab === "editor" && (
+                <div className="flex-1 p-4 md:p-8 overflow-auto bg-slate-50 dark:bg-slate-950">
+                  <div className="max-w-4xl mx-auto space-y-8 pb-20">
+                    <Card className="border-0 shadow-xl bg-white dark:bg-slate-900 overflow-hidden">
+                      <div className="h-2 bg-gradient-to-r from-blue-600 to-blue-400" />
+                      <CardContent className="p-8">
+                        <Form {...form}>
+                          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-100 dark:border-slate-800">
+                              <div className="space-y-1">
+                                <h2 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white uppercase">Novo Registro</h2>
+                                <p className="text-sm text-slate-500 font-medium">Preencha os dados da ocorrência com precisão.</p>
+                              </div>
+                              <div className="flex items-center gap-4 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-2xl border border-slate-100 dark:border-slate-800">
+                                <FormField
+                                  control={form.control}
+                                  name="gerarCartorial"
+                                  render={({ field }) => (
+                                    <FormItem className="flex flex-row items-center space-x-3 space-y-0">
                                       <FormControl>
-                                        <SelectTrigger className="bg-white uppercase text-xs">
-                                          <SelectValue placeholder="Opções rápidas..." />
+                                        <Checkbox
+                                          checked={field.value}
+                                          onCheckedChange={field.onChange}
+                                          className="w-5 h-5 border-2 border-blue-600 data-[state=checked]:bg-blue-600"
+                                        />
+                                      </FormControl>
+                                      <div className="space-y-1 leading-none">
+                                        <FormLabel className="text-xs font-black uppercase text-blue-600 cursor-pointer select-none tracking-wider">
+                                          Incluir no Cartorial
+                                        </FormLabel>
+                                      </div>
+                                    </FormItem>
+                                  )}
+                                />
+                              </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                              <FormField
+                                control={form.control}
+                                name="fato"
+                                render={({ field }) => (
+                                  <FormItem className="space-y-2">
+                                    <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Natureza da Ocorrência</FormLabel>
+                                    <Select onValueChange={field.onChange} value={field.value}>
+                                      <FormControl>
+                                        <SelectTrigger className="h-12 border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50 focus:ring-blue-600">
+                                          <SelectValue placeholder="Selecione o fato" />
                                         </SelectTrigger>
                                       </FormControl>
-                                      <SelectContent className="bg-white">
-                                        {QUICK_FACTS.map(f => (
-                                          <SelectItem key={f} value={f} className="uppercase text-xs">{f}</SelectItem>
+                                      <SelectContent className="max-h-[300px]">
+                                        {CRIME_TYPES.map(type => (
+                                          <SelectItem key={type} value={type} className="py-3 font-medium">{type}</SelectItem>
                                         ))}
                                       </SelectContent>
                                     </Select>
-                                    <FormControl>
-                                      <Input 
-                                        placeholder="Preenchimento livre..." 
-                                        className="bg-white uppercase" 
-                                        {...field} 
-                                      />
-                                    </FormControl>
-                                  </div>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-
-                            {showFatoComplementar && (
-                              <FormField
-                                control={form.control}
-                                name="fatoComplementar"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel className="text-slate-700 font-medium uppercase text-xs">Fato Complementar</FormLabel>
-                                    <FormControl><Input placeholder="Ex: Tráfico de Entorpecentes" className="bg-white uppercase" {...field} value={field.value || ""} /></FormControl>
                                     <FormMessage />
                                   </FormItem>
                                 )}
                               />
-                            )}
 
-                            <FormField
-                              control={form.control}
-                              name="unidade"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel className="text-slate-700 font-medium uppercase text-xs">Unidade Policial</FormLabel>
-                                  <Select onValueChange={handleUnidadeChange} value={field.value}>
+                              <FormField
+                                control={form.control}
+                                name="dataHora"
+                                render={({ field }) => (
+                                  <FormItem className="space-y-2">
+                                    <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Data e Hora</FormLabel>
                                     <FormControl>
+                                      <Input 
+                                        type="datetime-local" 
+                                        {...field} 
+                                        className="h-12 border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50 focus:ring-blue-600 font-medium"
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+
+                            <div className="space-y-6 pt-6 border-t border-slate-100 dark:border-slate-800">
+                              <div className="flex items-center gap-2 mb-2">
+                                <MapPin className="w-4 h-4 text-blue-600" />
+                                <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-blue-600">Localização</h3>
+                              </div>
+                              
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <FormField
+                                  control={form.control}
+                                  name="municipio"
+                                  render={({ field }) => (
+                                    <FormItem className="space-y-2">
+                                      <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Município</FormLabel>
+                                      <Select onValueChange={field.onChange} value={field.value}>
+                                        <FormControl>
+                                          <SelectTrigger className="h-12 border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50">
+                                            <SelectValue placeholder="Selecione a cidade" />
+                                          </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                          {CITIES.map(city => (
+                                            <SelectItem key={city} value={city} className="py-3 font-medium">{city}</SelectItem>
+                                          ))}
+                                        </SelectContent>
+                                      </Select>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+
+                                <FormField
+                                  control={form.control}
+                                  name="localLogradouro"
+                                  render={({ field }) => (
+                                    <FormItem className="space-y-2">
+                                      <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Logradouro (Rua/Av)</FormLabel>
+                                      <FormControl>
+                                        <Input placeholder="Ex: Rua das Flores" {...field} className="h-12 border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50" />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                              </div>
+
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <FormField
+                                  control={form.control}
+                                  name="localNumero"
+                                  render={({ field }) => (
+                                    <FormItem className="space-y-2">
+                                      <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Número</FormLabel>
+                                      <FormControl>
+                                        <Input placeholder="S/N ou nº" {...field} className="h-12 border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50" />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+
+                                <FormField
+                                  control={form.control}
+                                  name="localBairro"
+                                  render={({ field }) => (
+                                    <FormItem className="space-y-2">
+                                      <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Bairro</FormLabel>
+                                      <FormControl>
+                                        <Input placeholder="Ex: Centro" {...field} className="h-12 border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50" />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+
+                                <FormField
+                                  control={form.control}
+                                  name="viatura"
+                                  render={({ field }) => (
+                                    <FormItem className="space-y-2">
+                                      <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Viatura / Equipe</FormLabel>
+                                      <FormControl>
+                                        <Input placeholder="Ex: VTR 1234" {...field} className="h-12 border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50" />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                              </div>
+                            </div>
+
+                            <div className="space-y-6 pt-6 border-t border-slate-100 dark:border-slate-800">
+                              <div className="flex items-center justify-between mb-2">
+                                <div className="flex items-center gap-2">
+                                  <Users className="w-4 h-4 text-blue-600" />
+                                  <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-blue-600">Envolvidos</h3>
+                                </div>
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => {
+                                    const current = form.getValues("envolvidos") || [];
+                                    form.setValue("envolvidos", [...current, { 
+                                      tipo: "Autor", 
+                                      nome: "", 
+                                      alcunha: "", 
+                                      dataNascimento: "", 
+                                      antecedentes: "", 
+                                      faccao: "Não",
+                                      documentoRg: "",
+                                      documentoCpf: ""
+                                    }]);
+                                  }}
+                                  className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-black uppercase text-[9px] tracking-widest h-8 px-4"
+                                >
+                                  <Plus className="w-3 h-3 mr-2" /> Adicionar Envolvido
+                                </Button>
+                              </div>
+
+                              <div className="space-y-4">
+                                {form.watch("envolvidos")?.map((_, index) => (
+                                  <Card key={index} className="border-2 border-slate-100 dark:border-slate-800 shadow-none overflow-hidden hover:border-blue-100 dark:hover:border-blue-900 transition-colors">
+                                    <div className="bg-slate-50 dark:bg-slate-800/50 px-6 py-3 border-b flex items-center justify-between">
+                                      <span className="text-[10px] font-black uppercase text-slate-500 tracking-widest">Envolvido #{index + 1}</span>
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => {
+                                          const current = form.getValues("envolvidos");
+                                          form.setValue("envolvidos", current.filter((_, i) => i !== index));
+                                        }}
+                                        className="text-red-500 hover:text-red-600 hover:bg-red-50 h-8 w-8 p-0"
+                                      >
+                                        <Trash2 className="w-4 h-4" />
+                                      </Button>
+                                    </div>
+                                    <CardContent className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                                      <FormField
+                                        control={form.control}
+                                        name={`envolvidos.${index}.tipo`}
+                                        render={({ field }) => (
+                                          <FormItem className="space-y-2">
+                                            <FormLabel className="text-[9px] font-bold uppercase text-slate-400">Qualificação</FormLabel>
+                                            <Select onValueChange={field.onChange} value={field.value}>
+                                              <FormControl>
+                                                <SelectTrigger className="h-10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+                                                  <SelectValue placeholder="Tipo" />
+                                                </SelectTrigger>
+                                              </FormControl>
+                                              <SelectContent>
+                                                {ROLES.map(role => (
+                                                  <SelectItem key={role} value={role} className="font-medium">{role}</SelectItem>
+                                                ))}
+                                              </SelectContent>
+                                            </Select>
+                                          </FormItem>
+                                        )}
+                                      />
+                                      <FormField
+                                        control={form.control}
+                                        name={`envolvidos.${index}.nome`}
+                                        render={({ field }) => (
+                                          <FormItem className="space-y-2">
+                                            <FormLabel className="text-[9px] font-bold uppercase text-slate-400">Nome Completo</FormLabel>
+                                            <FormControl>
+                                              <Input {...field} className="h-10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900" />
+                                            </FormControl>
+                                          </FormItem>
+                                        )}
+                                      />
+                                      <FormField
+                                        control={form.control}
+                                        name={`envolvidos.${index}.alcunha`}
+                                        render={({ field }) => (
+                                          <FormItem className="space-y-2">
+                                            <FormLabel className="text-[9px] font-bold uppercase text-slate-400">Alcunha (Apelido)</FormLabel>
+                                            <FormControl>
+                                              <Input {...field} className="h-10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900" />
+                                            </FormControl>
+                                          </FormItem>
+                                        )}
+                                      />
+                                      <FormField
+                                        control={form.control}
+                                        name={`envolvidos.${index}.dataNascimento`}
+                                        render={({ field }) => (
+                                          <FormItem className="space-y-2">
+                                            <FormLabel className="text-[9px] font-bold uppercase text-slate-400">Data de Nascimento</FormLabel>
+                                            <FormControl>
+                                              <Input type="date" {...field} className="h-10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900" />
+                                            </FormControl>
+                                          </FormItem>
+                                        )}
+                                      />
+                                      <FormField
+                                        control={form.control}
+                                        name={`envolvidos.${index}.documentoRg`}
+                                        render={({ field }) => (
+                                          <FormItem className="space-y-2">
+                                            <FormLabel className="text-[9px] font-bold uppercase text-slate-400">RG</FormLabel>
+                                            <FormControl>
+                                              <Input {...field} className="h-10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900" />
+                                            </FormControl>
+                                          </FormItem>
+                                        )}
+                                      />
+                                      <FormField
+                                        control={form.control}
+                                        name={`envolvidos.${index}.documentoCpf`}
+                                        render={({ field }) => (
+                                          <FormItem className="space-y-2">
+                                            <FormLabel className="text-[9px] font-bold uppercase text-slate-400">CPF</FormLabel>
+                                            <FormControl>
+                                              <Input {...field} className="h-10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900" />
+                                            </FormControl>
+                                          </FormItem>
+                                        )}
+                                      />
+                                      <FormField
+                                        control={form.control}
+                                        name={`envolvidos.${index}.antecedentes`}
+                                        render={({ field }) => (
+                                          <FormItem className="space-y-2 md:col-span-2">
+                                            <FormLabel className="text-[9px] font-bold uppercase text-slate-400">Antecedentes Criminais</FormLabel>
+                                            <FormControl>
+                                              <Input {...field} placeholder="Ex: Tráfico, Furto..." className="h-10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900" />
+                                            </FormControl>
+                                          </FormItem>
+                                        )}
+                                      />
+                                      <FormField
+                                        control={form.control}
+                                        name={`envolvidos.${index}.faccao`}
+                                        render={({ field }) => (
+                                          <FormItem className="space-y-2">
+                                            <FormLabel className="text-[9px] font-bold uppercase text-slate-400">Pertence a Facção?</FormLabel>
+                                            <Select onValueChange={field.onChange} value={field.value}>
+                                              <FormControl>
+                                                <SelectTrigger className="h-10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+                                                  <SelectValue placeholder="Facção?" />
+                                                </SelectTrigger>
+                                              </FormControl>
+                                              <SelectContent>
+                                                {ORGANIZED_CRIME_OPTIONS.map(opt => (
+                                                  <SelectItem key={opt} value={opt} className="font-medium">{opt}</SelectItem>
+                                                ))}
+                                              </SelectContent>
+                                            </Select>
+                                          </FormItem>
+                                        )}
+                                      />
+                                    </CardContent>
+                                  </Card>
+                                ))}
+                              </div>
+                            </div>
+
+                            <div className="space-y-6 pt-6 border-t border-slate-100 dark:border-slate-800">
+                              <div className="flex items-center gap-2 mb-2">
+                                <FileEdit className="w-4 h-4 text-blue-600" />
+                                <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-blue-600">Resumo e Materiais</h3>
+                              </div>
+
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <FormField
+                                  control={form.control}
+                                  name="objetosApreendidos"
+                                  render={({ field }) => (
+                                    <FormItem className="space-y-2">
+                                      <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Materiais Apreendidos</FormLabel>
+                                      <FormControl>
+                                        <Textarea 
+                                          placeholder="Liste os materiais..." 
+                                          className="min-h-[120px] border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50 focus:ring-blue-600 resize-none" 
+                                          {...field} 
+                                        />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+
+                                <FormField
+                                  control={form.control}
+                                  name="historico"
+                                  render={({ field }) => (
+                                    <FormItem className="space-y-2">
+                                      <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Síntese dos Fatos</FormLabel>
+                                      <FormControl>
+                                        <Textarea 
+                                          placeholder="Descreva a ocorrência..." 
+                                          className="min-h-[120px] border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50 focus:ring-blue-600 resize-none" 
+                                          {...field} 
+                                        />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                              </div>
+
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+                                <FormField
+                                  control={form.control}
+                                  name="motivacao"
+                                  render={({ field }) => (
+                                    <FormItem className="space-y-2">
+                                      <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Motivação</FormLabel>
+                                      <FormControl>
+                                        <Input 
+                                          placeholder="Ex: Passional, Tráfico..." 
+                                          {...field} 
+                                          value={field.value || ""}
+                                          className="h-12 border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50 focus:ring-blue-600" 
+                                        />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+
+                                <FormField
+                                  control={form.control}
+                                  name="policialNome"
+                                  render={({ field }) => (
+                                    <FormItem className="space-y-2">
+                                      <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Policial Responsável</FormLabel>
+                                      <FormControl>
+                                        <Input 
+                                          placeholder="Nome do Policial" 
+                                          {...field} 
+                                          className="h-12 border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50 focus:ring-blue-600" 
+                                        />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                              </div>
+                            </div>
+
+                            <div className="pt-8 flex flex-col md:flex-row gap-4">
+                              <Button 
+                                type="submit" 
+                                disabled={createReport.isPending || updateReport.isPending}
+                                className="flex-1 h-14 bg-blue-600 hover:bg-blue-700 text-white font-black uppercase text-sm tracking-widest shadow-xl shadow-blue-600/20"
+                              >
+                                {createReport.isPending || updateReport.isPending ? (
+                                  <div className="flex items-center gap-2">
+                                    <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                                    <span>Processando...</span>
+                                  </div>
+                                ) : (
+                                  <div className="flex items-center gap-2">
+                                    <Save className="w-5 h-5" />
+                                    <span>{editingId ? "Atualizar Registro" : "Salvar Registro"}</span>
+                                  </div>
+                                )}
+                              </Button>
+                              {editingId && (
+                                <Button 
+                                  type="button" 
+                                  variant="outline" 
+                                  onClick={() => { setEditingId(null); form.reset(); }}
+                                  className="h-14 border-2 border-slate-200 font-black uppercase text-xs tracking-widest px-8"
+                                >
+                                  Cancelar Edição
+                                </Button>
+                              )}
+                            </div>
+                          </form>
+                        </Form>
+                      </CardContent>
+                    </Card>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pb-20">
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-2 px-1">
+                          <MessageSquare className="w-4 h-4 text-blue-600" />
+                          <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Prévia Formatada</h3>
+                        </div>
+                        <Card className="border-0 shadow-xl bg-white dark:bg-slate-900 h-full">
+                          <CardContent className="p-8">
+                            <ReportFormatter data={form.watch()} />
+                          </CardContent>
+                        </Card>
+                      </div>
+
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-2 px-1">
+                          <Share2 className="w-4 h-4 text-blue-600" />
+                          <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Opções de Compartilhamento</h3>
+                        </div>
+                        <Card className="border-0 shadow-xl bg-white dark:bg-slate-900 h-full">
+                          <CardContent className="p-8 flex flex-col gap-4">
+                            <Button 
+                              onClick={handleCopyMessage}
+                              className="w-full h-14 bg-slate-900 dark:bg-blue-600 hover:bg-slate-800 dark:hover:bg-blue-700 text-white font-black uppercase text-xs tracking-widest shadow-lg"
+                            >
+                              <Copy className="w-4 h-4 mr-2" /> Copiar para WhatsApp
+                            </Button>
+                            <p className="text-[10px] text-slate-400 font-medium leading-relaxed px-2">
+                              * A mensagem será copiada com a formatação adequada (negritos em asteriscos) pronta para ser colada no WhatsApp.
+                            </p>
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {activeTab === "word" && <WordReportTab reports={reports || []} />}
+              {activeTab === "weekly" && <WeeklySummaryTab reports={reports || []} />}
+              {activeTab === "cartoriais" && <CartoriaisTab reports={reports || []} />}
+            </div>
+          )}
+        </div>
                                       <SelectTrigger className="bg-white uppercase">
                                         <SelectValue placeholder="Selecione a unidade" />
                                       </SelectTrigger>
