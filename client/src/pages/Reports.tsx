@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link } from "wouter";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertReportSchema, type InsertReport } from "@shared/schema";
 import { useReports, useCreateReport, useUpdateReport, useDeleteReport } from "@/hooks/use-reports";
@@ -82,27 +82,15 @@ const ROLES = [
 
 const QUICK_FACTS = [
   "HOMICÍDIO DOLOSO",
-  "ROUBO A PEDESTRE",
   "ROUBO DE VEÍCULO",
-  "ROUBO A ESTABELECIMENTO COMERCIAL E DE ENSINO",
+  "ROUBO A PEDESTRE",
   "ROUBO A RESIDÊNCIA",
+  "ROUBO A ESTABELECIMENTO COMERCIAL E DE ENSINO",
   "FURTO DE VEÍCULO",
   "FURTO EM VEÍCULO",
   "HOMICÍDIO CULPOSO EM DIREÇÃO DE VEÍCULO AUTOMOTOR",
-  "TRÁFICO DE ENTORPECENTES",
-  "LESÃO CORPORAL DOLOSA",
-  "PORTE ILEGAL DE ARMA DE FOGO",
-  "VIOLÊNCIA DOMÉSTICA",
-  "ESTUPRO",
-  "RECEPTAÇÃO",
-  "ESTELIONATO",
-  "AMEAÇA",
 ];
 
-const ORCRIM_OPTIONS = [
-  "NÃO CONSTA",
-  "CONSTA",
-];
 
 const DEFAULT_PERSON = {
   role: "AUTOR",
@@ -200,8 +188,8 @@ export default function Reports() {
     name: "envolvidos" as any,
   });
 
-  const cidadesDisponiveis =
-    UNIDADES_CIDADES[form.watch("unidade") as string] || [];
+  const watchedUnidade = useWatch({ control: form.control, name: "unidade" });
+  const cidadesDisponiveis = UNIDADES_CIDADES[watchedUnidade as string] || [];
 
   const handleUnidadeChange = (value: string) => {
     form.setValue("unidade", value);
@@ -556,11 +544,8 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
 
               {/* Title */}
               <div className="relative z-10 text-center mb-12 space-y-3">
-                <p className="text-[10px] font-black uppercase tracking-[0.4em] text-blue-400">
-                  CRPM Hortênsias — Sistema de Ocorrências
-                </p>
                 <h1 className="text-4xl font-black uppercase tracking-tight text-white">
-                  Central de Módulos
+                  Sistema de Ocorrências
                 </h1>
                 <div className="h-1 w-20 bg-blue-500 mx-auto rounded-full" />
               </div>
@@ -652,9 +637,6 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
                 </Card>
               </div>
 
-              <p className="relative z-10 mt-10 text-[9px] font-bold uppercase tracking-[0.3em] text-blue-400/50">
-                CRPM Hortênsias · Inteligência Policial
-              </p>
             </div>
           ) : (
             /* ── Tab contents ── */
@@ -700,19 +682,13 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
                                   render={({ field }) => (
                                     <FormItem className="space-y-2">
                                       <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Natureza da Ocorrência *</FormLabel>
-                                      <Select
-                                        onValueChange={(val) => { if (val !== "__livre__") field.onChange(val); }}
-                                        value={QUICK_FACTS.includes(field.value) ? field.value : "__livre__"}
-                                      >
+                                      <Select onValueChange={field.onChange} value={field.value || ""}>
                                         <FormControl>
                                           <SelectTrigger className="h-12 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 font-medium">
-                                            <SelectValue placeholder="Selecione ou escreva o fato" />
+                                            <SelectValue placeholder="Selecione a natureza" />
                                           </SelectTrigger>
                                         </FormControl>
                                         <SelectContent className="max-h-[300px] bg-white dark:bg-slate-900">
-                                          <SelectItem value="__livre__" className="py-2 font-medium text-slate-400 italic">
-                                            ✏️ Preenchimento livre (abaixo)
-                                          </SelectItem>
                                           {QUICK_FACTS.map((type) => (
                                             <SelectItem key={type} value={type} className="py-2 font-medium">
                                               {type}
@@ -720,14 +696,6 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
                                           ))}
                                         </SelectContent>
                                       </Select>
-                                      <FormControl>
-                                        <Input
-                                          placeholder="Ou descreva livremente o fato..."
-                                          value={field.value || ""}
-                                          onChange={field.onChange}
-                                          className="h-12 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 font-medium"
-                                        />
-                                      </FormControl>
                                       <FormMessage />
                                     </FormItem>
                                   )}
@@ -823,10 +791,10 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
                                   render={({ field }) => (
                                     <FormItem className="space-y-2">
                                       <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Município *</FormLabel>
-                                      <Select onValueChange={field.onChange} value={field.value || ""} disabled={!form.watch("unidade")}>
+                                      <Select onValueChange={field.onChange} value={field.value || ""} disabled={!watchedUnidade}>
                                         <FormControl>
                                           <SelectTrigger className="h-12 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 font-medium">
-                                            <SelectValue placeholder={form.watch("unidade") ? "Selecione a cidade" : "Selecione a unidade primeiro"} />
+                                            <SelectValue placeholder={watchedUnidade ? "Selecione a cidade" : "Selecione a unidade primeiro"} />
                                           </SelectTrigger>
                                         </FormControl>
                                         <SelectContent className="bg-white dark:bg-slate-900">
@@ -1044,18 +1012,9 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
                                         render={({ field }) => (
                                           <FormItem className="space-y-1.5">
                                             <FormLabel className="text-[9px] font-bold uppercase text-slate-400">ORCRIM / Facção</FormLabel>
-                                            <Select onValueChange={field.onChange} value={(field.value as string) || "NÃO CONSTA"}>
-                                              <FormControl>
-                                                <SelectTrigger className="h-10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 font-medium">
-                                                  <SelectValue />
-                                                </SelectTrigger>
-                                              </FormControl>
-                                              <SelectContent className="bg-white dark:bg-slate-900">
-                                                {ORCRIM_OPTIONS.map((o) => (
-                                                  <SelectItem key={o} value={o} className="font-medium">{o}</SelectItem>
-                                                ))}
-                                              </SelectContent>
-                                            </Select>
+                                            <FormControl>
+                                              <Input {...field} value={(field.value as string) || ""} placeholder="Ex: Não consta, PCC, CV..." className="h-10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900" />
+                                            </FormControl>
                                           </FormItem>
                                         )}
                                       />
@@ -1066,6 +1025,19 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
                                           <div className="md:col-span-2 border-t border-blue-100 dark:border-blue-900 pt-3 mt-1">
                                             <p className="text-[9px] font-black uppercase tracking-widest text-blue-500">Dados Cartoriais</p>
                                           </div>
+                                          {/* Situação */}
+                                          <FormField
+                                            control={form.control}
+                                            name={`envolvidos.${index}.situacao` as any}
+                                            render={({ field }) => (
+                                              <FormItem className="space-y-1.5">
+                                                <FormLabel className="text-[9px] font-bold uppercase text-slate-400">Situação</FormLabel>
+                                                <FormControl>
+                                                  <Input {...field} value={(field.value as string) || ""} placeholder="Ex: Preso, Liberdade, Foragido..." className="h-10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900" />
+                                                </FormControl>
+                                              </FormItem>
+                                            )}
+                                          />
                                           {/* Alcunha */}
                                           <FormField
                                             control={form.control}
