@@ -183,6 +183,7 @@ export default function Reports() {
 
   const [editingId, setEditingId] = useState<number | null>(null);
   const [isPreliminar, setIsPreliminar] = useState(false);
+  const [showFatoComplementar, setShowFatoComplementar] = useState(false);
   const [activeTab, setActiveTab] = useState("editor");
   const [showMenu, setShowMenu] = useState(true);
   const [showPasswordDialog, setShowPasswordDialog] = useState<{ open: boolean; tab: string }>({ open: false, tab: "" });
@@ -237,6 +238,7 @@ export default function Reports() {
   const startEdit = (report: any) => {
     setEditingId(report.id);
     setIsPreliminar(false);
+    setShowFatoComplementar(!!(report.fatoComplementar));
     form.reset({
       fato: report.fato,
       fatoComplementar: report.fatoComplementar || "",
@@ -315,7 +317,11 @@ export default function Reports() {
 
     const military = data.dataHora ? format(new Date(data.dataHora), "ddHHmm") + format(new Date(data.dataHora), "MMM").toUpperCase().replace(".", "") + format(new Date(data.dataHora), "yy") : "[DATA]";
 
-    const msg = `${isPreliminar ? "*PRELIMINAR*\n\n" : ""}*${(data.fato || "[FATO]").toUpperCase()}*
+    const fatoLine = data.fatoComplementar?.trim()
+      ? `*${(data.fato || "[FATO]").toUpperCase()}*\n*${data.fatoComplementar.toUpperCase()}*`
+      : `*${(data.fato || "[FATO]").toUpperCase()}*`;
+
+    const msg = `${isPreliminar ? "*PRELIMINAR*\n\n" : ""}${fatoLine}
 
 *${(data.cidade || "[CIDADE]").toUpperCase()} - CRPM HORTÊNSIAS / ${(data.unidade || "[UNIDADE]").toUpperCase()}*
 
@@ -682,54 +688,83 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
                                   />
                                   <span className="text-[10px] font-black uppercase text-amber-600 tracking-widest">Preliminar</span>
                                 </label>
-                                {/* Gerar Cartorial */}
-                                <FormField
-                                  control={form.control}
-                                  name="gerarCartorial"
-                                  render={({ field }) => (
-                                    <FormItem className="flex flex-row items-center space-x-2 space-y-0 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 px-4 py-2 rounded-xl">
-                                      <FormControl>
-                                        <Checkbox
-                                          checked={!!field.value}
-                                          onCheckedChange={field.onChange}
-                                          className="w-4 h-4 border-2 border-blue-600 data-[state=checked]:bg-blue-600"
-                                        />
-                                      </FormControl>
-                                      <FormLabel className="text-[10px] font-black uppercase text-blue-600 cursor-pointer select-none tracking-widest">
-                                        Incluir no Cartorial
-                                      </FormLabel>
-                                    </FormItem>
-                                  )}
-                                />
                               </div>
                             </div>
 
                             {/* ── Fato + Data ── */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                              <FormField
-                                control={form.control}
-                                name="fato"
-                                render={({ field }) => (
-                                  <FormItem className="space-y-2">
-                                    <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Natureza da Ocorrência *</FormLabel>
-                                    <Select onValueChange={field.onChange} value={field.value || ""}>
-                                      <FormControl>
-                                        <SelectTrigger className="h-12 border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50">
-                                          <SelectValue placeholder="Selecione o fato" />
-                                        </SelectTrigger>
-                                      </FormControl>
-                                      <SelectContent className="max-h-[300px]">
-                                        {QUICK_FACTS.map((type) => (
-                                          <SelectItem key={type} value={type} className="py-2 font-medium">
-                                            {type}
+                              <div className="space-y-3">
+                                <FormField
+                                  control={form.control}
+                                  name="fato"
+                                  render={({ field }) => (
+                                    <FormItem className="space-y-2">
+                                      <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Natureza da Ocorrência *</FormLabel>
+                                      <Select
+                                        onValueChange={(val) => { if (val !== "__livre__") field.onChange(val); }}
+                                        value={QUICK_FACTS.includes(field.value) ? field.value : "__livre__"}
+                                      >
+                                        <FormControl>
+                                          <SelectTrigger className="h-12 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 font-medium">
+                                            <SelectValue placeholder="Selecione ou escreva o fato" />
+                                          </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent className="max-h-[300px] bg-white dark:bg-slate-900">
+                                          <SelectItem value="__livre__" className="py-2 font-medium text-slate-400 italic">
+                                            ✏️ Preenchimento livre (abaixo)
                                           </SelectItem>
-                                        ))}
-                                      </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
+                                          {QUICK_FACTS.map((type) => (
+                                            <SelectItem key={type} value={type} className="py-2 font-medium">
+                                              {type}
+                                            </SelectItem>
+                                          ))}
+                                        </SelectContent>
+                                      </Select>
+                                      <FormControl>
+                                        <Input
+                                          placeholder="Ou descreva livremente o fato..."
+                                          value={field.value || ""}
+                                          onChange={field.onChange}
+                                          className="h-12 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 font-medium"
+                                        />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                                {/* Fato complementar toggle */}
+                                <div className="space-y-2">
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setShowFatoComplementar(!showFatoComplementar);
+                                      if (showFatoComplementar) form.setValue("fatoComplementar", "");
+                                    }}
+                                    className={`flex items-center gap-2 text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-lg border-2 transition-all ${showFatoComplementar ? "bg-blue-600 border-blue-600 text-white" : "border-blue-200 text-blue-600 hover:bg-blue-50"}`}
+                                  >
+                                    <Plus className="w-3 h-3" />
+                                    Fato Complementar
+                                  </button>
+                                  {showFatoComplementar && (
+                                    <FormField
+                                      control={form.control}
+                                      name="fatoComplementar"
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormControl>
+                                            <Input
+                                              placeholder="Ex: COM EMPREGO DE ARMA DE FOGO"
+                                              {...field}
+                                              value={field.value || ""}
+                                              className="h-12 border-blue-200 dark:border-blue-900 bg-blue-50/50 dark:bg-blue-950/30 font-medium focus-visible:ring-blue-600"
+                                            />
+                                          </FormControl>
+                                        </FormItem>
+                                      )}
+                                    />
+                                  )}
+                                </div>
+                              </div>
 
                               <FormField
                                 control={form.control}
@@ -740,7 +775,7 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
                                     <FormControl>
                                       <Input
                                         type="datetime-local"
-                                        className="h-12 border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50 font-medium"
+                                        className="h-12 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 font-medium"
                                         value={field.value instanceof Date ? format(field.value, "yyyy-MM-dd'T'HH:mm") : ""}
                                         onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : new Date())}
                                       />
@@ -767,11 +802,11 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
                                       <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Unidade Policial *</FormLabel>
                                       <Select onValueChange={handleUnidadeChange} value={field.value || ""}>
                                         <FormControl>
-                                          <SelectTrigger className="h-12 border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50">
+                                          <SelectTrigger className="h-12 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 font-medium">
                                             <SelectValue placeholder="Selecione a unidade" />
                                           </SelectTrigger>
                                         </FormControl>
-                                        <SelectContent>
+                                        <SelectContent className="bg-white dark:bg-slate-900">
                                           {Object.keys(UNIDADES_CIDADES).map((u) => (
                                             <SelectItem key={u} value={u} className="font-medium">{u}</SelectItem>
                                           ))}
@@ -790,11 +825,11 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
                                       <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Município *</FormLabel>
                                       <Select onValueChange={field.onChange} value={field.value || ""} disabled={!form.watch("unidade")}>
                                         <FormControl>
-                                          <SelectTrigger className="h-12 border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50">
+                                          <SelectTrigger className="h-12 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 font-medium">
                                             <SelectValue placeholder={form.watch("unidade") ? "Selecione a cidade" : "Selecione a unidade primeiro"} />
                                           </SelectTrigger>
                                         </FormControl>
-                                        <SelectContent>
+                                        <SelectContent className="bg-white dark:bg-slate-900">
                                           {cidadesDisponiveis.map((city) => (
                                             <SelectItem key={city} value={city} className="font-medium">{city}</SelectItem>
                                           ))}
@@ -853,20 +888,41 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
 
                             {/* ── Envolvidos ── */}
                             <div className="space-y-5 pt-5 border-t border-slate-100 dark:border-slate-800">
-                              <div className="flex items-center justify-between">
+                              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                                 <div className="flex items-center gap-2">
                                   <Users className="w-4 h-4 text-blue-600" />
                                   <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-blue-600">Envolvidos</h3>
                                 </div>
-                                <Button
-                                  type="button"
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => appendPerson(DEFAULT_PERSON as any)}
-                                  className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-black uppercase text-[9px] tracking-widest h-8 px-4"
-                                >
-                                  <Plus className="w-3 h-3 mr-1" /> Adicionar Envolvido
-                                </Button>
+                                <div className="flex items-center gap-3 flex-wrap">
+                                  {/* Gerar Cartorial */}
+                                  <FormField
+                                    control={form.control}
+                                    name="gerarCartorial"
+                                    render={({ field }) => (
+                                      <FormItem className="flex flex-row items-center space-x-2 space-y-0 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 px-3 py-2 rounded-lg">
+                                        <FormControl>
+                                          <Checkbox
+                                            checked={!!field.value}
+                                            onCheckedChange={field.onChange}
+                                            className="w-4 h-4 border-2 border-blue-600 data-[state=checked]:bg-blue-600"
+                                          />
+                                        </FormControl>
+                                        <FormLabel className="text-[9px] font-black uppercase text-blue-600 cursor-pointer select-none tracking-widest whitespace-nowrap">
+                                          Incluir Cartorial
+                                        </FormLabel>
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => appendPerson(DEFAULT_PERSON as any)}
+                                    className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-black uppercase text-[9px] tracking-widest h-8 px-4"
+                                  >
+                                    <Plus className="w-3 h-3 mr-1" /> Adicionar Envolvido
+                                  </Button>
+                                </div>
                               </div>
 
                               <div className="space-y-4">
@@ -887,6 +943,7 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
                                       </Button>
                                     </div>
                                     <CardContent className="p-5 grid grid-cols-1 md:grid-cols-2 gap-5">
+                                      {/* Always visible: Qualificação */}
                                       <FormField
                                         control={form.control}
                                         name={`envolvidos.${index}.role` as any}
@@ -895,11 +952,11 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
                                             <FormLabel className="text-[9px] font-bold uppercase text-slate-400">Qualificação</FormLabel>
                                             <Select onValueChange={field.onChange} value={(field.value as string) || ""}>
                                               <FormControl>
-                                                <SelectTrigger className="h-10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+                                                <SelectTrigger className="h-10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 font-medium">
                                                   <SelectValue placeholder="Tipo" />
                                                 </SelectTrigger>
                                               </FormControl>
-                                              <SelectContent>
+                                              <SelectContent className="bg-white dark:bg-slate-900">
                                                 {ROLES.map((r) => (
                                                   <SelectItem key={r} value={r} className="font-medium">{r}</SelectItem>
                                                 ))}
@@ -908,6 +965,7 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
                                           </FormItem>
                                         )}
                                       />
+                                      {/* Always visible: Nome */}
                                       <FormField
                                         control={form.control}
                                         name={`envolvidos.${index}.nome` as any}
@@ -920,18 +978,7 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
                                           </FormItem>
                                         )}
                                       />
-                                      <FormField
-                                        control={form.control}
-                                        name={`envolvidos.${index}.alcunha` as any}
-                                        render={({ field }) => (
-                                          <FormItem className="space-y-1.5">
-                                            <FormLabel className="text-[9px] font-bold uppercase text-slate-400">Alcunha</FormLabel>
-                                            <FormControl>
-                                              <Input {...field} value={(field.value as string) || ""} className="h-10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900" />
-                                            </FormControl>
-                                          </FormItem>
-                                        )}
-                                      />
+                                      {/* Always visible: Data de Nascimento */}
                                       <FormField
                                         control={form.control}
                                         name={`envolvidos.${index}.dataNascimento` as any}
@@ -951,6 +998,7 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
                                           </FormItem>
                                         )}
                                       />
+                                      {/* Always visible: RG */}
                                       <FormField
                                         control={form.control}
                                         name={`envolvidos.${index}.documentoRg` as any}
@@ -963,6 +1011,7 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
                                           </FormItem>
                                         )}
                                       />
+                                      {/* Always visible: CPF */}
                                       <FormField
                                         control={form.control}
                                         name={`envolvidos.${index}.documentoCpf` as any}
@@ -975,11 +1024,12 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
                                           </FormItem>
                                         )}
                                       />
+                                      {/* Always visible: Antecedentes */}
                                       <FormField
                                         control={form.control}
                                         name={`envolvidos.${index}.antecedentes` as any}
                                         render={({ field }) => (
-                                          <FormItem className="space-y-1.5 md:col-span-2">
+                                          <FormItem className="space-y-1.5">
                                             <FormLabel className="text-[9px] font-bold uppercase text-slate-400">Antecedentes Criminais</FormLabel>
                                             <FormControl>
                                               <Input {...field} value={(field.value as string) || ""} placeholder="Ex: Tráfico, Furto..." className="h-10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900" />
@@ -987,6 +1037,7 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
                                           </FormItem>
                                         )}
                                       />
+                                      {/* Always visible: ORCRIM */}
                                       <FormField
                                         control={form.control}
                                         name={`envolvidos.${index}.orcrim` as any}
@@ -995,11 +1046,11 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
                                             <FormLabel className="text-[9px] font-bold uppercase text-slate-400">ORCRIM / Facção</FormLabel>
                                             <Select onValueChange={field.onChange} value={(field.value as string) || "NÃO CONSTA"}>
                                               <FormControl>
-                                                <SelectTrigger className="h-10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+                                                <SelectTrigger className="h-10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 font-medium">
                                                   <SelectValue />
                                                 </SelectTrigger>
                                               </FormControl>
-                                              <SelectContent>
+                                              <SelectContent className="bg-white dark:bg-slate-900">
                                                 {ORCRIM_OPTIONS.map((o) => (
                                                   <SelectItem key={o} value={o} className="font-medium">{o}</SelectItem>
                                                 ))}
@@ -1008,6 +1059,93 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
                                           </FormItem>
                                         )}
                                       />
+
+                                      {/* ── Cartorial extras (only when gerarCartorial is checked) ── */}
+                                      {form.watch("gerarCartorial") && (
+                                        <>
+                                          <div className="md:col-span-2 border-t border-blue-100 dark:border-blue-900 pt-3 mt-1">
+                                            <p className="text-[9px] font-black uppercase tracking-widest text-blue-500">Dados Cartoriais</p>
+                                          </div>
+                                          {/* Alcunha */}
+                                          <FormField
+                                            control={form.control}
+                                            name={`envolvidos.${index}.alcunha` as any}
+                                            render={({ field }) => (
+                                              <FormItem className="space-y-1.5">
+                                                <FormLabel className="text-[9px] font-bold uppercase text-slate-400">Alcunha</FormLabel>
+                                                <FormControl>
+                                                  <Input {...field} value={(field.value as string) || ""} className="h-10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900" />
+                                                </FormControl>
+                                              </FormItem>
+                                            )}
+                                          />
+                                          {/* Pai */}
+                                          <FormField
+                                            control={form.control}
+                                            name={`envolvidos.${index}.pai` as any}
+                                            render={({ field }) => (
+                                              <FormItem className="space-y-1.5">
+                                                <FormLabel className="text-[9px] font-bold uppercase text-slate-400">Nome do Pai</FormLabel>
+                                                <FormControl>
+                                                  <Input {...field} value={(field.value as string) || ""} placeholder="N/I" className="h-10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900" />
+                                                </FormControl>
+                                              </FormItem>
+                                            )}
+                                          />
+                                          {/* Mãe */}
+                                          <FormField
+                                            control={form.control}
+                                            name={`envolvidos.${index}.mae` as any}
+                                            render={({ field }) => (
+                                              <FormItem className="space-y-1.5">
+                                                <FormLabel className="text-[9px] font-bold uppercase text-slate-400">Nome da Mãe</FormLabel>
+                                                <FormControl>
+                                                  <Input {...field} value={(field.value as string) || ""} placeholder="N/I" className="h-10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900" />
+                                                </FormControl>
+                                              </FormItem>
+                                            )}
+                                          />
+                                          {/* Código Preso */}
+                                          <FormField
+                                            control={form.control}
+                                            name={`envolvidos.${index}.codigoPreso` as any}
+                                            render={({ field }) => (
+                                              <FormItem className="space-y-1.5">
+                                                <FormLabel className="text-[9px] font-bold uppercase text-slate-400">Código Preso</FormLabel>
+                                                <FormControl>
+                                                  <Input {...field} value={(field.value as string) || ""} placeholder="Nº do preso" className="h-10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900" />
+                                                </FormControl>
+                                              </FormItem>
+                                            )}
+                                          />
+                                          {/* Endereço */}
+                                          <FormField
+                                            control={form.control}
+                                            name={`envolvidos.${index}.endereco` as any}
+                                            render={({ field }) => (
+                                              <FormItem className="space-y-1.5 md:col-span-2">
+                                                <FormLabel className="text-[9px] font-bold uppercase text-slate-400">Endereço Residencial</FormLabel>
+                                                <FormControl>
+                                                  <Input {...field} value={(field.value as string) || ""} placeholder="Rua, número, bairro..." className="h-10 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900" />
+                                                </FormControl>
+                                              </FormItem>
+                                            )}
+                                          />
+                                          {/* Observações */}
+                                          <FormField
+                                            control={form.control}
+                                            name={`envolvidos.${index}.observacoes` as any}
+                                            render={({ field }) => (
+                                              <FormItem className="space-y-1.5 md:col-span-2">
+                                                <FormLabel className="text-[9px] font-bold uppercase text-slate-400">Observações</FormLabel>
+                                                <FormControl>
+                                                  <Textarea {...field} value={(field.value as string) || ""} placeholder="Informações adicionais..." className="min-h-[70px] border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 resize-none" />
+                                                </FormControl>
+                                              </FormItem>
+                                            )}
+                                          />
+                                        </>
+                                      )}
                                     </CardContent>
                                   </Card>
                                 ))}
@@ -1021,46 +1159,44 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
                                 <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-blue-600">Resumo, Materiais e Oficial</h3>
                               </div>
 
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                <FormField
-                                  control={form.control}
-                                  name="resumo"
-                                  render={({ field }) => (
-                                    <FormItem className="space-y-2">
-                                      <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Síntese dos Fatos *</FormLabel>
-                                      <FormControl>
-                                        <Textarea
-                                          placeholder="Descreva a ocorrência..."
-                                          className="min-h-[120px] border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50 resize-none"
-                                          {...field}
-                                        />
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
+                              <FormField
+                                control={form.control}
+                                name="resumo"
+                                render={({ field }) => (
+                                  <FormItem className="space-y-2">
+                                    <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Síntese dos Fatos *</FormLabel>
+                                    <FormControl>
+                                      <Textarea
+                                        placeholder="Descreva a ocorrência com todos os detalhes relevantes..."
+                                        className="min-h-[200px] border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 resize-y"
+                                        {...field}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
 
-                                <FormField
-                                  control={form.control}
-                                  name="motivacao"
-                                  render={({ field }) => (
-                                    <FormItem className="space-y-2">
-                                      <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
-                                        Motivação <span className="text-slate-300 font-normal normal-case tracking-normal">(se vazio: "Desconhecida")</span>
-                                      </FormLabel>
-                                      <FormControl>
-                                        <Input
-                                          placeholder="Ex: Passional, Tráfico... (opcional)"
-                                          {...field}
-                                          value={field.value || ""}
-                                          className="h-12 border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50"
-                                        />
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                              </div>
+                              <FormField
+                                control={form.control}
+                                name="motivacao"
+                                render={({ field }) => (
+                                  <FormItem className="space-y-2">
+                                    <FormLabel className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                                      Motivação <span className="text-slate-300 font-normal normal-case tracking-normal">(opcional — se vazio: "Desconhecida")</span>
+                                    </FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        placeholder="Ex: Passional, Tráfico, Desconhecida..."
+                                        {...field}
+                                        value={field.value || ""}
+                                        className="h-12 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900"
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
 
                               {/* Material apreendido */}
                               <div className="space-y-3">
