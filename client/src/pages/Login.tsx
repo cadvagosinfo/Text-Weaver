@@ -1,4 +1,5 @@
 import { useState } from "react";
+import owlBg from "@assets/arquetipodacoruja_1774223541664.webp";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ShieldAlert } from "lucide-react";
@@ -79,16 +80,16 @@ export default function Login({ onLogin }: LoginProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Owl watermark */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-        <div className="w-[500px] h-[500px] opacity-[0.07] text-blue-300">
-          <OwlWatermark />
-        </div>
-      </div>
-
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-slate-950">
+      {/* Blurred owl photo background */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-105"
+        style={{ backgroundImage: `url(${owlBg})`, filter: "blur(6px)" }}
+      />
+      {/* Heavy dark overlay — image is intentionally subtle/dim */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900/93 via-blue-950/90 to-slate-900/95 pointer-events-none" />
       {/* Subtle radial glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(59,130,246,0.15)_0%,_transparent_70%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(59,130,246,0.12)_0%,_transparent_70%)] pointer-events-none" />
 
       {/* Card */}
       <div className="relative z-10 w-full max-w-sm animate-in zoom-in-95 duration-300">
