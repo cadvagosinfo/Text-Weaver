@@ -1,4 +1,5 @@
 import { useState } from "react";
+import owlBg from "@assets/arquetipodacoruja_1774223541664.webp";
 import { Link } from "wouter";
 import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -567,16 +568,15 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
         <div className="flex-1 overflow-hidden">
           {showMenu ? (
             /* ── Menu ── */
-            <div className="h-full bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 overflow-auto flex flex-col items-center justify-center relative">
-              {/* Owl watermark */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-                <div className="w-[500px] h-[500px] opacity-[0.07] text-blue-300">
-                  <OwlWatermark />
-                </div>
-              </div>
+            <div
+              className="h-full overflow-auto flex flex-col items-center justify-center relative bg-cover bg-center bg-no-repeat"
+              style={{ backgroundImage: `url(${owlBg})` }}
+            >
+              {/* Dark overlay — keeps cards and text readable over the photo */}
+              <div className="absolute inset-0 bg-gradient-to-br from-slate-900/88 via-blue-950/82 to-slate-900/90 pointer-events-none" />
 
-              {/* Subtle radial glow */}
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(59,130,246,0.15)_0%,_transparent_70%)] pointer-events-none" />
+              {/* Subtle blue radial glow */}
+              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(59,130,246,0.12)_0%,_transparent_70%)] pointer-events-none" />
 
               {/* Title */}
               <div className="relative z-10 text-center mb-12 space-y-3">
