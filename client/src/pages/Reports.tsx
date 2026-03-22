@@ -124,40 +124,70 @@ const DEFAULT_FORM: InsertReport = {
 function OwlWatermark() {
   return (
     <svg
-      viewBox="0 0 100 100"
+      viewBox="0 0 200 220"
       fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
       className="w-full h-full"
     >
-      {/* Body */}
-      <ellipse cx="50" cy="62" rx="22" ry="28" />
-      {/* Head */}
-      <ellipse cx="50" cy="32" rx="20" ry="18" />
-      {/* Ear tufts */}
-      <polygon points="33,18 28,6 38,14" />
-      <polygon points="67,18 72,6 62,14" />
-      {/* Left eye ring */}
-      <circle cx="40" cy="33" r="9" fill="white" />
-      <circle cx="40" cy="33" r="6" fill="#1e40af" />
-      <circle cx="40" cy="33" r="3" fill="black" />
-      <circle cx="38" cy="31" r="1" fill="white" />
-      {/* Right eye ring */}
-      <circle cx="60" cy="33" r="9" fill="white" />
-      <circle cx="60" cy="33" r="6" fill="#1e40af" />
-      <circle cx="60" cy="33" r="3" fill="black" />
-      <circle cx="58" cy="31" r="1" fill="white" />
-      {/* Beak */}
-      <polygon points="50,38 46,44 54,44" fill="#b45309" />
-      {/* Wing lines */}
-      <path d="M30 58 Q25 70 28 82" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-      <path d="M70 58 Q75 70 72 82" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-      {/* Feet */}
-      <line x1="42" y1="88" x2="38" y2="96" stroke="white" strokeWidth="2" strokeLinecap="round" />
-      <line x1="42" y1="88" x2="42" y2="97" stroke="white" strokeWidth="2" strokeLinecap="round" />
-      <line x1="42" y1="88" x2="46" y2="96" stroke="white" strokeWidth="2" strokeLinecap="round" />
-      <line x1="58" y1="88" x2="54" y2="96" stroke="white" strokeWidth="2" strokeLinecap="round" />
-      <line x1="58" y1="88" x2="58" y2="97" stroke="white" strokeWidth="2" strokeLinecap="round" />
-      <line x1="58" y1="88" x2="62" y2="96" stroke="white" strokeWidth="2" strokeLinecap="round" />
+      {/* ── Wings spread wide ── */}
+      <path d="M55,100 Q10,80 5,140 Q25,125 48,118" />
+      <path d="M145,100 Q190,80 195,140 Q175,125 152,118" />
+
+      {/* ── Body – broad & imposing ── */}
+      <ellipse cx="100" cy="148" rx="52" ry="62" />
+
+      {/* ── Head ── */}
+      <circle cx="100" cy="72" r="52" />
+
+      {/* ── Aggressive ear tufts – splayed outward ── */}
+      <polygon points="52,38 24,4 62,28" />
+      <polygon points="148,38 176,4 138,28" />
+      {/* inner tuft detail */}
+      <polygon points="60,36 42,12 68,30" opacity="0.6" />
+      <polygon points="140,36 158,12 132,30" opacity="0.6" />
+
+      {/* ── Heavy angry brow ridge ── */}
+      <polygon points="48,54 100,42 152,54 100,66" fill="rgba(0,0,30,0.35)" />
+
+      {/* ── Left eye ── */}
+      <circle cx="76" cy="78" r="19" fill="white" />
+      <circle cx="78" cy="80" r="13" fill="#1e3a8a" />
+      <circle cx="80" cy="82" r="7" fill="black" />
+      <circle cx="83" cy="77" r="2.5" fill="white" />
+      {/* angry left brow – angled sharply inward */}
+      <path d="M54,53 Q70,48 96,62" fill="none" stroke="currentColor" strokeWidth="7" strokeLinecap="round" />
+
+      {/* ── Right eye ── */}
+      <circle cx="124" cy="78" r="19" fill="white" />
+      <circle cx="122" cy="80" r="13" fill="#1e3a8a" />
+      <circle cx="120" cy="82" r="7" fill="black" />
+      <circle cx="117" cy="77" r="2.5" fill="white" />
+      {/* angry right brow – angled sharply inward */}
+      <path d="M146,53 Q130,48 104,62" fill="none" stroke="currentColor" strokeWidth="7" strokeLinecap="round" />
+
+      {/* ── Hooked beak – large & sharp ── */}
+      <path d="M100,94 L84,114 L100,108 L116,114 Z" fill="#92400e" />
+      <path d="M100,108 Q90,120 82,114 L100,96 L118,114 Q110,120 100,108Z" fill="#78350f" />
+
+      {/* ── Chest feather rows ── */}
+      <path d="M66,125 Q100,112 134,125" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="2.5" />
+      <path d="M60,142 Q100,128 140,142" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="2.5" />
+      <path d="M58,159 Q100,144 142,159" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="2.5" />
+      <path d="M60,176 Q100,162 140,176" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="2" />
+
+      {/* ── Talons – sharp & extended ── */}
+      {/* left foot */}
+      <line x1="82" y1="206" x2="68" y2="216" stroke="white" strokeWidth="3" strokeLinecap="round" />
+      <line x1="82" y1="206" x2="76" y2="218" stroke="white" strokeWidth="3" strokeLinecap="round" />
+      <line x1="82" y1="206" x2="84" y2="218" stroke="white" strokeWidth="3" strokeLinecap="round" />
+      <line x1="82" y1="206" x2="96" y2="214" stroke="white" strokeWidth="3" strokeLinecap="round" />
+      <line x1="82" y1="206" x2="73" y2="196" stroke="white" strokeWidth="3" strokeLinecap="round" />
+      {/* right foot */}
+      <line x1="118" y1="206" x2="104" y2="216" stroke="white" strokeWidth="3" strokeLinecap="round" />
+      <line x1="118" y1="206" x2="116" y2="218" stroke="white" strokeWidth="3" strokeLinecap="round" />
+      <line x1="118" y1="206" x2="124" y2="218" stroke="white" strokeWidth="3" strokeLinecap="round" />
+      <line x1="118" y1="206" x2="132" y2="214" stroke="white" strokeWidth="3" strokeLinecap="round" />
+      <line x1="118" y1="206" x2="127" y2="196" stroke="white" strokeWidth="3" strokeLinecap="round" />
     </svg>
   );
 }
@@ -227,7 +257,7 @@ export default function Reports() {
     setEditingId(report.id);
     setIsPreliminar(false);
     setShowFatoComplementar(!!(report.fatoComplementar));
-    form.reset({
+    const values = {
       fato: report.fato,
       fatoComplementar: report.fatoComplementar || "",
       unidade: report.unidade,
@@ -242,9 +272,15 @@ export default function Reports() {
       resumo: report.resumo,
       motivacao: report.motivacao || "",
       gerarCartorial: report.gerarCartorial || false,
-    });
+    };
+    form.reset(values);
     setActiveTab("editor");
     setShowMenu(false);
+    // Re-apply cidade after a tick — Radix Select drops the value when
+    // cidadesDisponiveis is still empty on the very first render.
+    setTimeout(() => {
+      form.setValue("cidade", report.cidade || "", { shouldValidate: false });
+    }, 50);
   };
 
   const cancelEdit = () => {
@@ -568,7 +604,6 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
                     <div className="space-y-2">
                       <h3 className="font-black uppercase tracking-tighter text-xl text-white">Release</h3>
                       <div className="h-0.5 w-8 bg-blue-500 mx-auto rounded-full group-hover:w-16 transition-all duration-500" />
-                      <p className="text-[10px] font-bold uppercase text-blue-300/70 tracking-[0.18em]">WhatsApp & Mídias</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -589,7 +624,6 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
                     <div className="space-y-2">
                       <h3 className="font-black uppercase tracking-tighter text-xl text-white">Relatório RPI</h3>
                       <div className="h-0.5 w-8 bg-blue-500 mx-auto rounded-full group-hover:w-16 transition-all duration-500" />
-                      <p className="text-[10px] font-bold uppercase text-blue-300/70 tracking-[0.18em]">Documento Oficial</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -610,7 +644,6 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
                     <div className="space-y-2">
                       <h3 className="font-black uppercase tracking-tighter text-xl text-white">Resumo Semanal</h3>
                       <div className="h-0.5 w-8 bg-blue-500 mx-auto rounded-full group-hover:w-16 transition-all duration-500" />
-                      <p className="text-[10px] font-bold uppercase text-blue-300/70 tracking-[0.18em]">Estatística 7 Dias</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -631,7 +664,6 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
                     <div className="space-y-2">
                       <h3 className="font-black uppercase tracking-tighter text-xl text-white">Cartoriais</h3>
                       <div className="h-0.5 w-8 bg-blue-500 mx-auto rounded-full group-hover:w-16 transition-all duration-500" />
-                      <p className="text-[10px] font-bold uppercase text-blue-300/70 tracking-[0.18em]">Gerenciamento de Dados</p>
                     </div>
                   </CardContent>
                 </Card>
