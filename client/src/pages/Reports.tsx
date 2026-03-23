@@ -598,7 +598,7 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
                     <div className="relative">
                       <div className="absolute inset-0 bg-blue-500 blur-2xl opacity-0 group-hover:opacity-40 transition-all duration-500 scale-150" />
                       <div className="relative p-5 bg-blue-600/20 rounded-2xl border border-blue-400/30 group-hover:bg-blue-600 group-hover:rotate-6 transition-all duration-500">
-                        <FileText className="w-12 h-12 text-blue-300 group-hover:text-white transition-colors duration-500" />
+                        <FileText className="w-12 h-12 text-slate-400 group-hover:text-white transition-colors duration-500" />
                       </div>
                     </div>
                     <div className="space-y-2">
@@ -618,7 +618,7 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
                     <div className="relative">
                       <div className="absolute inset-0 bg-blue-500 blur-2xl opacity-0 group-hover:opacity-40 transition-all duration-500 scale-150" />
                       <div className="relative p-5 bg-blue-600/20 rounded-2xl border border-blue-400/30 group-hover:bg-blue-600 group-hover:-rotate-6 transition-all duration-500">
-                        <FileSpreadsheet className="w-12 h-12 text-blue-300 group-hover:text-white transition-colors duration-500" />
+                        <FileSpreadsheet className="w-12 h-12 text-slate-400 group-hover:text-white transition-colors duration-500" />
                       </div>
                     </div>
                     <div className="space-y-2">
@@ -638,7 +638,7 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
                     <div className="relative">
                       <div className="absolute inset-0 bg-blue-500 blur-2xl opacity-0 group-hover:opacity-40 transition-all duration-500 scale-150" />
                       <div className="relative p-5 bg-blue-600/20 rounded-2xl border border-blue-400/30 group-hover:bg-blue-600 group-hover:rotate-6 transition-all duration-500">
-                        <Calendar className="w-12 h-12 text-blue-300 group-hover:text-white transition-colors duration-500" />
+                        <Calendar className="w-12 h-12 text-slate-400 group-hover:text-white transition-colors duration-500" />
                       </div>
                     </div>
                     <div className="space-y-2">
@@ -658,7 +658,7 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
                     <div className="relative">
                       <div className="absolute inset-0 bg-blue-500 blur-2xl opacity-0 group-hover:opacity-40 transition-all duration-500 scale-150" />
                       <div className="relative p-5 bg-blue-600/20 rounded-2xl border border-blue-400/30 group-hover:bg-blue-600 group-hover:-rotate-6 transition-all duration-500">
-                        <Briefcase className="w-12 h-12 text-blue-300 group-hover:text-white transition-colors duration-500" />
+                        <Briefcase className="w-12 h-12 text-slate-400 group-hover:text-white transition-colors duration-500" />
                       </div>
                     </div>
                     <div className="space-y-2">

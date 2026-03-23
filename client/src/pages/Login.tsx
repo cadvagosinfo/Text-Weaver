@@ -124,7 +124,7 @@ export default function Login({ onLogin }: LoginProps) {
                     type="password"
                     autoFocus
                     placeholder="••••"
-                    className={`text-center text-3xl tracking-[0.5em] h-16 border-2 focus-visible:ring-blue-600 focus-visible:border-blue-600 bg-slate-50 font-mono transition-colors ${error ? "border-red-400 bg-red-50" : "border-slate-200"}`}
+                    className={`text-center text-3xl tracking-[0.5em] h-16 border-2 focus-visible:ring-slate-500 focus-visible:border-slate-500 font-mono transition-colors text-slate-800 placeholder:text-slate-400 ${error ? "border-red-400 bg-red-50" : "bg-slate-200 border-slate-400"}`}
                     value={password}
                     onChange={(e) => { setPassword(e.target.value); setError(false); }}
                   />
