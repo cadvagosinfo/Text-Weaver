@@ -375,11 +375,11 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
 
       {/* ── Password Dialog ── */}
       {showPasswordDialog.open && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-blue-900/60 backdrop-blur-md p-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/70 backdrop-blur-md p-4">
           <div className="w-full max-w-sm animate-in zoom-in-95 duration-200">
-            <div className="rounded-3xl overflow-hidden shadow-2xl border border-blue-400/30">
-              {/* Blue gradient top half */}
-              <div className="bg-gradient-to-b from-blue-700 to-blue-600 px-8 pt-10 pb-12 flex flex-col items-center gap-5">
+            <div className="rounded-3xl overflow-hidden shadow-2xl border border-slate-400/30">
+              {/* Gray gradient top half */}
+              <div className="bg-gradient-to-b from-slate-700 to-slate-600 px-8 pt-10 pb-12 flex flex-col items-center gap-5">
                 <div className="relative">
                   <div className="absolute inset-0 bg-white blur-2xl opacity-20 scale-150" />
                   <div className="relative p-5 bg-white/20 rounded-2xl border border-white/30 backdrop-blur-sm">
@@ -390,7 +390,7 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
                   <h3 className="font-black text-2xl tracking-tight uppercase text-white leading-none">
                     ACESSO RESTRITO
                   </h3>
-                  <p className="text-[10px] font-bold uppercase text-blue-200 tracking-[0.25em]">
+                  <p className="text-[10px] font-bold uppercase text-slate-300 tracking-[0.25em]">
                     SISTEMA DE SEGURANÇA
                   </p>
                 </div>
@@ -406,7 +406,7 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
                       type="password"
                       autoFocus
                       placeholder="••••"
-                      className={`text-center text-3xl tracking-[0.5em] h-16 border-2 focus-visible:ring-blue-600 focus-visible:border-blue-600 bg-slate-50 font-mono transition-colors ${passwordError ? "border-red-400 bg-red-50" : "border-slate-200"}`}
+                      className={`text-center text-3xl tracking-[0.5em] h-16 border-2 focus-visible:ring-slate-500 focus-visible:border-slate-500 font-mono transition-colors text-slate-800 placeholder:text-slate-400 ${passwordError ? "border-red-400 bg-red-50" : "bg-slate-200 border-slate-400"}`}
                       value={passwordInput}
                       onChange={(e) => { setPasswordInput(e.target.value); setPasswordError(false); }}
                       onKeyDown={(e) => e.key === "Enter" && handlePasswordSubmit()}
@@ -427,7 +427,7 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
                       Cancelar
                     </Button>
                     <Button
-                      className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-black uppercase text-[10px] h-12 shadow-lg shadow-blue-600/30 tracking-wider rounded-xl"
+                      className="flex-1 bg-slate-600 hover:bg-slate-700 text-white font-black uppercase text-[10px] h-12 shadow-lg shadow-slate-600/30 tracking-wider rounded-xl"
                       onClick={handlePasswordSubmit}
                     >
                       Acessar
@@ -590,80 +590,80 @@ ${data.resumo || "[RESUMO]"}${isPreliminar ? "\n\n*OCORRÊNCIA EM ANDAMENTO / AG
               <div className="relative z-10 max-w-5xl w-full px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {/* Release */}
                 <Card
-                  className="group relative overflow-hidden border border-white/10 shadow-2xl hover:shadow-blue-500/20 transition-all duration-500 cursor-pointer bg-white/5 backdrop-blur-md hover:-translate-y-3 hover:border-blue-400/40"
+                  className="group relative overflow-hidden border border-white/10 shadow-2xl hover:shadow-slate-500/20 transition-all duration-500 cursor-pointer bg-white/5 backdrop-blur-md hover:-translate-y-3 hover:border-slate-400/40"
                   onClick={() => { setActiveTab("editor"); setShowMenu(false); }}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-slate-400/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   <CardContent className="h-full flex flex-col items-center justify-center text-center p-8 gap-6 min-h-[220px]">
                     <div className="relative">
-                      <div className="absolute inset-0 bg-blue-500 blur-2xl opacity-0 group-hover:opacity-40 transition-all duration-500 scale-150" />
-                      <div className="relative p-5 bg-blue-600/20 rounded-2xl border border-blue-400/30 group-hover:bg-blue-600 group-hover:rotate-6 transition-all duration-500">
+                      <div className="absolute inset-0 bg-slate-400 blur-2xl opacity-0 group-hover:opacity-40 transition-all duration-500 scale-150" />
+                      <div className="relative p-5 bg-slate-600/20 rounded-2xl border border-slate-400/30 group-hover:bg-slate-600 group-hover:rotate-6 transition-all duration-500">
                         <FileText className="w-12 h-12 text-slate-400 group-hover:text-white transition-colors duration-500" />
                       </div>
                     </div>
                     <div className="space-y-2">
                       <h3 className="font-black uppercase tracking-tighter text-xl text-white">Release</h3>
-                      <div className="h-0.5 w-8 bg-blue-500 mx-auto rounded-full group-hover:w-16 transition-all duration-500" />
+                      <div className="h-0.5 w-8 bg-slate-400 mx-auto rounded-full group-hover:w-16 transition-all duration-500" />
                     </div>
                   </CardContent>
                 </Card>
 
                 {/* Relatório RPI */}
                 <Card
-                  className="group relative overflow-hidden border border-white/10 shadow-2xl hover:shadow-blue-500/20 transition-all duration-500 cursor-pointer bg-white/5 backdrop-blur-md hover:-translate-y-3 hover:border-blue-400/40"
+                  className="group relative overflow-hidden border border-white/10 shadow-2xl hover:shadow-slate-500/20 transition-all duration-500 cursor-pointer bg-white/5 backdrop-blur-md hover:-translate-y-3 hover:border-slate-400/40"
                   onClick={() => checkPassword("word")}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-slate-400/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   <CardContent className="h-full flex flex-col items-center justify-center text-center p-8 gap-6 min-h-[220px]">
                     <div className="relative">
-                      <div className="absolute inset-0 bg-blue-500 blur-2xl opacity-0 group-hover:opacity-40 transition-all duration-500 scale-150" />
-                      <div className="relative p-5 bg-blue-600/20 rounded-2xl border border-blue-400/30 group-hover:bg-blue-600 group-hover:-rotate-6 transition-all duration-500">
+                      <div className="absolute inset-0 bg-slate-400 blur-2xl opacity-0 group-hover:opacity-40 transition-all duration-500 scale-150" />
+                      <div className="relative p-5 bg-slate-600/20 rounded-2xl border border-slate-400/30 group-hover:bg-slate-600 group-hover:-rotate-6 transition-all duration-500">
                         <FileSpreadsheet className="w-12 h-12 text-slate-400 group-hover:text-white transition-colors duration-500" />
                       </div>
                     </div>
                     <div className="space-y-2">
                       <h3 className="font-black uppercase tracking-tighter text-xl text-white">Relatório RPI</h3>
-                      <div className="h-0.5 w-8 bg-blue-500 mx-auto rounded-full group-hover:w-16 transition-all duration-500" />
+                      <div className="h-0.5 w-8 bg-slate-400 mx-auto rounded-full group-hover:w-16 transition-all duration-500" />
                     </div>
                   </CardContent>
                 </Card>
 
                 {/* Resumo Semanal */}
                 <Card
-                  className="group relative overflow-hidden border border-white/10 shadow-2xl hover:shadow-blue-500/20 transition-all duration-500 cursor-pointer bg-white/5 backdrop-blur-md hover:-translate-y-3 hover:border-blue-400/40"
+                  className="group relative overflow-hidden border border-white/10 shadow-2xl hover:shadow-slate-500/20 transition-all duration-500 cursor-pointer bg-white/5 backdrop-blur-md hover:-translate-y-3 hover:border-slate-400/40"
                   onClick={() => checkPassword("weekly")}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-slate-400/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   <CardContent className="h-full flex flex-col items-center justify-center text-center p-8 gap-6 min-h-[220px]">
                     <div className="relative">
-                      <div className="absolute inset-0 bg-blue-500 blur-2xl opacity-0 group-hover:opacity-40 transition-all duration-500 scale-150" />
-                      <div className="relative p-5 bg-blue-600/20 rounded-2xl border border-blue-400/30 group-hover:bg-blue-600 group-hover:rotate-6 transition-all duration-500">
+                      <div className="absolute inset-0 bg-slate-400 blur-2xl opacity-0 group-hover:opacity-40 transition-all duration-500 scale-150" />
+                      <div className="relative p-5 bg-slate-600/20 rounded-2xl border border-slate-400/30 group-hover:bg-slate-600 group-hover:rotate-6 transition-all duration-500">
                         <Calendar className="w-12 h-12 text-slate-400 group-hover:text-white transition-colors duration-500" />
                       </div>
                     </div>
                     <div className="space-y-2">
                       <h3 className="font-black uppercase tracking-tighter text-xl text-white">Resumo Semanal</h3>
-                      <div className="h-0.5 w-8 bg-blue-500 mx-auto rounded-full group-hover:w-16 transition-all duration-500" />
+                      <div className="h-0.5 w-8 bg-slate-400 mx-auto rounded-full group-hover:w-16 transition-all duration-500" />
                     </div>
                   </CardContent>
                 </Card>
 
                 {/* Cartoriais */}
                 <Card
-                  className="group relative overflow-hidden border border-white/10 shadow-2xl hover:shadow-blue-500/20 transition-all duration-500 cursor-pointer bg-white/5 backdrop-blur-md hover:-translate-y-3 hover:border-blue-400/40"
+                  className="group relative overflow-hidden border border-white/10 shadow-2xl hover:shadow-slate-500/20 transition-all duration-500 cursor-pointer bg-white/5 backdrop-blur-md hover:-translate-y-3 hover:border-slate-400/40"
                   onClick={() => checkPassword("cartoriais")}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-slate-400/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   <CardContent className="h-full flex flex-col items-center justify-center text-center p-8 gap-6 min-h-[220px]">
                     <div className="relative">
-                      <div className="absolute inset-0 bg-blue-500 blur-2xl opacity-0 group-hover:opacity-40 transition-all duration-500 scale-150" />
-                      <div className="relative p-5 bg-blue-600/20 rounded-2xl border border-blue-400/30 group-hover:bg-blue-600 group-hover:-rotate-6 transition-all duration-500">
+                      <div className="absolute inset-0 bg-slate-400 blur-2xl opacity-0 group-hover:opacity-40 transition-all duration-500 scale-150" />
+                      <div className="relative p-5 bg-slate-600/20 rounded-2xl border border-slate-400/30 group-hover:bg-slate-600 group-hover:-rotate-6 transition-all duration-500">
                         <Briefcase className="w-12 h-12 text-slate-400 group-hover:text-white transition-colors duration-500" />
                       </div>
                     </div>
                     <div className="space-y-2">
                       <h3 className="font-black uppercase tracking-tighter text-xl text-white">Cartoriais</h3>
-                      <div className="h-0.5 w-8 bg-blue-500 mx-auto rounded-full group-hover:w-16 transition-all duration-500" />
+                      <div className="h-0.5 w-8 bg-slate-400 mx-auto rounded-full group-hover:w-16 transition-all duration-500" />
                     </div>
                   </CardContent>
                 </Card>

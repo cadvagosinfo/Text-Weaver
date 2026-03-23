@@ -93,9 +93,9 @@ export default function Login({ onLogin }: LoginProps) {
 
       {/* Card */}
       <div className="relative z-10 w-full max-w-sm animate-in zoom-in-95 duration-300">
-        <div className="rounded-3xl overflow-hidden shadow-2xl border border-blue-400/20">
-          {/* Blue gradient top */}
-          <div className="bg-gradient-to-b from-blue-700 to-blue-600 px-8 pt-10 pb-14 flex flex-col items-center gap-5">
+        <div className="rounded-3xl overflow-hidden shadow-2xl border border-slate-400/20">
+          {/* Gray gradient top */}
+          <div className="bg-gradient-to-b from-slate-700 to-slate-600 px-8 pt-10 pb-14 flex flex-col items-center gap-5">
             <div className="relative">
               <div className="absolute inset-0 bg-white blur-2xl opacity-20 scale-150" />
               <div className="relative p-5 bg-white/20 rounded-2xl border border-white/30 backdrop-blur-sm">
@@ -106,7 +106,7 @@ export default function Login({ onLogin }: LoginProps) {
               <h1 className="font-black text-2xl tracking-tight uppercase text-white leading-none">
                 Sistema de Ocorrências
               </h1>
-              <p className="text-[10px] font-bold uppercase text-blue-200 tracking-[0.25em]">
+              <p className="text-[10px] font-bold uppercase text-slate-300 tracking-[0.25em]">
                 Acesso Seguro ao Sistema
               </p>
             </div>
@@ -136,7 +136,7 @@ export default function Login({ onLogin }: LoginProps) {
                 </div>
                 <Button
                   type="submit"
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black uppercase text-[11px] h-13 py-3.5 shadow-lg shadow-blue-600/30 tracking-wider rounded-xl"
+                  className="w-full bg-slate-600 hover:bg-slate-700 text-white font-black uppercase text-[11px] h-13 py-3.5 shadow-lg shadow-slate-600/30 tracking-wider rounded-xl"
                 >
                   Entrar no Sistema
                 </Button>
